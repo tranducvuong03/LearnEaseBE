@@ -1,0 +1,6 @@
+@LearnEaseBE_HostAddress = http://localhost:5172
+
+GET {{LearnEaseBE_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
