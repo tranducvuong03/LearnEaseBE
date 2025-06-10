@@ -1,4 +1,5 @@
-﻿using LearnEase.Repository.EntityModel;
+﻿using LearnEase.Repository.DTO;
+using LearnEase.Repository.EntityModel;
 
 namespace LearnEase.Service
 {
@@ -9,6 +10,8 @@ namespace LearnEase.Service
         Task<Leaderboard> AddAsync(Leaderboard leaderboard);
         Task<Leaderboard> UpdateAsync(Leaderboard leaderboard);
         Task<bool> DeleteAsync(Guid id);
+        Task<List<Leaderboard>> GetTopUsersAsync(string period, int count);
+        Task RecordScoreAsync(RecordScoreDto dto);
     }
 
 }

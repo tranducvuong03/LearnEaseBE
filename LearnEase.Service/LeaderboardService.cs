@@ -1,16 +1,21 @@
 ﻿using LearnEase.Repository;
+using LearnEase.Repository.DTO;
 using LearnEase.Repository.EntityModel;
+using LearnEase.Repository.IRepo;
 using LearnEase.Service.IServices;
+using Microsoft.EntityFrameworkCore;
 
 namespace LearnEase.Service
 {
     public class LeaderboardService : ILeaderboardService
     {
+        private readonly ILeaderboardRepository _leader;
         private readonly IUnitOfWork _uow;
         private readonly IGenericRepository<Leaderboard> _repo;
 
-        public LeaderboardService(IUnitOfWork uow)
+        public LeaderboardService(IUnitOfWork uow, ILeaderboardRepository leader)
         {
+            _leader = leader;
             _uow = uow;
             _repo = _uow.GetRepository<Leaderboard>();
         }
@@ -40,6 +45,16 @@ namespace LearnEase.Service
             await _uow.SaveAsync();
             return true;
         }
+        public async Task<List<Leaderboard>> GetTopUsersAsync(string period, int count)
+        {
+            return await _leader.GetTopUsersAsync(period, count);
+        }
+        public async Task RecordScoreAsync(RecordScoreDto dto)
+
+        {
+            await _leader.RecordScoreAsync(dto);
+        }
+
     }
 
 }
