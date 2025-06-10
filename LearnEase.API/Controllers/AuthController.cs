@@ -5,6 +5,9 @@ using System.Security.Claims;
 using System.Text;
 using LearnEase.Repository.EntityModel;
 using LearnEase.Service.Models.Request;
+using Google.Apis.Auth;
+using LearnEase.Repository.DTO;
+using LearnEase.Repository;
 
 namespace LearnEase.API.Controllers
 {
@@ -53,7 +56,57 @@ namespace LearnEase.API.Controllers
             var token = GenerateJwtToken(user);
             return Ok(new { token });
         }
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.IdToken))
+                return BadRequest("IdToken is required.");
 
+            try
+            {
+                // Validate token
+                var payload = await GoogleJsonWebSignature.ValidateAsync(request.IdToken);
+                if (payload == null)
+                    return Unauthorized("Invalid Google token.");
+
+                var email = payload.Email;
+                var name = payload.Name;
+
+                if (string.IsNullOrEmpty(email))
+                    return BadRequest("Email not found in token.");
+
+                // Check if user exists
+                var user = _context.Users.FirstOrDefault(u => u.Email == email);
+
+                if (user == null)
+                {
+                    // Create new user
+                    user = new User
+                    {
+                        UserId = Guid.NewGuid(),
+                        Username = name,
+                        Email = email,
+                        Password = null // No password for Google login
+                    };
+
+                    _context.Users.Add(user);
+                    await _context.SaveChangesAsync();
+                }
+
+                // Generate JWT token
+                var token = new JwtHelper(_config).GenerateToken(user);
+
+                return Ok(new { token });
+            }
+            catch (InvalidJwtException ex)
+            {
+                return Unauthorized($"Invalid Google token: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
         private string GenerateJwtToken(User user)
         {
             var claims = new[]
