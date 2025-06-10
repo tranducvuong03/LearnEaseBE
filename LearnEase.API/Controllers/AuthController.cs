@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using LearnEase.Repository.EntityModel;
+using LearnEase.Service.Models.Request;
 
 namespace LearnEase.API.Controllers
 {

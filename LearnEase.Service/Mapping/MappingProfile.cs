@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿/*using AutoMapper;
 using LearnEase.Core.Entities;
 using LearnEase.Core.Models.Reponse;
 using LearnEase.Core.Models.Request;
@@ -48,3 +48,4 @@ namespace LearnEase.Service.Mapping
 		}
     }
 }
+*/

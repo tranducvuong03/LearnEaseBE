@@ -1,4 +1,4 @@
-﻿using LearnEase_Api.Dtos.reponse;
+﻿/*using LearnEase_Api.Dtos.reponse;
 using LearnEase_Api.Dtos.request;
 using LearnEase_Api.LearnEase.Core.IServices;
 using Microsoft.Extensions.Configuration;
@@ -20,7 +20,7 @@ namespace LearnEase_Api.LearnEase.Core.Services
             _redisCacherService = redis;
         }
 
-        /*public async Task<ApiResponse<UserResponse>> SignupWithGoogle(string idToken)
+        *//*public async Task<ApiResponse<UserResponse>> SignupWithGoogle(string idToken)
         {
             if (string.IsNullOrEmpty(idToken))
             {
@@ -100,7 +100,7 @@ namespace LearnEase_Api.LearnEase.Core.Services
                 Success = true,
                 Data = url
             });
-        }*/
+        }*//*
 
         public async Task<ApiResponse<string>> ExchangeCodeForToken(string code)
         {
@@ -325,3 +325,4 @@ namespace LearnEase_Api.LearnEase.Core.Services
         }
     }
 }
+*/

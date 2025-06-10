@@ -1,4 +1,4 @@
-﻿using LearnEase.Core.Entities;
+﻿/*using LearnEase.Core.Entities;
 using LearnEase.Core.Models.Reponse;
 
 namespace LearnEase_Api.Mapper
@@ -14,3 +14,4 @@ namespace LearnEase_Api.Mapper
 		}
 	}
 }
+*/
