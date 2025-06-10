@@ -8,7 +8,7 @@ using LearnEase.Repository.EntityModel;
 namespace LearnEase.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly LearnEaseContext _context;
@@ -74,18 +74,5 @@ namespace LearnEase.API.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-    }
-
-    public class RegisterRequest
-    {
-        public string Username { get; set; } = default!;
-        public string Password { get; set; } = default!;
-        public string Email { get; set; } = default!;
-    }
-
-    public class LoginRequest
-    {
-        public string Username { get; set; } = default!;
-        public string Password { get; set; } = default!;
     }
 }
