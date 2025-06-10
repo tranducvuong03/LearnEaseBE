@@ -1,4 +1,5 @@
-﻿using LearnEase.Repository.EntityModel;
+﻿using LearnEase.Repository.DTO;
+using LearnEase.Repository.EntityModel;
 using LearnEase.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -47,6 +48,29 @@ namespace LearnEase.API.Controllers
         {
             var success = await _service.DeleteAsync(id);
             return success ? NoContent() : NotFound();
+        }
+        // lấy điểm cao hàng tuần
+        [HttpGet("leaderboard/top/week")]
+        public async Task<IActionResult> GetTopUsers([FromQuery] string period = "weekly", [FromQuery] int top = 10)
+        {
+            var leaders = await _service.GetTopUsersAsync(period, top);
+            return Ok(leaders);
+        }
+        //hàng tháng 
+        [HttpGet("leaderboard/top/month")]
+        public async Task<IActionResult> GetTopUser([FromQuery] string period = "monthly", [FromQuery] int top = 10)
+        {
+            var leaders = await _service.GetTopUsersAsync(period, top);
+            return Ok(leaders);
+        }
+        //ghi điểm của game 
+        [HttpPost("leaderboard/record")]
+        public async Task<IActionResult> RecordScore([FromBody] RecordScoreDto dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            await _service.RecordScoreAsync(dto);
+            return Ok("Score recorded successfully.");
         }
     }
 
