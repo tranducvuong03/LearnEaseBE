@@ -22,14 +22,17 @@ namespace LearnEase.Repository
 
         public string GenerateToken(User user)
         {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
             var claims = new[]
             {
-            new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, user.Email),
-            new Claim("Username", user.Username ?? "")
-        };
+        new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
+        new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty), // tránh null
+        new Claim("Username", user.Username ?? string.Empty)                   // tránh null
+    };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtSettings:SecretKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtSettings:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
@@ -42,5 +45,6 @@ namespace LearnEase.Repository
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
     }
 }

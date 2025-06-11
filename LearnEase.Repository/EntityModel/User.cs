@@ -13,7 +13,7 @@ namespace LearnEase.Repository.EntityModel
         [Required, MaxLength(100)]
         public string Email { get; set; }
 
-        [Required]
+        [MaxLength(100)]
         public string? Password { get; set; }
 
         public string? AvatarUrl { get; set; }

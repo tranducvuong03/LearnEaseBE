@@ -69,14 +69,14 @@ namespace LearnEase.API.Controllers
                 if (payload == null)
                     return Unauthorized("Invalid Google token.");
 
-                var email = payload.Email;
+               
                 var name = payload.Name;
 
-                if (string.IsNullOrEmpty(email))
+                if (string.IsNullOrEmpty( payload.Email))
                     return BadRequest("Email not found in token.");
 
                 // Check if user exists
-                var user = _context.Users.FirstOrDefault(u => u.Email == email);
+                var user = _context.Users.FirstOrDefault(u => u.Email == payload.Email);
 
                 if (user == null)
                 {
@@ -85,8 +85,9 @@ namespace LearnEase.API.Controllers
                     {
                         UserId = Guid.NewGuid(),
                         Username = name,
-                        Email = email,
-                        Password = null // No password for Google login
+                        Email = payload.Email,
+                        Password = null, // No password for Google login
+                        AvatarUrl= payload.Picture,
                     };
 
                     _context.Users.Add(user);

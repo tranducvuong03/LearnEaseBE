@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnEase.Repository.Migrations
 {
     [DbContext(typeof(LearnEaseContext))]
-    [Migration("20250611092442_db")]
+    [Migration("20250611135116_db")]
     partial class db
     {
         /// <inheritdoc />
@@ -207,8 +207,8 @@ namespace LearnEase.Repository.Migrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("Username")
                         .IsRequired()
