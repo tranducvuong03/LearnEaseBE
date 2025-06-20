@@ -19,8 +19,4 @@
     <ProjectReference Include="..\LearnEase.Repository\LearnEase.Repository.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\Response\" />
-  </ItemGroup>
-
 </Project>

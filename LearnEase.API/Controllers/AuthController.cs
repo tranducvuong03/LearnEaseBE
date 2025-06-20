@@ -8,6 +8,7 @@ using LearnEase.Service.Models.Request;
 using Google.Apis.Auth;
 using LearnEase.Repository.DTO;
 using LearnEase.Repository;
+using LearnEase.Service.Models.Response;
 
 namespace LearnEase.API.Controllers
 {
@@ -97,9 +98,22 @@ namespace LearnEase.API.Controllers
                 // Generate JWT token
                 var token = new JwtHelper(_config).GenerateToken(user);
 
-                return Ok(new { token });
-            }
-            catch (InvalidJwtException ex)
+				var userResponse = new UserResponse
+				{
+					UserId = user.UserId,
+					Username = user.Username,
+					Email = user.Email,
+					AvatarUrl = user.AvatarUrl
+				};
+
+				return Ok(new LoginResponse
+				{
+					Token = token,
+					User = userResponse
+				});
+
+			}
+			catch (InvalidJwtException ex)
             {
                 return Unauthorized($"Invalid Google token: {ex.Message}");
             }
