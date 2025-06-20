@@ -63,6 +63,7 @@ namespace LearnEase.API.Controllers
             var success = await _service.DeleteAsync(id);
             return success ? NoContent() : NotFound();
         }
+
         //xem tiến độ học tập
         [HttpGet("progress/{userId}")]
         public async Task<IActionResult> GetUserProgress(Guid userId)

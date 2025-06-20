@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnEase.Repository.Migrations
 {
     [DbContext(typeof(LearnEaseContext))]
-    [Migration("20250611135116_db")]
-    partial class db
+    [Migration("20250619052111_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -288,6 +288,10 @@ namespace LearnEase.Repository.Migrations
 
                     b.Property<Guid>("DialectId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("DistractorsJson")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("Meaning")
                         .IsRequired()

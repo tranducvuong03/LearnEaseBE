@@ -18,6 +18,8 @@ namespace LearnEase.Repository.EntityModel
 
         public string? AudioUrl { get; set; }
 
+        [MaxLength(500)]
+        public string? DistractorsJson { get; set; }
         public Dialect Dialect { get; set; }
 
         public ICollection<UserProgress> UserProgresses { get; set; }

@@ -57,6 +57,7 @@ namespace LearnEase.API.Controllers
             var token = GenerateJwtToken(user);
             return Ok(new { token });
         }
+
         [HttpPost("google-login")]
         public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
         {
@@ -87,7 +88,7 @@ namespace LearnEase.API.Controllers
                         UserId = Guid.NewGuid(),
                         Username = name,
                         Email = payload.Email,
-                        Password = null, // No password for Google login
+                        Password = null,
                         AvatarUrl= payload.Picture,
                     };
 
@@ -122,6 +123,7 @@ namespace LearnEase.API.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
         private string GenerateJwtToken(User user)
         {
             var claims = new[]

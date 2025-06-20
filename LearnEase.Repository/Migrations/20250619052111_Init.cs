@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LearnEase.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class db : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -154,7 +154,8 @@ namespace LearnEase.Repository.Migrations
                     DialectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Word = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Meaning = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AudioUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    AudioUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DistractorsJson = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
                 {

@@ -26,16 +26,14 @@ namespace LearnEase.Service
 
         public async Task<NextLesson?> GetNextLessonForUserAsync(Guid userId)
         {
-            // Lấy cài đặt người dùng để biết phương ngữ ưu tiên
+            // Lấy cài đặt phương ngữ
             var userSettings = (await _userSettingsRepo.GetAllAsync()).FirstOrDefault(us => us.UserId == userId);
             Guid? preferredDialectId = userSettings?.PreferredDialectId;
 
-            // Lấy tất cả tiến trình của người dùng
             var userProgress = (await _userProgressRepo.GetAllAsync())
                                 .Where(up => up.UserId == userId)
                                 .ToList();
 
-            // Lấy tất cả từ vựng và bài tập nói, có thể lọc theo phương ngữ ưu tiên nếu có
             IEnumerable<VocabularyItem> allVocabs;
             IEnumerable<SpeakingExercise> allSpeakingExercises;
 
@@ -48,35 +46,13 @@ namespace LearnEase.Service
             }
             else
             {
-                // Nếu không có phương ngữ ưu tiên, lấy tất cả
                 allVocabs = await _vocabRepo.GetAllAsync();
                 allSpeakingExercises = await _speakingRepo.GetAllAsync();
             }
 
-            // --- Logic đề xuất bài học ---
-            // Đây là phần bạn sẽ tùy chỉnh để tạo ra luồng học tập thông minh.
-            // Ví dụ đơn giản: Luân phiên giữa Speaking và Vocabulary, ưu tiên bài chưa học.
-
-            // 1. Tìm một bài Speaking chưa học
-            var nextSpeakingExercise = allSpeakingExercises
-                                        .OrderBy(se => se.ExerciseId) // Sắp xếp để có thứ tự cố định
-                                        .FirstOrDefault(se => !userProgress.Any(up => up.ExerciseId == se.ExerciseId));
-
-            if (nextSpeakingExercise != null)
-            {
-                return new NextLesson
-                {
-                    LessonType = "Speaking",
-                    LessonId = nextSpeakingExercise.ExerciseId,
-                    PromptOrWord = nextSpeakingExercise.Prompt,
-                    AudioUrl = nextSpeakingExercise.SampleAudioUrl,
-                    DialectId = nextSpeakingExercise.DialectId
-                };
-            }
-
-            // 2. Nếu không có bài Speaking nào chưa học, tìm một từ vựng chưa học
+            // 1. Ưu tiên bài Vocabulary trước
             var nextVocabularyItem = allVocabs
-                                    .OrderBy(v => v.VocabId) // Sắp xếp để có thứ tự cố định
+                                    .OrderBy(v => v.VocabId)
                                     .FirstOrDefault(v => !userProgress.Any(up => up.VocabId == v.VocabId));
 
             if (nextVocabularyItem != null)
@@ -92,10 +68,24 @@ namespace LearnEase.Service
                 };
             }
 
-            // 3. Nếu không còn bài mới nào, bạn có thể implement logic ôn tập ở đây
-            // Ví dụ: Tìm bài đã học lâu nhất hoặc bài có điểm thấp nhất để ôn lại.
-            // Hiện tại, chỉ trả về null nếu hết bài mới.
-            return null; // Không còn bài học nào mới để đề xuất
+            // 2. Nếu hết từ vựng mới đến bài Speaking
+            var nextSpeakingExercise = allSpeakingExercises
+                                        .OrderBy(se => se.ExerciseId)
+                                        .FirstOrDefault(se => !userProgress.Any(up => up.ExerciseId == se.ExerciseId));
+
+            if (nextSpeakingExercise != null)
+            {
+                return new NextLesson
+                {
+                    LessonType = "Speaking",
+                    LessonId = nextSpeakingExercise.ExerciseId,
+                    PromptOrWord = nextSpeakingExercise.Prompt,
+                    AudioUrl = nextSpeakingExercise.SampleAudioUrl,
+                    DialectId = nextSpeakingExercise.DialectId
+                };
+            }
+
+            return null;
         }
     }
 }
