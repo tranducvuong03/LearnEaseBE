@@ -64,6 +64,7 @@ namespace LearnEase.Service
                     PromptOrWord = nextVocabularyItem.Word,
                     AudioUrl = nextVocabularyItem.AudioUrl,
                     Meaning = nextVocabularyItem.Meaning,
+                    DistractorsJson = nextVocabularyItem.DistractorsJson,
                     DialectId = nextVocabularyItem.DialectId
                 };
             }

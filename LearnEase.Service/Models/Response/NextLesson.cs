@@ -14,5 +14,6 @@ namespace LearnEase.Service.Models.Response
         public string? AudioUrl { get; set; }    // AudioUrl cho Vocabulary, SampleAudioUrl cho Speaking
         public string? Meaning { get; set; }     // Chỉ có với Vocabulary (có thể null)
         public Guid DialectId { get; set; }    // Phương ngữ của bài học
+        public string? DistractorsJson { get; set; }
     }
 }
