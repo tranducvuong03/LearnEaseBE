@@ -11,7 +11,8 @@
 		<PackageReference Include="Microsoft.Extensions.Http" Version="9.0.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="StackExchange.Redis" Version="2.8.0" />
-		<PackageReference Include="Google.Apis.Auth" Version="1.60.0" />
+		<PackageReference Include="Google.Apis.Auth" Version="1.67.0" />
+
 	</ItemGroup>
 
 	<ItemGroup>

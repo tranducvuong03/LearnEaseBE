@@ -4,6 +4,7 @@ using LearnEase.Repository.IRepo;
 using LearnEase.Repository.Repositories;
 using LearnEase.Service;
 using LearnEase.Service.IServices;
+using LearnEase.Service.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -25,6 +26,8 @@ builder.Services.AddScoped<ILanguageService, LanguageService>();
 builder.Services.AddScoped<IVocabularyItemService, VocabularyItemService>();
 builder.Services.AddScoped<ILeaderboardRepository, LeaderboardRepository>();
 builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
+builder.Services.AddScoped<IOpenAIService, OpenAIService>();
+builder.Services.AddHttpClient<IOpenAIService, OpenAIService>();
 // Add services to the container.
 builder.Services.AddSqlServer<LearnEaseContext>(builder.Configuration.GetConnectionString("DefaultConnection"));
 builder.Services.AddControllers();
