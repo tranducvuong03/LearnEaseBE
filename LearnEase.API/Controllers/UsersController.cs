@@ -2,6 +2,7 @@
 using LearnEase.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LearnEase.API.Controllers
 {
@@ -27,7 +28,21 @@ namespace LearnEase.API.Controllers
             return user == null ? NotFound() : Ok(user);
         }
 
-        [HttpPost]
+		[HttpGet("me")]
+		public async Task<IActionResult> GetCurrentUser()
+		{
+			var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+			if (userIdClaim == null)
+				return Unauthorized("Token is missing user ID");
+
+			if (!Guid.TryParse(userIdClaim.Value, out Guid userId))
+				return BadRequest("Invalid user ID in token");
+
+			var user = await _service.GetByIdAsync(userId);
+			return user == null ? NotFound("User not found") : Ok(user);
+		}
+
+		[HttpPost]
         public async Task<IActionResult> Create(User user)
         {
             var created = await _service.AddAsync(user);
