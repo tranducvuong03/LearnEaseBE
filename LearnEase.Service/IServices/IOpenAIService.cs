@@ -8,6 +8,11 @@ namespace LearnEase.Service.IServices
 {
     public interface IOpenAIService
     {
-        Task<string> GetAIResponseAsync(string userInput, bool useDatabase = false, List<object> conversationHistory = null);
+        Task<string> GetAIResponseAsync(
+             string userInput,
+             bool useDatabase = false,
+             List<object> conversationHistory = null,
+             string username = "bạn"
+         );
     }
 }
