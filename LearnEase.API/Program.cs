@@ -32,6 +32,8 @@ builder.Services.AddHttpClient<IOpenAIService, OpenAIService>();
 
 builder.Services.AddScoped<ILearningService, LearningService>();
 
+//---------------------send mail------------------------
+builder.Services.AddScoped<IEmailService, EmailService>();
 // Add services to the container.
 builder.Services.AddSqlServer<LearnEaseContext>(builder.Configuration.GetConnectionString("DefaultConnection"));
 builder.Services.AddControllers();
