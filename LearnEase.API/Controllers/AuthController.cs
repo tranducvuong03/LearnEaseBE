@@ -9,6 +9,7 @@ using Google.Apis.Auth;
 using LearnEase.Repository.DTO;
 using LearnEase.Repository;
 using LearnEase.Service.Models.Response;
+using LearnEase.Service.IServices;
 
 namespace LearnEase.API.Controllers
 {
@@ -18,14 +19,16 @@ namespace LearnEase.API.Controllers
     {
         private readonly LearnEaseContext _context;
         private readonly IConfiguration _config;
+		private readonly IEmailService _emailService;
 
-        public AuthController(LearnEaseContext context, IConfiguration config)
+		public AuthController(LearnEaseContext context, IConfiguration config, IEmailService emailService)
         {
             _context = context;
             _config = config;
-        }
+			_emailService = emailService;
+		}
 
-        [HttpPost("register")]
+		[HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             if (_context.Users.Any(u => u.Username == request.Username))
@@ -94,10 +97,13 @@ namespace LearnEase.API.Controllers
 
                     _context.Users.Add(user);
                     await _context.SaveChangesAsync();
-                }
+					// send mail to user
+					await _emailService.SendWelcomeEmailAsync(user.Email, user.Username);
 
-                // Generate JWT token
-                var token = new JwtHelper(_config).GenerateToken(user);
+				}
+
+				// Generate JWT token
+				var token = new JwtHelper(_config).GenerateToken(user);
 
 				var userResponse = new UserResponse
 				{
