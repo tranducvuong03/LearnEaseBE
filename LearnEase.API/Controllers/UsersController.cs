@@ -1,4 +1,5 @@
-﻿using LearnEase.Repository.EntityModel;
+﻿using LearnEase.Repository.DTO;
+using LearnEase.Repository.EntityModel;
 using LearnEase.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -73,5 +74,34 @@ namespace LearnEase.API.Controllers
 
             return Ok(progress);
         }
+        [HttpPut("{id}/username")]
+        public async Task<IActionResult> UpdateUsername(Guid id, [FromBody] UpdateUsernameRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Username))
+                return BadRequest("Username cannot be empty");
+
+            var user = await _service.GetByIdAsync(id);
+            if (user == null)
+                return NotFound("User not found");
+
+            user.Username = request.Username;
+
+            var updated = await _service.UpdateAsync(user);
+            return Ok(updated);
+        }
+        [HttpPut("{id}/avatar")]
+        public async Task<IActionResult> UpdateAvatar(Guid id, [FromBody] UpdateAvatarRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.AvatarUrl))
+                return BadRequest("Avatar URL cannot be empty");
+            var user = await _service.GetByIdAsync(id);
+            if (user == null)
+                return NotFound("User not found");
+            user.AvatarUrl = request.AvatarUrl;
+            var updated = await _service.UpdateAsync(user);
+            return Ok(updated);
+        }
+
+
     }
 }

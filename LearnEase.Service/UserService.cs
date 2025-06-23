@@ -42,6 +42,29 @@ namespace LearnEase.Service
             await _unitOfWork.SaveAsync();
             return true;
         }
+        public async Task<User?> UpdateUsernameAsync(Guid id, string newUsername)
+        {
+            var user = await _repo.GetByIdAsync(id);
+            if (user == null) return null;
+
+            user.Username = newUsername;
+            _repo.Update(user);
+            await _unitOfWork.SaveAsync();
+
+            return user;
+        }
+        public async Task<User?> UpdateAvatarAsync(Guid id, string newAvatarUrl)
+        {
+            var user = await _repo.GetByIdAsync(id);
+            if (user == null) return null;
+
+            user.AvatarUrl = newAvatarUrl;
+            _repo.Update(user);
+            await _unitOfWork.SaveAsync();
+
+            return user;
+        }
+
     }
 
 }
