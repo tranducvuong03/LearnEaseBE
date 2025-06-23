@@ -9,6 +9,8 @@ namespace LearnEase.Service
         Task<User> AddAsync(User user);
         Task<User> UpdateAsync(User user);
         Task<bool> DeleteAsync(Guid id);
+        Task<User?> UpdateUsernameAsync(Guid id, string newUsername);
+
     }
 
 }
