@@ -32,6 +32,10 @@ builder.Services.AddHttpClient<IOpenAIService, OpenAIService>();
 
 builder.Services.AddScoped<ILearningService, LearningService>();
 
+//payment
+builder.Services.AddScoped<IPayOSService, PayOSService>();
+
+
 //---------------------send mail------------------------
 builder.Services.AddScoped<IEmailService, EmailService>();
 // Add services to the container.
