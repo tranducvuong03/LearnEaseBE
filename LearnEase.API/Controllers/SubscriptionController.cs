@@ -12,7 +12,7 @@ namespace LearnEase.API.Controllers
 {
 	[Authorize]
 	[Route("api/[controller]")]
-    [ApiController]
+	[ApiController]
 	public class SubscriptionController : ControllerBase
 	{
 		private readonly LearnEaseContext _context;
@@ -66,25 +66,59 @@ namespace LearnEase.API.Controllers
 		[HttpPost("webhook")]
 		public async Task<IActionResult> PayOSWebhook([FromBody] PayOSWebhookRequest request)
 		{
-			if (request.status != "SUCCESS")
-				return Ok(); // Không xử lý nếu thanh toán thất bại
+			Console.WriteLine("====== Webhook Received ======");
+			Console.WriteLine($"[Status] {request.status}");
+			Console.WriteLine($"[Description] {request.description}");
 
-			// Lấy userId từ description đã tạo lúc gọi đơn
-			var desc = request.description;
-			if (!desc.Contains("User")) return BadRequest("Invalid description");
+			if (!string.Equals(request.status, "SUCCESS", StringComparison.OrdinalIgnoreCase) &&
+				!string.Equals(request.status, "PAID", StringComparison.OrdinalIgnoreCase))
+			{
+				return Ok();
+			}
 
-			var userIdStr = desc.Split("User").Last().Trim();
-			if (!Guid.TryParse(userIdStr, out var userId))
-				return BadRequest("Invalid userId");
+			var desc = request.description?.Trim();
+			if (string.IsNullOrWhiteSpace(desc) || !desc.StartsWith("Sub", StringComparison.OrdinalIgnoreCase))
+				return BadRequest("Invalid description format");
 
-			var planType = desc.Contains("yearly") ? "yearly" : "monthly";
+			// Strip prefix "Sub" → lấy phần còn lại
+			var payload = desc.Substring(3); // e.g., "monthly3fa85f64"
+
+			string planType = null;
+			string userPrefix = null;
+
+			if (payload.StartsWith("monthly", StringComparison.OrdinalIgnoreCase))
+			{
+				planType = "monthly";
+				userPrefix = payload.Substring(7); // sau "monthly"
+			}
+			else if (payload.StartsWith("yearly", StringComparison.OrdinalIgnoreCase))
+			{
+				planType = "yearly";
+				userPrefix = payload.Substring(6); // sau "yearly"
+			}
+			else
+			{
+				return BadRequest("Invalid plan type in description");
+			}
+
+			if (string.IsNullOrWhiteSpace(userPrefix))
+				return BadRequest("Missing user ID prefix");
+
+			var user = _context.Users
+	.AsEnumerable()
+	.FirstOrDefault(u => u.UserId.ToString().StartsWith(userPrefix, StringComparison.OrdinalIgnoreCase));
+
+			if (user == null)
+				return BadRequest("User not found");
+
+
 			var now = DateTime.UtcNow;
 			var endDate = planType == "monthly" ? now.AddMonths(1) : now.AddYears(1);
 			var price = planType == "monthly" ? 66000 : 673200;
 
 			var subscription = new Subscription
 			{
-				UserId = userId,
+				UserId = user.UserId,
 				PlanType = planType,
 				Price = price,
 				StartDate = now,
@@ -95,8 +129,12 @@ namespace LearnEase.API.Controllers
 			_context.Subscriptions.Add(subscription);
 			await _context.SaveChangesAsync();
 
+			Console.WriteLine($"Subscription created for {user.UserId} - {planType}");
+
 			return Ok();
 		}
+
+
 
 
 		private Guid GetUserIdFromToken()
