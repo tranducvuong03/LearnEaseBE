@@ -29,7 +29,7 @@ builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
 
 builder.Services.AddScoped<IOpenAIService, OpenAIService>();
 builder.Services.AddHttpClient<IOpenAIService, OpenAIService>();
-
+builder.Services.AddScoped<IAiLessonService, AiLessonService>();
 builder.Services.AddScoped<ILearningService, LearningService>();
 
 //payment

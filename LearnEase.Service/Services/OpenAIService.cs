@@ -26,18 +26,27 @@ namespace LearnEase.Service.Services
             _apiKey = configuration["OpenAI:ApiKey"];
             _logger = logger;
         }
+        public async Task<string> GenerateQuizFeedbackAsync(int correct, int total)
+        {
+            string prompt = $@"
+A learner just completed a quiz.
+
+Correct answers: {correct} out of {total}
+
+Write a short feedback in English, friendly tone, max 2 sentences.
+";
+
+            return await CallOpenAI(prompt);
+        }
 
         public async Task<string> GetAIResponseAsync(string userInput, bool useDatabase = false, List<object> conversationHistory = null, string username = "bạn")
         {
             _logger.LogInformation($"Received input: {userInput}, useDatabase: {useDatabase}");
 
-            if (conversationHistory == null || !conversationHistory.Any())
+            if (!useDatabase && (conversationHistory == null || !conversationHistory.Any()))
             {
-                return $"Xin chào {username}, tôi là trợ lý học tập của bạn. Tôi có thể giúp bạn:\n" +
-                       "- Kiểm tra ngữ pháp và sửa lỗi\n" +
-                       "- Gợi ý từ vựng mới và nghĩa\n" +
-                       "- Hướng dẫn luyện tập đoạn văn hoặc bài nói\n\n" +
-                       "Bạn muốn bắt đầu với điều gì?";
+                // Trong trường hợp cần AI sinh ra nội dung trực tiếp (ví dụ: prompt speaking)
+                return await CallOpenAI(userInput); // dùng trực tiếp userInput như prompt
             }
 
             string lowerInput = userInput.ToLower();

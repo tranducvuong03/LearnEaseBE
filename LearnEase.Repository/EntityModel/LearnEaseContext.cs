@@ -19,6 +19,9 @@ namespace LearnEase.Repository.EntityModel
         public DbSet<UserProgress> UserProgresses { get; set; }
         public DbSet<Leaderboard> Leaderboards { get; set; }
 		public DbSet<Subscription> Subscriptions { get; set; }
+        public DbSet<AiLesson> AiLessons { get; set; }
+        public DbSet<AiLessonPart> AiLessonParts { get; set; }
+        public DbSet<UserLessonAttempt> UserLessons { get; set; }
 
-	}
+    }
 }

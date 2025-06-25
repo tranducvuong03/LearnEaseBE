@@ -3,6 +3,7 @@ using LearnEase.Repository.DTO;
 using LearnEase.Repository.EntityModel;
 using LearnEase.Repository.IRepo;
 using LearnEase.Service.IServices;
+using LearnEase.Service.Models.Response;
 using Microsoft.EntityFrameworkCore;
 
 namespace LearnEase.Service
@@ -45,16 +46,29 @@ namespace LearnEase.Service
             await _uow.SaveAsync();
             return true;
         }
-        public async Task<List<Leaderboard>> GetTopUsersAsync(string period, int count)
+      /*  public async Task<List<Leaderboard>> GetTopUsersAsync(string period, int count)
         {
             return await _leader.GetTopUsersAsync(period, count);
-        }
+        }*/
         public async Task RecordScoreAsync(RecordScoreDto dto)
 
         {
             await _leader.RecordScoreAsync(dto);
         }
 
+        public async Task<List<LeaderboardDisplayDto>> GetTopUserDisplayAsync(string period, int top)
+        {
+            var rawList = await _leader.GetTopUsersAsync(period, top); 
+
+            return rawList.Select(l => new LeaderboardDisplayDto
+            {
+                UserId = l.UserId,
+                Username = l.User?.Username ?? "Unknown",
+                Score = l.Score,
+                Period = l.Period,
+                RecordedAt = l.RecordedAt
+            }).ToList();
+        }
     }
 
 }

@@ -8,7 +8,7 @@ namespace LearnEase.API.Controllers
     [ApiController]
     public class SpeechController : Controller
     {
-        private const string GoogleApiKey = "AIzaSyDvp47T0YCaY-dnPajybBGeDc8-MRanoc0"; 
+        private const string GoogleApiKey = ""; 
         private const string GoogleApiUrl = $"https://speech.googleapis.com/v1/speech:recognize?key={GoogleApiKey}";
 
         [HttpPost("transcribe")]

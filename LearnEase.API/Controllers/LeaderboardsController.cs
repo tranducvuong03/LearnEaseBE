@@ -53,14 +53,14 @@ namespace LearnEase.API.Controllers
         [HttpGet("leaderboard/top/week")]
         public async Task<IActionResult> GetTopUsers([FromQuery] string period = "weekly", [FromQuery] int top = 10)
         {
-            var leaders = await _service.GetTopUsersAsync(period, top);
+            var leaders = await _service.GetTopUserDisplayAsync(period, top);
             return Ok(leaders);
         }
         //hàng tháng 
         [HttpGet("leaderboard/top/month")]
         public async Task<IActionResult> GetTopUser([FromQuery] string period = "monthly", [FromQuery] int top = 10)
         {
-            var leaders = await _service.GetTopUsersAsync(period, top);
+            var leaders = await _service.GetTopUserDisplayAsync(period, top);
             return Ok(leaders);
         }
         //ghi điểm của game 

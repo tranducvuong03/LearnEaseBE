@@ -30,7 +30,7 @@ namespace LearnEase.Repository.Repositories
 
             if (existing != null)
             {
-                existing.Score = dto.Score;
+                existing.Score += dto.Score;
                 existing.RecordedAt = DateTime.UtcNow;
                 _context.Leaderboards.Update(existing);
             }
