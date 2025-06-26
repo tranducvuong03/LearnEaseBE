@@ -130,4 +130,25 @@ Topic: '{topic}'";
         var translation = await _openAIService.GetAIResponseAsync(prompt, false, new(), "System");
         return translation.Trim().Trim('"', '.', '\n');
     }
+    public async Task<AiLesson?> GetCurrentWeeklyLessonAsync()
+    {
+        var startOfWeek = DateTime.UtcNow.Date.AddDays(-(int)DateTime.UtcNow.DayOfWeek);
+        return (await _lessonRepo.GetAllAsync())
+            .Where(l => l.CreatedAt >= startOfWeek)
+            .OrderByDescending(l => l.CreatedAt)
+            .FirstOrDefault();
+    }
+
+    public async Task<AiLesson> GetOrGenerateCurrentWeeklyLessonAsync()
+    {
+        var existing = await GetCurrentWeeklyLessonAsync();
+        if (existing != null) return existing;
+
+        // Tự động sinh topic nếu chưa có
+        var topicPrompt = "Generate one simple English learning topic of the week. Return only the topic in a few words.";
+        var topic = await _openAIService.GetAIResponseAsync(topicPrompt, false, new(), "System");
+
+        return await GenerateLessonAsync(topic.Trim('\"', '.', '\n'));
+    }
+
 }

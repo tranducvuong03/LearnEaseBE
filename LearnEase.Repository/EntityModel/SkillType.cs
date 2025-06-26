@@ -8,9 +8,9 @@ namespace LearnEase.Repository.EntityModel
 {
     public enum SkillType
     {
-        Listening,
-        Speaking,
-        Reading,
-        Writing
+        Listening = 0,
+        Speaking = 1,
+        Reading = 2,
+        Writing = 3
     }
 }

@@ -15,5 +15,7 @@ namespace LearnEase.Service.IServices
         Task<AiLessonPart> GenerateListeningPart(string topic);
         Task<AiLessonPart> GenerateSpeakingPart(string topic);
         Task<string> TranslateTopicToEnglish(string topic);
+        Task<AiLesson?> GetCurrentWeeklyLessonAsync();
+        Task<AiLesson> GetOrGenerateCurrentWeeklyLessonAsync();
     }
 }

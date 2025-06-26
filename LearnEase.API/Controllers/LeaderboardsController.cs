@@ -72,6 +72,7 @@ namespace LearnEase.API.Controllers
             await _service.RecordScoreAsync(dto);
             return Ok("Score recorded successfully.");
         }
-    }
+      
+        }
 
 }
