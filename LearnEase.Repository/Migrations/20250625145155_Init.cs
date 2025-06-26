@@ -126,6 +126,28 @@ namespace LearnEase.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Lessons",
+                columns: table => new
+                {
+                    LessonId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DialectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IconUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Lessons", x => x.LessonId);
+                    table.ForeignKey(
+                        name: "FK_Lessons_Dialects_DialectId",
+                        column: x => x.DialectId,
+                        principalTable: "Dialects",
+                        principalColumn: "DialectId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "SpeakingExercises",
                 columns: table => new
                 {
@@ -153,8 +175,8 @@ namespace LearnEase.Repository.Migrations
                     VocabId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DialectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Word = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Meaning = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AudioUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DistractorsJson = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true)
                 },
                 constraints: table =>
@@ -166,6 +188,30 @@ namespace LearnEase.Repository.Migrations
                         principalTable: "Dialects",
                         principalColumn: "DialectId",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LessonSpeakings",
+                columns: table => new
+                {
+                    LessonId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ExerciseId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LessonSpeakings", x => new { x.LessonId, x.ExerciseId });
+                    table.ForeignKey(
+                        name: "FK_LessonSpeakings_Lessons_LessonId",
+                        column: x => x.LessonId,
+                        principalTable: "Lessons",
+                        principalColumn: "LessonId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LessonSpeakings_SpeakingExercises_ExerciseId",
+                        column: x => x.ExerciseId,
+                        principalTable: "SpeakingExercises",
+                        principalColumn: "ExerciseId",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -198,6 +244,30 @@ namespace LearnEase.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "LessonVocabularies",
+                columns: table => new
+                {
+                    LessonId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    VocabId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LessonVocabularies", x => new { x.LessonId, x.VocabId });
+                    table.ForeignKey(
+                        name: "FK_LessonVocabularies_Lessons_LessonId",
+                        column: x => x.LessonId,
+                        principalTable: "Lessons",
+                        principalColumn: "LessonId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_LessonVocabularies_VocabularyItems_VocabId",
+                        column: x => x.VocabId,
+                        principalTable: "VocabularyItems",
+                        principalColumn: "VocabId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserProgresses",
                 columns: table => new
                 {
@@ -207,17 +277,17 @@ namespace LearnEase.Repository.Migrations
                     ExerciseId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     LastReviewed = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RepetitionCount = table.Column<int>(type: "int", nullable: false),
-                    VocabularyItemVocabId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    SpeakingExerciseExerciseId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    VocabularyItemVocabId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserProgresses", x => x.ProgressId);
                     table.ForeignKey(
-                        name: "FK_UserProgresses_SpeakingExercises_SpeakingExerciseExerciseId",
-                        column: x => x.SpeakingExerciseExerciseId,
+                        name: "FK_UserProgresses_SpeakingExercises_ExerciseId",
+                        column: x => x.ExerciseId,
                         principalTable: "SpeakingExercises",
-                        principalColumn: "ExerciseId");
+                        principalColumn: "ExerciseId",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_UserProgresses_Users_UserId",
                         column: x => x.UserId,
@@ -247,6 +317,21 @@ namespace LearnEase.Repository.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Lessons_DialectId",
+                table: "Lessons",
+                column: "DialectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LessonSpeakings_ExerciseId",
+                table: "LessonSpeakings",
+                column: "ExerciseId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_LessonVocabularies_VocabId",
+                table: "LessonVocabularies",
+                column: "VocabId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_SpeakingAttempts_ExerciseId",
                 table: "SpeakingAttempts",
                 column: "ExerciseId");
@@ -262,9 +347,9 @@ namespace LearnEase.Repository.Migrations
                 column: "DialectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserProgresses_SpeakingExerciseExerciseId",
+                name: "IX_UserProgresses_ExerciseId",
                 table: "UserProgresses",
-                column: "SpeakingExerciseExerciseId");
+                column: "ExerciseId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserProgresses_UserId",
@@ -292,6 +377,12 @@ namespace LearnEase.Repository.Migrations
                 name: "Leaderboards");
 
             migrationBuilder.DropTable(
+                name: "LessonSpeakings");
+
+            migrationBuilder.DropTable(
+                name: "LessonVocabularies");
+
+            migrationBuilder.DropTable(
                 name: "SpeakingAttempts");
 
             migrationBuilder.DropTable(
@@ -299,6 +390,9 @@ namespace LearnEase.Repository.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserSettings");
+
+            migrationBuilder.DropTable(
+                name: "Lessons");
 
             migrationBuilder.DropTable(
                 name: "SpeakingExercises");

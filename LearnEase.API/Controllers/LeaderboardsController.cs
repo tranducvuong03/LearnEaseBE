@@ -1,6 +1,6 @@
-﻿using LearnEase.Repository.DTO;
-using LearnEase.Repository.EntityModel;
+﻿using LearnEase.Repository.EntityModel;
 using LearnEase.Service;
+using LearnEase.Service.Models.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -65,11 +65,11 @@ namespace LearnEase.API.Controllers
         }
         //ghi điểm của game 
         [HttpPost("leaderboard/record")]
-        public async Task<IActionResult> RecordScore([FromBody] RecordScoreDto dto)
+        public async Task<IActionResult> RecordScore([FromBody] RecordScoreRequest request)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            await _service.RecordScoreAsync(dto);
+            await _service.RecordScoreAsync(request);
             return Ok("Score recorded successfully.");
         }
     }

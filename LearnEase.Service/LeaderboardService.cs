@@ -1,8 +1,8 @@
 ﻿using LearnEase.Repository;
-using LearnEase.Repository.DTO;
 using LearnEase.Repository.EntityModel;
 using LearnEase.Repository.IRepo;
 using LearnEase.Service.IServices;
+using LearnEase.Service.Models.Request;
 using Microsoft.EntityFrameworkCore;
 
 namespace LearnEase.Service
@@ -49,10 +49,10 @@ namespace LearnEase.Service
         {
             return await _leader.GetTopUsersAsync(period, count);
         }
-        public async Task RecordScoreAsync(RecordScoreDto dto)
+        public async Task RecordScoreAsync(RecordScoreRequest request)
 
         {
-            await _leader.RecordScoreAsync(dto);
+            await _leader.RecordScoreAsync(request);
         }
 
     }

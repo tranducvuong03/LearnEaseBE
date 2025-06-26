@@ -1,6 +1,6 @@
-﻿using LearnEase.Repository.DTO;
-using LearnEase.Repository.EntityModel;
+﻿using LearnEase.Repository.EntityModel;
 using LearnEase.Repository.IRepo;
+using LearnEase.Service.Models.Request;
 using Microsoft.EntityFrameworkCore;
 
 namespace LearnEase.Repository.Repositories
@@ -23,14 +23,15 @@ namespace LearnEase.Repository.Repositories
                 .Take(count)
                 .ToListAsync();
         }
-        public async Task RecordScoreAsync(RecordScoreDto dto)
+
+        public async Task RecordScoreAsync(RecordScoreRequest request)
         {
             var existing = await _context.Leaderboards
-                .FirstOrDefaultAsync(x => x.UserId == dto.UserId && x.Period == dto.Period);
+                .FirstOrDefaultAsync(x => x.UserId == request.UserId && x.Period == request.Period);
 
             if (existing != null)
             {
-                existing.Score = dto.Score;
+                existing.Score = request.Score;
                 existing.RecordedAt = DateTime.UtcNow;
                 _context.Leaderboards.Update(existing);
             }
@@ -39,9 +40,9 @@ namespace LearnEase.Repository.Repositories
                 var newScore = new Leaderboard
                 {
                     LeaderboardId = Guid.NewGuid(),
-                    UserId = dto.UserId,
-                    Period = dto.Period,
-                    Score = dto.Score,
+                    UserId = request.UserId,
+                    Period = request.Period,
+                    Score = request.Score,
                     RecordedAt = DateTime.UtcNow
                 };
 
@@ -50,8 +51,6 @@ namespace LearnEase.Repository.Repositories
 
             await _context.SaveChangesAsync();
         }
-
-
 
         public async Task AddAsync(Leaderboard leaderboard)
         {

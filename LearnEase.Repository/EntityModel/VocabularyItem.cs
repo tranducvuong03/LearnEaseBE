@@ -13,15 +13,12 @@ namespace LearnEase.Repository.EntityModel
         [Required, MaxLength(100)]
         public string Word { get; set; }
 
-        [Required]
-        public string Meaning { get; set; }
-
         public string? AudioUrl { get; set; }
-
+        public string? ImageUrl { get; set; }
         [MaxLength(500)]
         public string? DistractorsJson { get; set; }
-        public Dialect Dialect { get; set; }
 
-        public ICollection<UserProgress> UserProgresses { get; set; }
+        public Dialect Dialect { get; set; }
+        public ICollection<LessonVocabulary> LessonVocabularies { get; set; }
     }
 }

@@ -37,5 +37,20 @@ namespace LearnEase.API.Controllers
 
             return Ok(nextLesson);
         }
+
+        [HttpGet("next-lesson-block")]
+        public async Task<IActionResult> GetNextLessonBlock()
+        {
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out Guid userId))
+                return Unauthorized();
+
+            var lessonBlock = await _learningService.GetNextLessonBlockForUserAsync(userId);
+            if (lessonBlock == null)
+                return NotFound();
+
+            return Ok(lessonBlock);
+        }
+
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LearnEase.Repository.DTO
+namespace LearnEase.Service.Models.Request
 {
     public class GoogleLoginRequest
     {

@@ -8,6 +8,7 @@ namespace LearnEase.Repository.EntityModel
             : base(options)
         {
         }
+
         public DbSet<User> Users { get; set; }
         public DbSet<UserSettings> UserSettings { get; set; }
         public DbSet<Achievement> Achievements { get; set; }
@@ -18,7 +19,52 @@ namespace LearnEase.Repository.EntityModel
         public DbSet<SpeakingAttempt> SpeakingAttempts { get; set; }
         public DbSet<UserProgress> UserProgresses { get; set; }
         public DbSet<Leaderboard> Leaderboards { get; set; }
-		public DbSet<Subscription> Subscriptions { get; set; }
 
-	}
+        public DbSet<Lesson> Lessons { get; set; }
+        public DbSet<LessonVocabulary> LessonVocabularies { get; set; }
+        public DbSet<LessonSpeaking> LessonSpeakings { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // LessonSpeaking composite key
+            modelBuilder.Entity<LessonSpeaking>()
+                .HasKey(ls => new { ls.LessonId, ls.ExerciseId });
+
+            modelBuilder.Entity<LessonSpeaking>()
+                .HasOne(ls => ls.Lesson)
+                .WithMany(l => l.LessonSpeakings)
+                .HasForeignKey(ls => ls.LessonId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<LessonSpeaking>()
+                .HasOne(ls => ls.SpeakingExercise)
+                .WithMany(se => se.LessonSpeakings)
+                .HasForeignKey(ls => ls.ExerciseId)
+                .OnDelete(DeleteBehavior.Restrict); // 🔥 Quan trọng để tránh multiple cascade
+
+            // LessonVocabulary composite key
+            modelBuilder.Entity<LessonVocabulary>()
+                .HasKey(lv => new { lv.LessonId, lv.VocabId });
+
+            modelBuilder.Entity<LessonVocabulary>()
+                .HasOne(lv => lv.Lesson)
+                .WithMany(l => l.LessonVocabularies)
+                .HasForeignKey(lv => lv.LessonId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<LessonVocabulary>()
+                .HasOne(lv => lv.VocabularyItem)
+                .WithMany(v => v.LessonVocabularies)
+                .HasForeignKey(lv => lv.VocabId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<UserProgress>()
+                .HasOne(up => up.SpeakingExercise)
+                .WithMany(se => se.UserProgresses)
+                .HasForeignKey(up => up.ExerciseId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+    }
 }

@@ -14,12 +14,13 @@ namespace LearnEase.Repository.EntityModel
         public string Prompt { get; set; }
 
         public string? SampleAudioUrl { get; set; }
-
         public string? ReferenceText { get; set; }
 
         public Dialect Dialect { get; set; }
 
+        public ICollection<LessonSpeaking> LessonSpeakings { get; set; }
         public ICollection<SpeakingAttempt> Attempts { get; set; }
         public ICollection<UserProgress> UserProgresses { get; set; }
     }
+
 }

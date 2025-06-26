@@ -1,7 +1,7 @@
 USE [LearnEase]
 
 /*========================================================
-  1.  LANGUAGE & DIALECT
+  1. LANGUAGE & DIALECT
 ========================================================*/
 INSERT INTO Languages(LanguageId, Name)
 VALUES ('1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', N'English');
@@ -9,53 +9,47 @@ VALUES ('1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', N'English');
 INSERT INTO Dialects
   (DialectId, LanguageId, Name, Region, AccentCode, Description, VoiceSampleUrl, IsAvailable)
 VALUES
-  ('3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', -- General American
-   '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01',
+  ('3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01',
    N'General American', N'United States', 'en-US',
    N'Standard American English accent',
    'https://cdn.learnEase.com/audio/accent/en_us_sample.mp3', 1),
-  ('3B5F8475-29D7-4F2D-A127-8CBFDF8D83F2', -- Received Pronunciation
-   '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01',
+  ('3B5F8475-29D7-4F2D-A127-8CBFDF8D83F2', '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01',
    N'Received Pronunciation', N'United Kingdom', 'en-GB',
    N'Standard British English accent',
    'https://cdn.learnEase.com/audio/accent/en_gb_sample.mp3', 1);
 
 /*========================================================
-  2.  USER & SETTING
+  2. USER & SETTING
 ========================================================*/
 INSERT INTO [Users]
   (UserId, Username, Email, Password, AvatarUrl, CreatedAt)
 VALUES
-  ('4C6EC7A2-644C-44B8-B222-52EDF6197781',  -- vuong
-   'vuong', 'vuong@example.com', '123',
-   NULL, SYSUTCDATETIME());
+  ('4C6EC7A2-644C-44B8-B222-52EDF6197781', 'vuong', 'vuong@example.com', '123', NULL, SYSUTCDATETIME());
 
 INSERT INTO UserSettings
   (UserId, PreferredDialectId, PlaybackSpeed, NotificationOn)
 VALUES
-  ('4C6EC7A2-644C-44B8-B222-52EDF6197781',  -- vuong
-   '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1',  -- Prefers American
-   1.0, 1);
+  ('4C6EC7A2-644C-44B8-B222-52EDF6197781', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 1.0, 1);
 
 /*========================================================
-  3.  VOCABULARY
+  3. VOCABULARY
 ========================================================*/
 INSERT INTO VocabularyItems
-  (VocabId, DialectId, Word, Meaning, AudioUrl, DistractorsJson)
+  (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson)
 VALUES
-  ('8E0E90F8-9E1C-4B05-B6EC-001A1B2C3D01',
-   '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1',
-   N'hello', N'xin chào',
-   'https://cdn.learnEase.com/audio/vocab/hello_us.mp3',
-   NULL),
-  ('8E0E90F8-9E1C-4B05-B6EC-001A1B2C3D02',
-   '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1',
-   N'schedule', N'lịch trình',
-   'https://cdn.learnEase.com/audio/vocab/schedule_us.mp3',
-   N'["shadow","school","schema"]');
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'coffee', 'https://cdn.learnEase.com/audio/vocab/coffee_us.mp3', NULL, N'["toffee","coffer","copy"]'),
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'library', 'https://cdn.learnEase.com/audio/vocab/library_us.mp3', NULL, N'["librarian","liberty","battery"]'),
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'bicycle', 'https://cdn.learnEase.com/audio/vocab/bicycle_us.mp3', NULL, N'["tricycle","icicle","bisect"]'),
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'vegetable', 'https://cdn.learnEase.com/audio/vocab/vegetable_us.mp3', NULL, N'["vegetation","vestibule","vegetarian"]'),
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'airport', 'https://cdn.learnEase.com/audio/vocab/airport_us.mp3', NULL, N'["seaport","airplane","airdrop"]'),
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'mountain', 'https://cdn.learnEase.com/audio/vocab/mountain_us.mp3', NULL, N'["fountain","maintain","molecule"]'),
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'hospital', 'https://cdn.learnEase.com/audio/vocab/hospital_us.mp3', NULL, N'["hostile","hostel","postal"]'),
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'elephant', 'https://cdn.learnEase.com/audio/vocab/elephant_us.mp3', NULL, N'["relevant","elegant","eleven"]'),
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'umbrella', 'https://cdn.learnEase.com/audio/vocab/umbrella_us.mp3', NULL, N'["armadillo","umbrage","gazella"]'),
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'computer', 'https://cdn.learnEase.com/audio/vocab/computer_us.mp3', NULL, N'["commuter","conductor","composer"]');
 
 /*========================================================
-  4.  SPEAKING EXERCISE
+  4. SPEAKING EXERCISE (with fixed ID)
 ========================================================*/
 INSERT INTO SpeakingExercises
   (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText)
@@ -64,36 +58,33 @@ VALUES
    '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1',
    N'Please say: "How are you today?"',
    'https://cdn.learnEase.com/audio/exercise/how_are_you_today.mp3',
-   N'How are you today?');
+   'How are you today?');
 
 /*========================================================
-  5.  USER PROGRESS & SPEAKING ATTEMPT
+  5. USER PROGRESS & SPEAKING ATTEMPT
 ========================================================*/
 INSERT INTO UserProgresses
   (ProgressId, UserId, VocabId, ExerciseId, LastReviewed, RepetitionCount)
 VALUES
   ('9F2898C5-3B35-44F4-8AB3-0A0B0C0D0E01',
-   '4C6EC7A2-644C-44B8-B222-52EDF6197781',   -- vuong
-   '8E0E90F8-9E1C-4B05-B6EC-001A1B2C3D01',   -- hello
-   NULL, DATEADD(DAY,-1,SYSUTCDATETIME()), 2),
+   '4C6EC7A2-644C-44B8-B222-52EDF6197781',
+   NULL, NULL, DATEADD(DAY,-1,SYSUTCDATETIME()), 2),
   ('9F2898C5-3B35-44F4-8AB3-0A0B0C0D0E02',
-   '4C6EC7A2-644C-44B8-B222-52EDF6197781',   -- vuong
-   NULL,
-   '5D7E5B9D-1144-4AD2-B719-179B1A93AC01',   -- exercise
-   DATEADD(HOUR,-5,SYSUTCDATETIME()), 1);
+   '4C6EC7A2-644C-44B8-B222-52EDF6197781',
+   NULL, '5D7E5B9D-1144-4AD2-B719-179B1A93AC01', DATEADD(HOUR,-5,SYSUTCDATETIME()), 1);
 
 INSERT INTO SpeakingAttempts
   (AttemptId, UserId, ExerciseId, AttemptedAt, Score, UserAudioUrl, Transcription)
 VALUES
   ('AA1B2C3D-4E5F-6789-ABCD-EEFF00112233',
-   '4C6EC7A2-644C-44B8-B222-52EDF6197781',   -- vuong
+   '4C6EC7A2-644C-44B8-B222-52EDF6197781',
    '5D7E5B9D-1144-4AD2-B719-179B1A93AC01',
    SYSUTCDATETIME(), 85.0,
    'https://cdn.learnEase.com/audio/user/attempt_001.mp3',
    N'How are you today?');
 
 /*========================================================
-  6.  ACHIEVEMENT & LEADERBOARD
+  6. ACHIEVEMENT & LEADERBOARD
 ========================================================*/
 INSERT INTO Achievements
   (AchievementId, UserId, Name, Description, AchievedAt)

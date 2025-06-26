@@ -1,6 +1,7 @@
 ﻿using LearnEase.Repository.DTO;
 using LearnEase.Repository.EntityModel;
 using LearnEase.Service;
+using LearnEase.Service.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -29,21 +30,32 @@ namespace LearnEase.API.Controllers
             return user == null ? NotFound() : Ok(user);
         }
 
-		[HttpGet("me")]
-		public async Task<IActionResult> GetCurrentUser()
-		{
-			var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-			if (userIdClaim == null)
-				return Unauthorized("Token is missing user ID");
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
+            if (userIdClaim == null)
+                return Unauthorized("Token is missing user ID");
 
-			if (!Guid.TryParse(userIdClaim.Value, out Guid userId))
-				return BadRequest("Invalid user ID in token");
+            if (!Guid.TryParse(userIdClaim.Value, out Guid userId))
+                return BadRequest("Invalid user ID in token");
 
-			var user = await _service.GetByIdAsync(userId);
-			return user == null ? NotFound("User not found") : Ok(user);
-		}
+            var user = await _service.GetByIdAsync(userId);
+            if (user == null) return NotFound("User not found");
 
-		[HttpPost]
+            var response = new UserResponse
+            {
+                UserId = user.UserId,
+                Username = user.Username,
+                Email = user.Email,
+                AvatarUrl = user.AvatarUrl
+            };
+
+            return Ok(response);
+        }
+
+
+        [HttpPost]
         public async Task<IActionResult> Create(User user)
         {
             var created = await _service.AddAsync(user);

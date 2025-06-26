@@ -21,7 +21,7 @@ namespace LearnEase.Service
             _userProgressRepo = _uow.GetRepository<UserProgress>();
             _vocabRepo = _uow.GetRepository<VocabularyItem>();
             _speakingRepo = _uow.GetRepository<SpeakingExercise>();
-            _userSettingsRepo = _uow.GetRepository<UserSettings>(); // Khởi tạo nếu cần
+            _userSettingsRepo = _uow.GetRepository<UserSettings>();
         }
 
         public async Task<NextLesson?> GetNextLessonForUserAsync(Guid userId)
@@ -63,7 +63,6 @@ namespace LearnEase.Service
                     LessonId = nextVocabularyItem.VocabId,
                     PromptOrWord = nextVocabularyItem.Word,
                     AudioUrl = nextVocabularyItem.AudioUrl,
-                    Meaning = nextVocabularyItem.Meaning,
                     DistractorsJson = nextVocabularyItem.DistractorsJson,
                     DialectId = nextVocabularyItem.DialectId
                 };
@@ -88,5 +87,47 @@ namespace LearnEase.Service
 
             return null;
         }
+
+        public async Task<LessonModel?> GetNextLessonBlockForUserAsync(Guid userId)
+        {
+            var userSettings = (await _userSettingsRepo.GetAllAsync())
+                .FirstOrDefault(us => us.UserId == userId);
+            Guid? preferredDialectId = userSettings?.PreferredDialectId;
+
+            var userProgress = (await _userProgressRepo.GetAllAsync())
+                .Where(up => up.UserId == userId).ToList();
+
+            IEnumerable<VocabularyItem> allVocabs = await _vocabRepo.GetAllAsync();
+            IEnumerable<SpeakingExercise> allSpeaking = await _speakingRepo.GetAllAsync();
+
+            if (preferredDialectId.HasValue)
+            {
+                var dialectId = preferredDialectId.Value;
+                allVocabs = allVocabs.Where(v => v.DialectId == dialectId);
+                allSpeaking = allSpeaking.Where(s => s.DialectId == dialectId);
+            }
+
+            var remainingVocabs = allVocabs
+                .Where(v => !userProgress.Any(p => p.VocabId == v.VocabId))
+                .OrderBy(v => v.VocabId)
+                .Take(5)
+                .ToList();
+
+            var remainingSpeaking = allSpeaking
+                .Where(s => !userProgress.Any(p => p.ExerciseId == s.ExerciseId))
+                .OrderBy(s => s.ExerciseId)
+                .Take(5)
+                .ToList();
+
+            if (!remainingVocabs.Any() && !remainingSpeaking.Any()) return null;
+
+            return new LessonModel
+            {
+                LessonId = Guid.NewGuid(),
+                Vocabularies = remainingVocabs,
+                SpeakingExercises = remainingSpeaking
+            };
+        }
+
     }
 }
