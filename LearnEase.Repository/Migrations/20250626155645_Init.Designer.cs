@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnEase.Repository.Migrations
 {
     [DbContext(typeof(LearnEaseContext))]
-    [Migration("20250624143427_AddSubscriptionTable")]
-    partial class AddSubscriptionTable
+    [Migration("20250626155645_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -128,6 +128,66 @@ namespace LearnEase.Repository.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Leaderboards");
+                });
+
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.Lesson", b =>
+                {
+                    b.Property<Guid>("LessonId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("DialectId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("IconUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("LessonId");
+
+                    b.HasIndex("DialectId");
+
+                    b.ToTable("Lessons");
+                });
+
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.LessonSpeaking", b =>
+                {
+                    b.Property<Guid>("LessonId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ExerciseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("LessonId", "ExerciseId");
+
+                    b.HasIndex("ExerciseId");
+
+                    b.ToTable("LessonSpeakings");
+                });
+
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.LessonVocabulary", b =>
+                {
+                    b.Property<Guid>("LessonId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("VocabId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("LessonId", "VocabId");
+
+                    b.HasIndex("VocabId");
+
+                    b.ToTable("LessonVocabularies");
                 });
 
             modelBuilder.Entity("LearnEase.Repository.EntityModel.SpeakingAttempt", b =>
@@ -268,9 +328,6 @@ namespace LearnEase.Repository.Migrations
                     b.Property<int>("RepetitionCount")
                         .HasColumnType("int");
 
-                    b.Property<Guid?>("SpeakingExerciseExerciseId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
@@ -282,7 +339,7 @@ namespace LearnEase.Repository.Migrations
 
                     b.HasKey("ProgressId");
 
-                    b.HasIndex("SpeakingExerciseExerciseId");
+                    b.HasIndex("ExerciseId");
 
                     b.HasIndex("UserId");
 
@@ -326,8 +383,7 @@ namespace LearnEase.Repository.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("Meaning")
-                        .IsRequired()
+                    b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Word")
@@ -375,6 +431,55 @@ namespace LearnEase.Repository.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.Lesson", b =>
+                {
+                    b.HasOne("LearnEase.Repository.EntityModel.Dialect", "Dialect")
+                        .WithMany()
+                        .HasForeignKey("DialectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Dialect");
+                });
+
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.LessonSpeaking", b =>
+                {
+                    b.HasOne("LearnEase.Repository.EntityModel.SpeakingExercise", "SpeakingExercise")
+                        .WithMany("LessonSpeakings")
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("LearnEase.Repository.EntityModel.Lesson", "Lesson")
+                        .WithMany("LessonSpeakings")
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
+
+                    b.Navigation("SpeakingExercise");
+                });
+
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.LessonVocabulary", b =>
+                {
+                    b.HasOne("LearnEase.Repository.EntityModel.Lesson", "Lesson")
+                        .WithMany("LessonVocabularies")
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LearnEase.Repository.EntityModel.VocabularyItem", "VocabularyItem")
+                        .WithMany("LessonVocabularies")
+                        .HasForeignKey("VocabId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
+
+                    b.Navigation("VocabularyItem");
+                });
+
             modelBuilder.Entity("LearnEase.Repository.EntityModel.SpeakingAttempt", b =>
                 {
                     b.HasOne("LearnEase.Repository.EntityModel.SpeakingExercise", "Exercise")
@@ -420,7 +525,8 @@ namespace LearnEase.Repository.Migrations
                 {
                     b.HasOne("LearnEase.Repository.EntityModel.SpeakingExercise", "SpeakingExercise")
                         .WithMany("UserProgresses")
-                        .HasForeignKey("SpeakingExerciseExerciseId");
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("LearnEase.Repository.EntityModel.User", "User")
                         .WithMany("UserProgresses")
@@ -429,7 +535,7 @@ namespace LearnEase.Repository.Migrations
                         .IsRequired();
 
                     b.HasOne("LearnEase.Repository.EntityModel.VocabularyItem", "VocabularyItem")
-                        .WithMany("UserProgresses")
+                        .WithMany()
                         .HasForeignKey("VocabularyItemVocabId");
 
                     b.Navigation("SpeakingExercise");
@@ -473,9 +579,18 @@ namespace LearnEase.Repository.Migrations
                     b.Navigation("Dialects");
                 });
 
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.Lesson", b =>
+                {
+                    b.Navigation("LessonSpeakings");
+
+                    b.Navigation("LessonVocabularies");
+                });
+
             modelBuilder.Entity("LearnEase.Repository.EntityModel.SpeakingExercise", b =>
                 {
                     b.Navigation("Attempts");
+
+                    b.Navigation("LessonSpeakings");
 
                     b.Navigation("UserProgresses");
                 });
@@ -495,7 +610,7 @@ namespace LearnEase.Repository.Migrations
 
             modelBuilder.Entity("LearnEase.Repository.EntityModel.VocabularyItem", b =>
                 {
-                    b.Navigation("UserProgresses");
+                    b.Navigation("LessonVocabularies");
                 });
 #pragma warning restore 612, 618
         }

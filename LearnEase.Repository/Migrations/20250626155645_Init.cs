@@ -106,6 +106,29 @@ namespace LearnEase.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Subscriptions",
+                columns: table => new
+                {
+                    SubscriptionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PlanType = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Price = table.Column<int>(type: "int", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Subscriptions", x => x.SubscriptionId);
+                    table.ForeignKey(
+                        name: "FK_Subscriptions_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserSettings",
                 columns: table => new
                 {
@@ -347,6 +370,11 @@ namespace LearnEase.Repository.Migrations
                 column: "DialectId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Subscriptions_UserId",
+                table: "Subscriptions",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserProgresses_ExerciseId",
                 table: "UserProgresses",
                 column: "ExerciseId");
@@ -384,6 +412,9 @@ namespace LearnEase.Repository.Migrations
 
             migrationBuilder.DropTable(
                 name: "SpeakingAttempts");
+
+            migrationBuilder.DropTable(
+                name: "Subscriptions");
 
             migrationBuilder.DropTable(
                 name: "UserProgresses");

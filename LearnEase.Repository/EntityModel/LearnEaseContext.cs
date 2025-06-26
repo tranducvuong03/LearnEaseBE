@@ -19,7 +19,7 @@ namespace LearnEase.Repository.EntityModel
         public DbSet<SpeakingAttempt> SpeakingAttempts { get; set; }
         public DbSet<UserProgress> UserProgresses { get; set; }
         public DbSet<Leaderboard> Leaderboards { get; set; }
-
+        public DbSet<Subscription> Subscriptions { get; set; }
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<LessonVocabulary> LessonVocabularies { get; set; }
         public DbSet<LessonSpeaking> LessonSpeakings { get; set; }
