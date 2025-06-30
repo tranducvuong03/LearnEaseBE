@@ -1,4 +1,5 @@
-﻿using LearnEase.Repository.EntityModel;
+﻿using LearnEase.Repository.DTO;
+using LearnEase.Repository.EntityModel;
 using LearnEase.Service.Models.Request;
 
 namespace LearnEase.Repository.IRepo
@@ -11,6 +12,6 @@ namespace LearnEase.Repository.IRepo
         Task<IEnumerable<Leaderboard>> GetAllAsync();
         void Update(Leaderboard leaderboard);
         void Delete(Leaderboard leaderboard);
-        Task RecordScoreAsync(RecordScoreRequest dto);
+        Task RecordScoreAsync(RecordScoreDto dto);
     }
 }

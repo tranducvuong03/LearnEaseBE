@@ -23,6 +23,10 @@ namespace LearnEase.Repository.EntityModel
         public DbSet<Lesson> Lessons { get; set; }
         public DbSet<LessonVocabulary> LessonVocabularies { get; set; }
         public DbSet<LessonSpeaking> LessonSpeakings { get; set; }
+        public DbSet<AiLesson> AiLessons { get; set; }
+        public DbSet<AiLessonPart> AiLessonParts { get; set; }
+        public DbSet<UserLessonAttempt> UserLessons { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
