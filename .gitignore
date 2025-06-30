@@ -15,7 +15,7 @@ x64/
 [Oo]bj/
 
 # Appsetting
-appsettings.json
+**/appsettings.json
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
@@ -134,3 +134,5 @@ $RECYCLE.BIN/
 .DS_Store
 
 _NCrunch*
+**/google-key.json 
+

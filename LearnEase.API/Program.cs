@@ -8,7 +8,20 @@ using LearnEase.Service.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", "google-key.json");
 
+var googleKeyPath = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
+Console.WriteLine($"🔐 GOOGLE_APPLICATION_CREDENTIALS = {googleKeyPath}");
+if (!File.Exists("google-key.json"))
+{
+    Console.WriteLine("❌ File google-key.json không tồn tại trong thư mục làm việc.");
+}
+else
+{
+    Console.WriteLine("✅ File google-key.json đã tồn tại.");
+}
+var path = Path.GetFullPath("google-key.json");
+Console.WriteLine($"📌 Đường dẫn tuyệt đối: {path}");
 var builder = WebApplication.CreateBuilder(args);
 
 // DI
@@ -26,6 +39,9 @@ builder.Services.AddScoped<ILanguageService, LanguageService>();
 builder.Services.AddScoped<IVocabularyItemService, VocabularyItemService>();
 builder.Services.AddScoped<ILeaderboardRepository, LeaderboardRepository>();
 builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+builder.Services.AddScoped<IAiLessonService, AiLessonService>();
+builder.Services.AddScoped<ILearningService, LearningService>();
 
 builder.Services.AddScoped<IOpenAIService, OpenAIService>();
 builder.Services.AddHttpClient<IOpenAIService, OpenAIService>();

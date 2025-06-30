@@ -14,5 +14,6 @@ namespace LearnEase.Service.IServices
              List<object> conversationHistory = null,
              string username = "bạn"
          );
+        Task<string> GenerateQuizFeedbackAsync(int correct, int total);
     }
 }
