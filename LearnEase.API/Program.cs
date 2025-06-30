@@ -110,7 +110,15 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]))
     };
 });
-
+//------cho phép chạy api local----------------
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("AllowLocalhost",
+		policy => policy
+			.WithOrigins("http://127.0.0.1:5500")
+			.AllowAnyHeader()
+			.AllowAnyMethod());
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -121,6 +129,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowLocalhost");
 
 app.UseAuthentication();
 

@@ -27,8 +27,9 @@ namespace LearnEase.Repository.EntityModel
         public DbSet<AiLessonPart> AiLessonParts { get; set; }
         public DbSet<UserLessonAttempt> UserLessons { get; set; }
 
+		public DbSet<TransactionLogs> TransactionLogs { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+		protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 

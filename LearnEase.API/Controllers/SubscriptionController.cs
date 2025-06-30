@@ -5,6 +5,7 @@ using LearnEase.Service.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -66,10 +67,8 @@ namespace LearnEase.API.Controllers
 		[HttpPost("webhook")]
 		public async Task<IActionResult> PayOSWebhook([FromBody] PayOSWebhookRequest request)
 		{
-			Console.WriteLine("====== Webhook Received ======");
-			Console.WriteLine($"[Status] {request.status}");
-			Console.WriteLine($"[Description] {request.description}");
-
+			Console.WriteLine("=== [WEBHOOK RECEIVED] ===");
+			Console.WriteLine(JsonConvert.SerializeObject(request));
 			if (!string.Equals(request.status, "SUCCESS", StringComparison.OrdinalIgnoreCase) &&
 				!string.Equals(request.status, "PAID", StringComparison.OrdinalIgnoreCase))
 			{
@@ -114,7 +113,7 @@ namespace LearnEase.API.Controllers
 
 			var now = DateTime.UtcNow;
 			var endDate = planType == "monthly" ? now.AddMonths(1) : now.AddYears(1);
-			var price = planType == "monthly" ? 66000 : 673200;
+			var price = planType == "monthly" ? 39000 : 397800;
 
 			var subscription = new Subscription
 			{
@@ -127,6 +126,21 @@ namespace LearnEase.API.Controllers
 			};
 
 			_context.Subscriptions.Add(subscription);
+			var transaction = new TransactionLogs
+			{
+				Id = Guid.NewGuid(),
+				UserId = user.UserId,
+				PlanType = planType,
+				Amount = price,
+				OrderCode = request.orderCode,
+				PayOSOrderId = request.transactionId?.ToString(),
+				Status = request.status,
+				Description = request.description,
+				CreatedAt = now
+			};
+
+			_context.TransactionLogs.Add(transaction);
+
 			await _context.SaveChangesAsync();
 
 			Console.WriteLine($"Subscription created for {user.UserId} - {planType}");
