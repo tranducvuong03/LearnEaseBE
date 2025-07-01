@@ -28,7 +28,13 @@ namespace LearnEase.API.Controllers
             var result = await _service.GetByIdAsync(id);
             return result == null ? NotFound() : Ok(result);
         }
-
+        [HttpGet("user/{userId}")]
+        public async Task<IActionResult> GetByUserId(Guid userId)
+        {
+            var all = await _service.GetAllAsync();
+            var results = all.Where(l => l.UserId == userId);
+            return Ok(results);
+        }
         [HttpPost]
         public async Task<IActionResult> Create(Leaderboard leaderboard)
         {
@@ -73,6 +79,33 @@ namespace LearnEase.API.Controllers
             await _service.RecordScoreAsync(dto);
             return Ok("Score recorded successfully.");
         }
+        //lấy hạng của user ra 
+        [HttpGet("rank")]
+        public async Task<IActionResult> GetUserRank(
+    [FromQuery] Guid userId,
+    [FromQuery] string period = "weekly")
+        {
+            var all = (await _service.GetAllAsync())
+                .Where(l => l.Period == period)
+                .OrderByDescending(l => l.Score)
+                .ToList();
+
+            var index = all.FindIndex(x => x.UserId == userId);
+            if (index == -1)
+                return NotFound("❌ Không tìm thấy điểm người dùng trong bảng xếp hạng.");
+
+            var user = all[index];
+
+            return Ok(new
+            {
+                rank = index + 1,
+                userId = user.UserId,
+                score = user.Score,
+                username = user.User?.Username,
+                avatar = user.User?.AvatarUrl
+            });
+        }
+
     }
 
 }

@@ -8,6 +8,7 @@ using LearnEase.Service.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", "google-key.json");
 
 var googleKeyPath = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
@@ -56,8 +57,11 @@ builder.Services.AddScoped<IPayOSService, PayOSService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 // Add services to the container.
 builder.Services.AddSqlServer<LearnEaseContext>(builder.Configuration.GetConnectionString("DefaultConnection"));
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers()
+    .AddJsonOptions(opt =>
+    {
+        opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>

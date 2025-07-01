@@ -86,6 +86,11 @@ namespace LearnEase.API.Controllers
         public async Task<IActionResult> EvaluateLessonAnswers([FromBody] EvaluateLessonRequest request)
 
         {
+            var existingAttempt = (await _attemptRepo.GetAllAsync())
+.FirstOrDefault(a => a.UserId == request.UserId && a.LessonId == request.LessonId && a.Skill == request.Skill);
+
+            if (existingAttempt != null)
+                return BadRequest("❌ Hôm nay bạn đã thử thách này rồi.");
 
             var part = (await _partRepo.GetAllAsync())
                         .FirstOrDefault(p => p.LessonId == request.LessonId && p.Skill == request.Skill);
@@ -329,6 +334,11 @@ Trả lời trực tiếp, không cần tiêu đề hay định dạng.";
         [HttpPost("evaluate-writing")]
         public async Task<IActionResult> EvaluateWriting([FromBody] EvaluateLessonRequest request)
         {
+            var existingAttempt = (await _attemptRepo.GetAllAsync())
+   .FirstOrDefault(a => a.UserId == request.UserId && a.LessonId == request.LessonId && a.Skill == request.Skill);
+
+            if (existingAttempt != null)
+                return BadRequest("❌ Hôm nay bạn đã thử thách này rồi.");
             var part = (await _partRepo.GetAllAsync())
                         .FirstOrDefault(p => p.LessonId == request.LessonId && p.Skill == SkillType.Writing);
 
@@ -434,6 +444,12 @@ Bài viết của học viên:
         [HttpPost("evaluate-listening")]
         public async Task<IActionResult> EvaluateListening([FromBody] EvaluateLessonRequest request)
         {
+
+            var existingAttempt = (await _attemptRepo.GetAllAsync())
+    .FirstOrDefault(a => a.UserId == request.UserId && a.LessonId == request.LessonId && a.Skill == request.Skill);
+
+            if (existingAttempt != null)
+                return BadRequest("❌ Hôm nay bạn đã thử thách này rồi.");
             var part = (await _partRepo.GetAllAsync())
                         .FirstOrDefault(p => p.LessonId == request.LessonId && p.Skill == SkillType.Listening);
 
