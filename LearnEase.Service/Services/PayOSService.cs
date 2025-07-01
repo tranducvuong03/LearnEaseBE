@@ -28,7 +28,7 @@ namespace LearnEase.Service.Services
 		public async Task<string> CreatePaymentUrlAsync(string planType, Guid userId)
 		{
 			var orderCode = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-			var amount = planType == "yearly" ? 673200 : 66000;
+			var amount = planType == "yearly" ? 397800 : 39000;
 			var userShort = userId.ToString().Substring(0, 8);
 			var description = $"Sub-{planType}-{userShort}";
 			var returnUrl = _config["PayOS:ReturnUrl"];
