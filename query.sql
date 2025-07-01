@@ -143,3 +143,50 @@ VALUES
    N'Say: "It is raining heavily."',
    'https://www.oxfordlearnersdictionaries.com/media/english/us_pron/r/rai/rain_/rain__us_1.mp3',
    'It is raining heavily.');
+
+   /*========================================================
+  8. TOPIC & LESSON (Daily Life)
+========================================================*/
+INSERT INTO Topic(TopicId, Title, Description)
+VALUES
+  ('11111111-1111-1111-1111-111111111111', N'Daily Life', N'Từ vựng và câu nói hàng ngày');
+
+INSERT INTO Lessons(LessonId, TopicId, DialectId, [Order], Title, Description)
+VALUES
+  ('22222222-2222-2222-2222-222222222222', '11111111-1111-1111-1111-111111111111',
+   '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 1, N'Daily Vocabulary 1', NULL),
+
+  ('22222222-2222-2222-2222-222222222223', '11111111-1111-1111-1111-111111111111',
+   '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 2, N'Daily Vocabulary 2', NULL);
+
+/*========================================================
+  9. GÁN 5 VOCAB CHO MỖI LESSON
+========================================================*/
+DECLARE @Lesson1 UNIQUEIDENTIFIER = '22222222-2222-2222-2222-222222222222';
+DECLARE @Lesson2 UNIQUEIDENTIFIER = '22222222-2222-2222-2222-222222222223';
+
+INSERT INTO LessonVocabularies (LessonId, VocabId)
+SELECT @Lesson1, VocabId FROM VocabularyItems WHERE Word IN (
+  N'coffee', N'library', N'bicycle', N'vegetable', N'airport'
+);
+
+INSERT INTO LessonVocabularies (LessonId, VocabId)
+SELECT @Lesson2, VocabId FROM VocabularyItems WHERE Word IN (
+  N'mountain', N'hospital', N'elephant', N'umbrella', N'computer'
+);
+
+/*========================================================
+ 10. GÁN 5 SPEAKING CHO MỖI LESSON
+========================================================*/
+INSERT INTO LessonSpeakings (LessonId, ExerciseId)
+SELECT @Lesson1, ExerciseId FROM SpeakingExercises
+WHERE ReferenceText IN (
+  'How are you today?', 'Where is the library?', 'I need a computer.',
+  'This is a hospital.', 'She rides a bicycle.'
+);
+
+INSERT INTO LessonSpeakings (LessonId, ExerciseId)
+SELECT @Lesson2, ExerciseId FROM SpeakingExercises
+WHERE ReferenceText IN (
+  'I like vegetables.', 'The coffee is hot.', 'It is raining heavily.'
+);

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnEase.Repository.Migrations
 {
     [DbContext(typeof(LearnEaseContext))]
-    [Migration("20250626155645_Init")]
-    partial class Init
+    [Migration("20250701133747_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,6 +50,56 @@ namespace LearnEase.Repository.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Achievements");
+                });
+
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.AiLesson", b =>
+                {
+                    b.Property<Guid>("LessonId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Topic")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("LessonId");
+
+                    b.ToTable("AiLessons");
+                });
+
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.AiLessonPart", b =>
+                {
+                    b.Property<Guid>("PartId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("AudioUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ChoicesJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("LessonId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Prompt")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReferenceText")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Skill")
+                        .HasColumnType("int");
+
+                    b.HasKey("PartId");
+
+                    b.HasIndex("LessonId");
+
+                    b.ToTable("AiLessonParts");
                 });
 
             modelBuilder.Entity("LearnEase.Repository.EntityModel.Dialect", b =>
@@ -153,9 +203,14 @@ namespace LearnEase.Repository.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<Guid>("TopicId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("LessonId");
 
                     b.HasIndex("DialectId");
+
+                    b.HasIndex("TopicId");
 
                     b.ToTable("Lessons");
                 });
@@ -282,6 +337,66 @@ namespace LearnEase.Repository.Migrations
                     b.ToTable("Subscriptions");
                 });
 
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.Topic", b =>
+                {
+                    b.Property<Guid>("TopicId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("TopicId");
+
+                    b.ToTable("Topic");
+                });
+
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.TransactionLogs", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("OrderCode")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("PayOSOrderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PlanType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("TransactionLogs");
+                });
+
             modelBuilder.Entity("LearnEase.Repository.EntityModel.User", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -311,6 +426,42 @@ namespace LearnEase.Repository.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.UserLessonAttempt", b =>
+                {
+                    b.Property<Guid>("AttemptId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("AttemptedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Feedback")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("LessonId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<float>("Score")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Skill")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserAnswer")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AttemptId");
+
+                    b.HasIndex("LessonId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserLessons");
                 });
 
             modelBuilder.Entity("LearnEase.Repository.EntityModel.UserProgress", b =>
@@ -409,6 +560,17 @@ namespace LearnEase.Repository.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.AiLessonPart", b =>
+                {
+                    b.HasOne("LearnEase.Repository.EntityModel.AiLesson", "Lesson")
+                        .WithMany("Parts")
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
+                });
+
             modelBuilder.Entity("LearnEase.Repository.EntityModel.Dialect", b =>
                 {
                     b.HasOne("LearnEase.Repository.EntityModel.Language", "Language")
@@ -439,7 +601,15 @@ namespace LearnEase.Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("LearnEase.Repository.EntityModel.Topic", "Topic")
+                        .WithMany("Lessons")
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Dialect");
+
+                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("LearnEase.Repository.EntityModel.LessonSpeaking", b =>
@@ -521,6 +691,36 @@ namespace LearnEase.Repository.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.TransactionLogs", b =>
+                {
+                    b.HasOne("LearnEase.Repository.EntityModel.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.UserLessonAttempt", b =>
+                {
+                    b.HasOne("LearnEase.Repository.EntityModel.AiLesson", "Lesson")
+                        .WithMany()
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LearnEase.Repository.EntityModel.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lesson");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("LearnEase.Repository.EntityModel.UserProgress", b =>
                 {
                     b.HasOne("LearnEase.Repository.EntityModel.SpeakingExercise", "SpeakingExercise")
@@ -567,6 +767,11 @@ namespace LearnEase.Repository.Migrations
                     b.Navigation("Dialect");
                 });
 
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.AiLesson", b =>
+                {
+                    b.Navigation("Parts");
+                });
+
             modelBuilder.Entity("LearnEase.Repository.EntityModel.Dialect", b =>
                 {
                     b.Navigation("SpeakingExercises");
@@ -593,6 +798,11 @@ namespace LearnEase.Repository.Migrations
                     b.Navigation("LessonSpeakings");
 
                     b.Navigation("UserProgresses");
+                });
+
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.Topic", b =>
+                {
+                    b.Navigation("Lessons");
                 });
 
             modelBuilder.Entity("LearnEase.Repository.EntityModel.User", b =>
