@@ -32,6 +32,7 @@ namespace LearnEase.Service.Services
 			var message = new MailMessage
 			{
 				From = new MailAddress(from, displayName),
+
 				Subject = "🎉 Welcome to LearnEase!",
 				IsBodyHtml = true
 			};
@@ -71,7 +72,9 @@ namespace LearnEase.Service.Services
 			using var smtp = new SmtpClient(smtpHost, smtpPort)
 			{
 				Credentials = new NetworkCredential(smtpUser, smtpPass),
-				EnableSsl = true
+                Timeout = 5000,
+
+                EnableSsl = true
 			};
 
 			await smtp.SendMailAsync(message);

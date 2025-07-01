@@ -60,74 +60,145 @@ namespace LearnEase.API.Controllers
             return Ok(new { token });
         }
 
+        
         [HttpPost("google-login")]
         public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
         {
+            Console.WriteLine("⏱️ GoogleLogin bắt đầu");
+
             if (string.IsNullOrWhiteSpace(request.IdToken))
                 return BadRequest("IdToken is required.");
 
             try
             {
-                // Validate token
                 var payload = await GoogleJsonWebSignature.ValidateAsync(request.IdToken);
-                if (payload == null)
-                    return Unauthorized("Invalid Google token.");
+                Console.WriteLine("✅ Token OK");
 
-               
                 var name = payload.Name;
-
-                if (string.IsNullOrEmpty( payload.Email))
+                if (string.IsNullOrEmpty(payload.Email))
                     return BadRequest("Email not found in token.");
 
-                // Check if user exists
                 var user = _context.Users.FirstOrDefault(u => u.Email == payload.Email);
 
                 if (user == null)
                 {
-                    // Create new user
+                    Console.WriteLine("🆕 Chưa có user → tạo mới");
+
                     user = new User
                     {
                         UserId = Guid.NewGuid(),
                         Username = name,
                         Email = payload.Email,
                         Password = null,
-                        AvatarUrl= payload.Picture,
+                        AvatarUrl = payload.Picture
                     };
 
                     _context.Users.Add(user);
                     await _context.SaveChangesAsync();
-					// send mail to user
-					await _emailService.SendWelcomeEmailAsync(user.Email, user.Username);
 
-				}
+                    Console.WriteLine("✅ Tạo user mới thành công");
+                }
 
-				// Generate JWT token
-				var token = new JwtHelper(_config).GenerateToken(user);
+                Console.WriteLine("🎫 Tạo token...");
+                var token = new JwtHelper(_config).GenerateToken(user);
 
-				var userResponse = new UserResponse
-				{
-					UserId = user.UserId,
-					Username = user.Username,
-					Email = user.Email,
-					AvatarUrl = user.AvatarUrl
-				};
+                var userResponse = new UserResponse
+                {
+                    UserId = user.UserId,
+                    Username = user.Username,
+                    Email = user.Email,
+                    AvatarUrl = user.AvatarUrl
+                };
 
-				return Ok(new LoginResponse
-				{
-					Token = token,
-					User = userResponse
-				});
-
-			}
-			catch (InvalidJwtException ex)
-            {
-                return Unauthorized($"Invalid Google token: {ex.Message}");
+                Console.WriteLine("🚀 Trả về response thành công");
+                return Ok(new LoginResponse
+                {
+                    Token = token,
+                    User = userResponse
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
+                Console.WriteLine("❌ Lỗi xử lý Google login: " + ex.Message);
+                return StatusCode(500, "Google login error: " + ex.Message);
             }
         }
+
+        /*  public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
+          {
+              if (string.IsNullOrWhiteSpace(request.IdToken))
+                  return BadRequest("IdToken is required.");
+
+              try
+              {
+                  // Validate token
+                  var payload = await GoogleJsonWebSignature.ValidateAsync(request.IdToken);
+                  if (payload == null)
+                      return Unauthorized("Invalid Google token.");
+
+
+                  var name = payload.Name;
+
+                  if (string.IsNullOrEmpty( payload.Email))
+                      return BadRequest("Email not found in token.");
+
+                  // Check if user exists
+                  var user = _context.Users.FirstOrDefault(u => u.Email == payload.Email);
+
+                  if (user == null)
+                  {
+                      // Create new user
+                      user = new User
+                      {
+                          UserId = Guid.NewGuid(),
+                          Username = name,
+                          Email = payload.Email,
+                          Password = null,
+                          AvatarUrl= payload.Picture,
+                      };
+
+                      _context.Users.Add(user);
+                      await _context.SaveChangesAsync();
+                      // send mail to user
+                      try
+                      {
+                          await _emailService.SendWelcomeEmailAsync(user.Email, user.Username);
+                      }
+                      catch (Exception ex)
+                      {
+                          // Ghi log nhưng không throw để tránh làm fail login
+                          Console.WriteLine("⚠️ SendWelcomeEmail failed: " + ex.Message);
+                      }
+
+                  }
+
+                  // Generate JWT token
+                  var token = new JwtHelper(_config).GenerateToken(user);
+
+                  var userResponse = new UserResponse
+                  {
+                      UserId = user.UserId,
+                      Username = user.Username,
+                      Email = user.Email,
+                      AvatarUrl = user.AvatarUrl
+                  };
+
+                  return Ok(new LoginResponse
+                  {
+                      Token = token,
+                      User = userResponse
+                  });
+
+              }
+              catch (InvalidJwtException ex)
+              {
+                  return Unauthorized($"Invalid Google token: {ex.Message}");
+              }
+              catch (Exception ex)
+              {
+                  return StatusCode(500, $"Internal server error: {ex.Message}");
+              }
+          }*/
 
         private string GenerateJwtToken(User user)
         {
