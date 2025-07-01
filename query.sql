@@ -102,3 +102,44 @@ VALUES
    '4C6EC7A2-644C-44B8-B222-52EDF6197781',
    'weekly', 200,
    SYSUTCDATETIME());
+
+/*========================================================
+  7. SpeakingExercises
+========================================================*/
+INSERT INTO SpeakingExercises
+  (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText)
+VALUES
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1',
+   N'Say: "Where is the library?"',
+   'https://www.oxfordlearnersdictionaries.com/media/english/us_pron/l/lib/library/library__us_1.mp3',
+   'Where is the library?'),
+
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1',
+   N'Please say: "I need a computer."',
+   'https://www.oxfordlearnersdictionaries.com/media/english/us_pron/c/com/computer/computer__us_1.mp3',
+   'I need a computer.'),
+
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1',
+   N'Say aloud: "This is a hospital."',
+   'https://www.oxfordlearnersdictionaries.com/media/english/us_pron/h/hos/hospit/hospital__us_1.mp3',
+   'This is a hospital.'),
+
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1',
+   N'Repeat after me: "She rides a bicycle."',
+   'https://www.oxfordlearnersdictionaries.com/media/english/us_pron/b/bic/bicycl/bicycle__us_1.mp3',
+   'She rides a bicycle.'),
+
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1',
+   N'Please say: "I like vegetables."',
+   'https://www.oxfordlearnersdictionaries.com/media/english/us_pron/v/veg/veget/vegetable__us_1.mp3',
+   'I like vegetables.'),
+
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1',
+   N'Say this sentence: "The coffee is hot."',
+   'https://www.oxfordlearnersdictionaries.com/media/english/us_pron/c/cof/coffee/coffee__us_1.mp3',
+   'The coffee is hot.'),
+
+  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1',
+   N'Say: "It is raining heavily."',
+   'https://www.oxfordlearnersdictionaries.com/media/english/us_pron/r/rai/rain_/rain__us_1.mp3',
+   'It is raining heavily.');
