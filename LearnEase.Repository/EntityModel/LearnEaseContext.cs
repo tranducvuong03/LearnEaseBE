@@ -27,9 +27,9 @@ namespace LearnEase.Repository.EntityModel
         public DbSet<AiLessonPart> AiLessonParts { get; set; }
         public DbSet<UserLessonAttempt> UserLessons { get; set; }
 
-		public DbSet<TransactionLogs> TransactionLogs { get; set; }
+        public DbSet<TransactionLogs> TransactionLogs { get; set; }
 
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
@@ -70,6 +70,12 @@ namespace LearnEase.Repository.EntityModel
                 .WithMany(se => se.UserProgresses)
                 .HasForeignKey(up => up.ExerciseId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Lesson>()
+                .HasOne(l => l.Topic)
+                .WithMany(t => t.Lessons)
+                .HasForeignKey(l => l.TopicId);
+
         }
     }
 }

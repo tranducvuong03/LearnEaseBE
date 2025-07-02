@@ -203,9 +203,14 @@ namespace LearnEase.Repository.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<Guid>("TopicId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("LessonId");
 
                     b.HasIndex("DialectId");
+
+                    b.HasIndex("TopicId");
 
                     b.ToTable("Lessons");
                 });
@@ -330,6 +335,25 @@ namespace LearnEase.Repository.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Subscriptions");
+                });
+
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.Topic", b =>
+                {
+                    b.Property<Guid>("TopicId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("TopicId");
+
+                    b.ToTable("Topic");
                 });
 
             modelBuilder.Entity("LearnEase.Repository.EntityModel.TransactionLogs", b =>
@@ -577,7 +601,15 @@ namespace LearnEase.Repository.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("LearnEase.Repository.EntityModel.Topic", "Topic")
+                        .WithMany("Lessons")
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Dialect");
+
+                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("LearnEase.Repository.EntityModel.LessonSpeaking", b =>
@@ -766,6 +798,11 @@ namespace LearnEase.Repository.Migrations
                     b.Navigation("LessonSpeakings");
 
                     b.Navigation("UserProgresses");
+                });
+
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.Topic", b =>
+                {
+                    b.Navigation("Lessons");
                 });
 
             modelBuilder.Entity("LearnEase.Repository.EntityModel.User", b =>

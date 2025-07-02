@@ -17,8 +17,12 @@ namespace LearnEase.Repository.Migrations
                 {
                     LessonId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Topic = table.Column<string>(type: "nvarchar(max)", nullable: false),
+<<<<<<<< HEAD:LearnEase.Repository/Migrations/20250702084921_init.cs
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DayIndex = table.Column<int>(type: "int", nullable: false)
+========
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+>>>>>>>> 9dbe2ed37d303b0b5f131a5611bb04baf7e5bee0:LearnEase.Repository/Migrations/20250701133747_init.cs
                 },
                 constraints: table =>
                 {
@@ -35,6 +39,19 @@ namespace LearnEase.Repository.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Languages", x => x.LanguageId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Topic",
+                columns: table => new
+                {
+                    TopicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Topic", x => x.TopicId);
                 });
 
             migrationBuilder.CreateTable(
@@ -245,6 +262,7 @@ namespace LearnEase.Repository.Migrations
                 columns: table => new
                 {
                     LessonId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TopicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DialectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Order = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -259,6 +277,12 @@ namespace LearnEase.Repository.Migrations
                         column: x => x.DialectId,
                         principalTable: "Dialects",
                         principalColumn: "DialectId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Lessons_Topic_TopicId",
+                        column: x => x.TopicId,
+                        principalTable: "Topic",
+                        principalColumn: "TopicId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -442,6 +466,11 @@ namespace LearnEase.Repository.Migrations
                 column: "DialectId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Lessons_TopicId",
+                table: "Lessons",
+                column: "TopicId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LessonSpeakings_ExerciseId",
                 table: "LessonSpeakings",
                 column: "ExerciseId");
@@ -557,6 +586,9 @@ namespace LearnEase.Repository.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Topic");
 
             migrationBuilder.DropTable(
                 name: "Dialects");

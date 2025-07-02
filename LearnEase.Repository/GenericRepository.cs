@@ -1,5 +1,6 @@
 ﻿using LearnEase.Repository.EntityModel;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace LearnEase.Repository
 {
@@ -14,7 +15,14 @@ namespace LearnEase.Repository
             _dbSet = context.Set<T>();
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync() => await _dbSet.ToListAsync();
+        public async Task<IEnumerable<T>> GetAllAsync(
+            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null)
+        {
+            IQueryable<T> query = _dbSet;
+            if (include != null)
+                query = include(query);
+            return await query.ToListAsync();
+        }
 
         public async Task<T?> GetByIdAsync(Guid id) => await _dbSet.FindAsync(id);
 
