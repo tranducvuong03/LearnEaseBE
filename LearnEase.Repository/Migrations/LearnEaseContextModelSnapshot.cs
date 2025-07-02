@@ -58,6 +58,9 @@ namespace LearnEase.Repository.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DayIndex")
+                        .HasColumnType("int");
+
                     b.Property<string>("Topic")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -365,6 +368,8 @@ namespace LearnEase.Repository.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("TransactionLogs");
                 });
 
@@ -644,6 +649,17 @@ namespace LearnEase.Repository.Migrations
                 });
 
             modelBuilder.Entity("LearnEase.Repository.EntityModel.Subscription", b =>
+                {
+                    b.HasOne("LearnEase.Repository.EntityModel.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.TransactionLogs", b =>
                 {
                     b.HasOne("LearnEase.Repository.EntityModel.User", "User")
                         .WithMany()
