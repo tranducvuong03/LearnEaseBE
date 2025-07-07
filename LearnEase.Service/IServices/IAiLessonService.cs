@@ -17,5 +17,6 @@ namespace LearnEase.Service.IServices
         Task<string> TranslateTopicToEnglish(string topic);
         Task<AiLesson?> GetCurrentWeeklyLessonAsync();
         Task<AiLesson> GetOrGenerateCurrentWeeklyLessonAsync();
+        Task<List<AiLesson>> GetOrGenerateWeeklyLessonsAsync();
     }
 }

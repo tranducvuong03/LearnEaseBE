@@ -58,6 +58,9 @@ namespace LearnEase.Repository.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DayIndex")
+                        .HasColumnType("int");
+
                     b.Property<string>("Topic")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");

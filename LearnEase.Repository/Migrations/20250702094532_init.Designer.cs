@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnEase.Repository.Migrations
 {
     [DbContext(typeof(LearnEaseContext))]
-    [Migration("20250701133747_init")]
+    [Migration("20250702094532_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -60,6 +60,9 @@ namespace LearnEase.Repository.Migrations
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("DayIndex")
+                        .HasColumnType("int");
 
                     b.Property<string>("Topic")
                         .IsRequired()

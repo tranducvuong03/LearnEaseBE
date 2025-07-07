@@ -82,37 +82,70 @@ namespace LearnEase.API.Controllers
                 parts = parts
             });
         }
+        private bool IsLessonAvailableToday(AiLesson lesson)
+        {
+            int todayIndex = (int)DateTime.UtcNow.DayOfWeek;
+            if (todayIndex == 0) todayIndex = 7;
+            return lesson.DayIndex == todayIndex;
+        }
+        [HttpGet("weekly-lessons")]
+        public async Task<IActionResult> GetWeeklyLessons()
+        {
+            var lessons = await _lessonService.GetOrGenerateWeeklyLessonsAsync();
+
+            var response = new List<object>();
+
+            foreach (var lesson in lessons.OrderBy(l => l.DayIndex))
+            {
+                var lessonParts = (await _partRepo.GetAllAsync())
+                    .Where(p => p.LessonId == lesson.LessonId)
+                    .Select(p => new
+                    {
+                        skill = p.Skill.ToString(),
+                        prompt = p.Prompt,
+                        referenceText = p.ReferenceText,
+                        audioUrl = p.AudioUrl,
+                        choicesJson = p.ChoicesJson
+                    });
+
+                response.Add(new
+                {
+                    lesson.LessonId,
+                    lesson.Topic,
+                    lesson.DayIndex,
+                    lesson.CreatedAt,
+                    parts = lessonParts
+                });
+            }
+
+            return Ok(response);
+
+        }
+
+
         [HttpPost("evaluate")]
         public async Task<IActionResult> EvaluateLessonAnswers([FromBody] EvaluateLessonRequest request)
-
         {
-            var existingAttempt = (await _attemptRepo.GetAllAsync())
-.FirstOrDefault(a => a.UserId == request.UserId && a.LessonId == request.LessonId && a.Skill == request.Skill);
+            var lesson = await _lessonRepo.GetByIdAsync(request.LessonId);
+            if (lesson == null) return BadRequest("❌ Bài học không tồn tại.");
+          
 
-            if (existingAttempt != null)
-                return BadRequest("❌ Hôm nay bạn đã thử thách này rồi.");
+            var existingAttempt = (await _attemptRepo.GetAllAsync())
+                .FirstOrDefault(a => a.UserId == request.UserId && a.LessonId == request.LessonId && a.Skill == request.Skill);
+            if (existingAttempt != null) return BadRequest("❌ Hôm nay bạn đã thử thách này rồi.");
 
             var part = (await _partRepo.GetAllAsync())
-                        .FirstOrDefault(p => p.LessonId == request.LessonId && p.Skill == request.Skill);
-
-            if (part == null || string.IsNullOrEmpty(part.ChoicesJson))
-                return BadRequest("❌ Không tìm thấy bài học hoặc phần kỹ năng phù hợp để chấm điểm.");
+                .FirstOrDefault(p => p.LessonId == request.LessonId && p.Skill == request.Skill);
+            if (part == null || string.IsNullOrEmpty(part.ChoicesJson)) return BadRequest("❌ Không tìm thấy phần kỹ năng để chấm điểm.");
 
             var correctList = JsonSerializer.Deserialize<List<ChoiceQuestion>>(part.ChoicesJson);
-            int total = correctList.Count;
-            int correct = 0;
+            int correct = request.Answers.Count(kv =>
+                int.TryParse(kv.Key, out int idx) &&
+                idx < correctList.Count &&
+                kv.Value == correctList[idx].Answer);
 
-            foreach (var index in request.Answers.Keys)
-            {
-                if (int.TryParse(index, out int i) && i < total)
-                {
-                    if (request.Answers[index] == correctList[i].Answer)
-                        correct++;
-                }
-            }
-            string aiFeedback = await _openAIService.GenerateQuizFeedbackAsync(correct, total);
-
-            float score = (100f / total) * correct;
+            float score = (100f / correctList.Count) * correct;
+            string aiFeedback = await _openAIService.GenerateQuizFeedbackAsync(correct, correctList.Count);
 
             var attempt = new UserLessonAttempt
             {
@@ -125,10 +158,12 @@ namespace LearnEase.API.Controllers
                 Feedback = aiFeedback,
                 AttemptedAt = DateTime.UtcNow
             };
-            var periods = new[] { "weekly", "monthly" };
-            int rounded = (int)Math.Round(score);
 
-            foreach (var p in periods)
+            await _attemptRepo.AddAsync(attempt);
+            await _uow.SaveAsync();
+
+            int rounded = (int)Math.Round(score);
+            foreach (var p in new[] { "weekly", "monthly" })
             {
                 await _leaderboardRepo.RecordScoreAsync(new RecordScoreDto
                 {
@@ -138,17 +173,9 @@ namespace LearnEase.API.Controllers
                 });
             }
 
-            await _attemptRepo.AddAsync(attempt);
-            await _uow.SaveAsync();
-
-            return Ok(new
-            {
-                score,
-                correct,
-                total,
-                feedback = attempt.Feedback
-            });
+            return Ok(new { score, correct, total = correctList.Count, feedback = aiFeedback });
         }
+
         [HttpGet("attempts")]
         public async Task<IActionResult> GetUserAttempt(
     [FromQuery] Guid userId,
@@ -334,20 +361,20 @@ Trả lời trực tiếp, không cần tiêu đề hay định dạng.";
         [HttpPost("evaluate-writing")]
         public async Task<IActionResult> EvaluateWriting([FromBody] EvaluateLessonRequest request)
         {
+            var lesson = await _lessonRepo.GetByIdAsync(request.LessonId);
+            if (lesson == null) return BadRequest("❌ Bài học không tồn tại.");
+            if (!IsLessonAvailableToday(lesson)) return BadRequest("⏳ Bạn chỉ có thể làm bài học của ngày hôm nay.");
+
             var existingAttempt = (await _attemptRepo.GetAllAsync())
-   .FirstOrDefault(a => a.UserId == request.UserId && a.LessonId == request.LessonId && a.Skill == request.Skill);
+                .FirstOrDefault(a => a.UserId == request.UserId && a.LessonId == request.LessonId && a.Skill == request.Skill);
+            if (existingAttempt != null) return BadRequest("❌ Hôm nay bạn đã thử thách này rồi.");
 
-            if (existingAttempt != null)
-                return BadRequest("❌ Hôm nay bạn đã thử thách này rồi.");
             var part = (await _partRepo.GetAllAsync())
-                        .FirstOrDefault(p => p.LessonId == request.LessonId && p.Skill == SkillType.Writing);
-
-            if (part == null)
-                return BadRequest("❌ Không tìm thấy phần viết để chấm điểm.");
+                .FirstOrDefault(p => p.LessonId == request.LessonId && p.Skill == SkillType.Writing);
+            if (part == null) return BadRequest("❌ Không tìm thấy phần viết để chấm điểm.");
 
             string userWriting = request.Answers?.Values.FirstOrDefault()?.Trim();
-            if (string.IsNullOrWhiteSpace(userWriting))
-                return BadRequest("❌ Bài viết không được để trống.");
+            if (string.IsNullOrWhiteSpace(userWriting)) return BadRequest("❌ Bài viết không được để trống.");
 
             int wordCount = userWriting.Split(new[] { ' ', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries).Length;
             if (wordCount < 8)
@@ -366,7 +393,6 @@ Trả lời trực tiếp, không cần tiêu đề hay định dạng.";
 
                 await _attemptRepo.AddAsync(tooShortAttempt);
                 await _uow.SaveAsync();
-
                 return Ok(new { score = 0, feedback = tooShortAttempt.Feedback });
             }
 
@@ -389,7 +415,7 @@ Bài viết của học viên:
 ";
 
             string feedback = await _openAIService.GetAIResponseAsync(prompt, false, new(), "System");
-            float score = ExtractScoreFromFeedback(feedback);  // vẫn giữ logic cũ
+            float score = ExtractScoreFromFeedback(feedback);
 
             var attempt = new UserLessonAttempt
             {
@@ -407,8 +433,7 @@ Bài viết của học viên:
             await _uow.SaveAsync();
 
             int rounded = (int)Math.Round(score);
-            var periods = new[] { "weekly", "monthly" };
-            foreach (var p in periods)
+            foreach (var p in new[] { "weekly", "monthly" })
             {
                 await _leaderboardRepo.RecordScoreAsync(new RecordScoreDto
                 {
@@ -422,45 +447,26 @@ Bài viết của học viên:
         }
 
       
-     private float ExtractScoreFromFeedback(string feedback)
-        {
-            if (string.IsNullOrWhiteSpace(feedback))
-                return 0;
 
-            // 1️⃣ Bắt "Điểm là 94", "Điểm: 94", "với điểm là 94", "Điểm còn lại là 76"
-            var match = Regex.Match(feedback, @"(?i)điểm(?:\s*(?:là|:|：))?\s*(\d{1,3})");
-
-            if (match.Success && int.TryParse(match.Groups[1].Value, out var score))
-                return Math.Min(score, 100);  // Clamp về tối đa 100
-
-            // 2️⃣ Fallback: tìm số cuối cùng nếu regex thất bại
-            var matches = Regex.Matches(feedback, @"\d{1,3}");
-            if (matches.Count > 0 && int.TryParse(matches[^1].Value, out var fallbackScore))
-                return Math.Min(fallbackScore, 100);
-
-            return 0f;
-        }
-
+        
         [HttpPost("evaluate-listening")]
         public async Task<IActionResult> EvaluateListening([FromBody] EvaluateLessonRequest request)
         {
+            var lesson = await _lessonRepo.GetByIdAsync(request.LessonId);
+            if (lesson == null) return BadRequest("❌ Bài học không tồn tại.");
+            if (!IsLessonAvailableToday(lesson)) return BadRequest("⏳ Bạn chỉ có thể làm bài học của ngày hôm nay.");
 
             var existingAttempt = (await _attemptRepo.GetAllAsync())
-    .FirstOrDefault(a => a.UserId == request.UserId && a.LessonId == request.LessonId && a.Skill == request.Skill);
+                .FirstOrDefault(a => a.UserId == request.UserId && a.LessonId == request.LessonId && a.Skill == request.Skill);
+            if (existingAttempt != null) return BadRequest("❌ Hôm nay bạn đã thử thách này rồi.");
 
-            if (existingAttempt != null)
-                return BadRequest("❌ Hôm nay bạn đã thử thách này rồi.");
             var part = (await _partRepo.GetAllAsync())
-                        .FirstOrDefault(p => p.LessonId == request.LessonId && p.Skill == SkillType.Listening);
-
-            if (part == null || string.IsNullOrWhiteSpace(part.ReferenceText))
-                return BadRequest("❌ Không tìm thấy đoạn audio để chấm điểm.");
+                .FirstOrDefault(p => p.LessonId == request.LessonId && p.Skill == SkillType.Listening);
+            if (part == null || string.IsNullOrWhiteSpace(part.ReferenceText)) return BadRequest("❌ Không tìm thấy đoạn audio để chấm điểm.");
 
             string userText = request.Answers?.Values.FirstOrDefault()?.Trim().ToLower() ?? "";
             string expected = part.ReferenceText.Trim().ToLower();
-
-            if (string.IsNullOrEmpty(userText))
-                return BadRequest("❌ Bạn chưa nhập câu trả lời.");
+            if (string.IsNullOrEmpty(userText)) return BadRequest("❌ Bạn chưa nhập câu trả lời.");
 
             double similarity = ComputeSimilarity(expected, userText);
             float score = (float)Math.Round(similarity * 100);
@@ -487,9 +493,9 @@ Bài viết của học viên:
 
             await _attemptRepo.AddAsync(attempt);
             await _uow.SaveAsync();
+
             int rounded = (int)Math.Round(score);
-            var periods = new[] { "weekly", "monthly" };
-            foreach (var p in periods)
+            foreach (var p in new[] { "weekly", "monthly" })
             {
                 await _leaderboardRepo.RecordScoreAsync(new RecordScoreDto
                 {
@@ -500,6 +506,20 @@ Bài viết của học viên:
             }
 
             return Ok(new { score, feedback });
+        }
+        private float ExtractScoreFromFeedback(string feedback)
+        {
+            if (string.IsNullOrWhiteSpace(feedback)) return 0;
+
+            var match = Regex.Match(feedback, @"(?i)điểm(?:\s*(?:là|:|：))?\s*(\d{1,3})");
+            if (match.Success && int.TryParse(match.Groups[1].Value, out var score))
+                return Math.Min(score, 100);
+
+            var matches = Regex.Matches(feedback, @"\d{1,3}");
+            if (matches.Count > 0 && int.TryParse(matches[^1].Value, out var fallbackScore))
+                return Math.Min(fallbackScore, 100);
+
+            return 0f;
         }
         private double ComputeSimilarity(string expected, string actual)
         {

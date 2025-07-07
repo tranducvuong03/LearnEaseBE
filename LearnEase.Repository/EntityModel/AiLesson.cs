@@ -13,6 +13,7 @@ namespace LearnEase.Repository.EntityModel
         public string Topic { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public int DayIndex { get; set; }
 
         public ICollection<AiLessonPart> Parts { get; set; } // Optional, nhưng tốt cho navigation
     }
