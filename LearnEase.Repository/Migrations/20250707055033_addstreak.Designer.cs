@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnEase.Repository.Migrations
 {
     [DbContext(typeof(LearnEaseContext))]
-    [Migration("20250702094532_init")]
-    partial class init
+    [Migration("20250707055033_addstreak")]
+    partial class addstreak
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -521,6 +521,28 @@ namespace LearnEase.Repository.Migrations
                     b.ToTable("UserSettings");
                 });
 
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.UserStreak", b =>
+                {
+                    b.Property<Guid>("StreakId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("LessonCount")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("StreakId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserStreaks");
+                });
+
             modelBuilder.Entity("LearnEase.Repository.EntityModel.VocabularyItem", b =>
                 {
                     b.Property<Guid>("VocabId")
@@ -753,6 +775,17 @@ namespace LearnEase.Repository.Migrations
                     b.HasOne("LearnEase.Repository.EntityModel.User", "User")
                         .WithOne("Settings")
                         .HasForeignKey("LearnEase.Repository.EntityModel.UserSettings", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.UserStreak", b =>
+                {
+                    b.HasOne("LearnEase.Repository.EntityModel.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

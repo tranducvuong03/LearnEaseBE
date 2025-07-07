@@ -22,12 +22,15 @@ namespace LearnEase.API.Controllers
         private readonly IUnitOfWork _uow;
         private readonly ILeaderboardRepository _leaderboardRepo;
         private readonly IOpenAIService _openAIService;
+        private readonly IUserStreakService _userStreakService;
+
 
         public AiLessonController(
            IAiLessonService lessonService,
            IUnitOfWork uow,
            ILeaderboardRepository leaderboardRepo,
-           IOpenAIService openAIService // 👈 thêm tham số này
+           IOpenAIService openAIService,
+            IUserStreakService userStreakService
        )
         {
             _uow = uow;
@@ -35,8 +38,9 @@ namespace LearnEase.API.Controllers
             _lessonRepo = uow.GetRepository<AiLesson>();
             _partRepo = uow.GetRepository<AiLessonPart>();
             _attemptRepo = uow.GetRepository<UserLessonAttempt>();
-            _leaderboardRepo = leaderboardRepo; // 👈 đừng quên dòng này
-            _openAIService = openAIService;     // ✅ fix null tại đây
+            _leaderboardRepo = leaderboardRepo; 
+            _openAIService = openAIService;
+            _userStreakService = userStreakService;
         }
 
         /// <summary>
@@ -169,6 +173,7 @@ namespace LearnEase.API.Controllers
 
             await _attemptRepo.AddAsync(attempt);
             await _uow.SaveAsync();
+            await _userStreakService.UpdateStreakAsync(request.UserId);
 
             int rounded = (int)Math.Round(score);
             foreach (var p in new[] { "weekly", "monthly" })
@@ -401,6 +406,8 @@ Trả lời trực tiếp, không cần tiêu đề hay định dạng.";
 
                 await _attemptRepo.AddAsync(tooShortAttempt);
                 await _uow.SaveAsync();
+                await _userStreakService.UpdateStreakAsync(request.UserId);
+
                 return Ok(new { score = 0, feedback = tooShortAttempt.Feedback });
             }
 
@@ -501,6 +508,8 @@ Bài viết của học viên:
 
             await _attemptRepo.AddAsync(attempt);
             await _uow.SaveAsync();
+            await _userStreakService.UpdateStreakAsync(request.UserId);
+
 
             int rounded = (int)Math.Round(score);
             foreach (var p in new[] { "weekly", "monthly" })
