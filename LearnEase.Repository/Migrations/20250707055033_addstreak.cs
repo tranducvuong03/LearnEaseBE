@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LearnEase.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class db : Migration
+    public partial class addstreak : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -247,6 +247,26 @@ namespace LearnEase.Repository.Migrations
                     table.PrimaryKey("PK_UserSettings", x => x.UserId);
                     table.ForeignKey(
                         name: "FK_UserSettings_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserStreaks",
+                columns: table => new
+                {
+                    StreakId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LessonCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserStreaks", x => x.StreakId);
+                    table.ForeignKey(
+                        name: "FK_UserStreaks_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
@@ -527,6 +547,11 @@ namespace LearnEase.Repository.Migrations
                 column: "VocabularyItemVocabId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserStreaks_UserId",
+                table: "UserStreaks",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_VocabularyItems_DialectId",
                 table: "VocabularyItems",
                 column: "DialectId");
@@ -567,6 +592,9 @@ namespace LearnEase.Repository.Migrations
 
             migrationBuilder.DropTable(
                 name: "UserSettings");
+
+            migrationBuilder.DropTable(
+                name: "UserStreaks");
 
             migrationBuilder.DropTable(
                 name: "Lessons");

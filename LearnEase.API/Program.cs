@@ -1,4 +1,5 @@
 ﻿using LearnEase.Repository;
+
 using LearnEase.Repository.EntityModel;
 using LearnEase.Repository.IRepo;
 using LearnEase.Repository.Repositories;
@@ -43,6 +44,7 @@ builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 builder.Services.AddScoped<IAiLessonService, AiLessonService>();
 builder.Services.AddScoped<ILearningService, LearningService>();
+builder.Services.AddScoped<IUserStreakService, UserStreakService>();
 
 builder.Services.AddScoped<IOpenAIService, OpenAIService>();
 builder.Services.AddHttpClient<IOpenAIService, OpenAIService>();

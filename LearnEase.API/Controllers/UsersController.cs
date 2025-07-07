@@ -1,6 +1,7 @@
 ﻿using LearnEase.Repository.DTO;
 using LearnEase.Repository.EntityModel;
 using LearnEase.Service;
+using LearnEase.Service.IServices;
 using LearnEase.Service.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +15,13 @@ namespace LearnEase.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _service;
+        private readonly IUserStreakService _userStreakService;
 
-        public UsersController(IUserService service)
+        public UsersController(IUserService service , IUserStreakService userStreakService )
         {
-            _service = service;
+            _service = service; 
+            _userStreakService = userStreakService;
+            
         }
 
         [HttpGet]
@@ -113,7 +117,19 @@ namespace LearnEase.API.Controllers
             var updated = await _service.UpdateAsync(user);
             return Ok(updated);
         }
+        [HttpGet("{id}/streak")]
+        public async Task<IActionResult> GetStreak(Guid id)
+        {
+            var streak = await _userStreakService.GetCurrentStreakAsync(id);
+            var lastActive = await _userStreakService.GetLastActiveDateAsync(id);
 
+            return Ok(new
+            {
+                streak,
+                lastActive = lastActive?.ToString("yyyy-MM-dd")
+            });
 
-    }
+        }
+
+        }
 }
