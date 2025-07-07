@@ -85,8 +85,16 @@ namespace LearnEase.API.Controllers
         private bool IsLessonAvailableToday(AiLesson lesson)
         {
             int todayIndex = (int)DateTime.UtcNow.DayOfWeek;
-            if (todayIndex == 0) todayIndex = 7;
-            return lesson.DayIndex == todayIndex;
+            if (todayIndex == 0) todayIndex = 7; // Chủ nhật là 7
+
+            // Xác định ngày đầu tuần (Thứ 2)
+            var startOfWeek = DateTime.UtcNow.Date.AddDays(-(todayIndex - 1));
+
+            // Lấy ngày thực tế tương ứng với DayIndex
+            var expectedDate = startOfWeek.AddDays(lesson.DayIndex - 1);
+
+            // So sánh ngày hôm nay với ngày của bài học
+            return DateTime.UtcNow.Date == expectedDate.Date;
         }
         [HttpGet("weekly-lessons")]
         public async Task<IActionResult> GetWeeklyLessons()
@@ -128,7 +136,7 @@ namespace LearnEase.API.Controllers
         {
             var lesson = await _lessonRepo.GetByIdAsync(request.LessonId);
             if (lesson == null) return BadRequest("❌ Bài học không tồn tại.");
-          
+            if (!IsLessonAvailableToday(lesson)) return BadRequest("⏳ Bạn chỉ có thể làm bài học của ngày hôm nay.");
 
             var existingAttempt = (await _attemptRepo.GetAllAsync())
                 .FirstOrDefault(a => a.UserId == request.UserId && a.LessonId == request.LessonId && a.Skill == request.Skill);
