@@ -92,38 +92,43 @@ namespace LearnEase.API.Controllers
         public async Task<IActionResult> GetWeeklyLessons()
         {
             var lessons = await _lessonService.GetOrGenerateWeeklyLessonsAsync();
-            var parts = await _partRepo.GetAllAsync();
 
-            var response = lessons
-                .OrderBy(l => l.DayIndex)
-                .Select(lesson => new
+            var response = new List<object>();
+
+            foreach (var lesson in lessons.OrderBy(l => l.DayIndex))
+            {
+                var lessonParts = (await _partRepo.GetAllAsync())
+                    .Where(p => p.LessonId == lesson.LessonId)
+                    .Select(p => new
+                    {
+                        skill = p.Skill.ToString(),
+                        prompt = p.Prompt,
+                        referenceText = p.ReferenceText,
+                        audioUrl = p.AudioUrl,
+                        choicesJson = p.ChoicesJson
+                    });
+
+                response.Add(new
                 {
                     lesson.LessonId,
                     lesson.Topic,
                     lesson.DayIndex,
                     lesson.CreatedAt,
-                    Parts = parts
-                        .Where(p => p.LessonId == lesson.LessonId)
-                        .Select(p => new
-                        {
-                            skill = p.Skill.ToString(),
-                            prompt = p.Prompt,
-                            referenceText = p.ReferenceText,
-                            audioUrl = p.AudioUrl,
-                            choicesJson = p.ChoicesJson
-                        })
+                    parts = lessonParts
                 });
+            }
 
             return Ok(response);
+
         }
 
-        
+
         [HttpPost("evaluate")]
         public async Task<IActionResult> EvaluateLessonAnswers([FromBody] EvaluateLessonRequest request)
         {
             var lesson = await _lessonRepo.GetByIdAsync(request.LessonId);
             if (lesson == null) return BadRequest("❌ Bài học không tồn tại.");
-            if (!IsLessonAvailableToday(lesson)) return BadRequest("⏳ Bạn chỉ có thể làm bài học của ngày hôm nay.");
+          
 
             var existingAttempt = (await _attemptRepo.GetAllAsync())
                 .FirstOrDefault(a => a.UserId == request.UserId && a.LessonId == request.LessonId && a.Skill == request.Skill);

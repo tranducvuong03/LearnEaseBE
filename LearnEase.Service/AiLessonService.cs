@@ -314,13 +314,15 @@ Return as:
     public async Task<AiLesson> GenerateLessonAsync(string topic)
     {
         var translatedTopic = await TranslateTopicToEnglish(topic);
-        var lesson = new AiLesson
-        {
-            LessonId = Guid.NewGuid(),
-            Topic = topic,
-            CreatedAt = DateTime.UtcNow
-        };
-
+        var utcNow = DateTime.UtcNow;
+       
+       var lesson = new AiLesson
+       {
+           LessonId = Guid.NewGuid(),
+           Topic = topic,
+           CreatedAt = utcNow,
+           DayIndex = utcNow.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)utcNow.DayOfWeek
+       };
         var parts = new List<AiLessonPart>
         {
             await GenerateSpeakingPart(topic),
