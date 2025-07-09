@@ -88,17 +88,24 @@ namespace LearnEase.API.Controllers
         }
         private bool IsLessonAvailableToday(AiLesson lesson)
         {
-            int todayIndex = (int)DateTime.UtcNow.DayOfWeek;
+            int todayIndex = (int)DateTime.Now.DayOfWeek;
             if (todayIndex == 0) todayIndex = 7; // Chủ nhật là 7
 
             // Xác định ngày đầu tuần (Thứ 2)
-            var startOfWeek = DateTime.UtcNow.Date.AddDays(-(todayIndex - 1));
+            var startOfWeek = DateTime.Now.Date.AddDays(-(todayIndex - 1));
 
             // Lấy ngày thực tế tương ứng với DayIndex
             var expectedDate = startOfWeek.AddDays(lesson.DayIndex - 1);
 
             // So sánh ngày hôm nay với ngày của bài học
-            return DateTime.UtcNow.Date == expectedDate.Date;
+            return DateTime.Now.Date == expectedDate.Date;
+            Console.WriteLine($"📅 Now: {DateTime.Now} | UTC: {DateTime.UtcNow}");
+            Console.WriteLine($"🕐 Today is {DateTime.Now:dddd dd/MM/yyyy} — DayIndex = {todayIndex}");
+            Console.WriteLine($"👉 todayIndex = {todayIndex}");
+            Console.WriteLine($"👉 startOfWeek = {startOfWeek:MM/dd}");
+            Console.WriteLine($"👉 lesson.DayIndex = {lesson.DayIndex}");
+            Console.WriteLine($"👉 expectedDate = {expectedDate:MM/dd}");
+
         }
         [HttpGet("weekly-lessons")]
         public async Task<IActionResult> GetWeeklyLessons()
@@ -563,6 +570,38 @@ Bài viết của học viên:
             return expectedWords.Length == 0 ? 0 : (double)correctCount / expectedWords.Length;
         }
 
+        [HttpGet("lesson-today")]
+        public async Task<IActionResult> GetTodayLesson()
+        {
+            int todayIndex = (int)DateTime.Now.DayOfWeek;
+            if (todayIndex == 0) todayIndex = 7; // Chủ nhật là 7
+
+            var lessons = await _lessonService.GetOrGenerateWeeklyLessonsAsync();
+            var todayLesson = lessons.FirstOrDefault(l => l.DayIndex == todayIndex);
+
+            if (todayLesson == null)
+                return NotFound("❌ Không có bài học cho hôm nay.");
+
+            var parts = (await _partRepo.GetAllAsync())
+                .Where(p => p.LessonId == todayLesson.LessonId)
+                .Select(p => new
+                {
+                    skill = p.Skill.ToString(),
+                    prompt = p.Prompt,
+                    referenceText = p.ReferenceText,
+                    audioUrl = p.AudioUrl,
+                    choicesJson = p.ChoicesJson
+                });
+
+            return Ok(new
+            {
+                todayLesson.LessonId,
+                todayLesson.Topic,
+                todayLesson.DayIndex,
+                todayLesson.CreatedAt,
+                parts
+            });
+        }
 
     }
 }
