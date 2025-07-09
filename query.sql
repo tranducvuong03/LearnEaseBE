@@ -3,6 +3,25 @@ USE [LearnEase]
 /*========================================================
   1. LANGUAGE & DIALECT
 ========================================================*/
+
+INSERT INTO Dialects (DialectId, LanguageId, Name, Region, AccentCode, Description, IsAvailable)
+VALUES
+(NEWID(), @languageId, 'English (US)', 'United States', 'en-US', 'American English accent', 1),
+(NEWID(), @languageId, 'English (UK)', 'United Kingdom', 'en-GB', 'British English accent', 1),
+(NEWID(), @languageId, 'English (Australia)', 'Australia', 'en-AU', 'Australian English accent', 1),
+(NEWID(), @languageId, 'English (India)', 'India', 'en-IN', 'Indian English accent', 1),
+(NEWID(), @languageId, 'English (Canada)', 'Canada', 'en-CA', 'Canadian English accent', 1),
+(NEWID(), @languageId, 'English (New Zealand)', 'New Zealand', 'en-NZ', 'New Zealand English accent', 1),
+(NEWID(), @languageId, 'English (Singapore)', 'Singapore', 'en-SG', 'Singapore English accent', 1),
+(NEWID(), @languageId, 'English (South Africa)', 'South Africa', 'en-ZA', 'South African English accent', 1),
+(NEWID(), @languageId, 'English (Philippines)', 'Philippines', 'en-PH', 'Philippine English accent', 1),
+(NEWID(), @languageId, 'English (Hong Kong)', 'Hong Kong', 'en-HK', 'Hong Kong English accent', 1),
+(NEWID(), @languageId, 'English (Ireland)', 'Ireland', 'en-IE', 'Irish English accent', 1),
+(NEWID(), @languageId, 'English (Kenya)', 'Kenya', 'en-KE', 'Kenyan English accent', 1),
+(NEWID(), @languageId, 'English (Tanzania)', 'Tanzania', 'en-TZ', 'Tanzanian English accent', 1);
+
+
+
 INSERT INTO Languages(LanguageId, Name)
 VALUES ('1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', N'English');
 
