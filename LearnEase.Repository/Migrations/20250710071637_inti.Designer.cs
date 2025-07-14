@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnEase.Repository.Migrations
 {
     [DbContext(typeof(LearnEaseContext))]
-    [Migration("20250707055033_addstreak")]
-    partial class addstreak
+    [Migration("20250710071637_inti")]
+    partial class inti
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

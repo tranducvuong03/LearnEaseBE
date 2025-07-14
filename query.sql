@@ -3,25 +3,30 @@ USE [LearnEase]
 /*========================================================
   1. LANGUAGE & DIALECT
 ========================================================*/
+INSERT INTO Languages(LanguageId, Name)
+VALUES ('1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', N'English');
 
-INSERT INTO Dialects (DialectId, LanguageId, Name, Region, AccentCode, Description, IsAvailable)
+INSERT INTO Dialects (DialectId, LanguageId, Name, Region, AccentCode, Description, VoiceSampleUrl, IsAvailable)
 VALUES
-(NEWID(), @languageId, 'English (US)', 'United States', 'en-US', 'American English accent', 1),
-(NEWID(), @languageId, 'English (UK)', 'United Kingdom', 'en-GB', 'British English accent', 1),
-(NEWID(), @languageId, 'English (Australia)', 'Australia', 'en-AU', 'Australian English accent', 1),
-(NEWID(), @languageId, 'English (India)', 'India', 'en-IN', 'Indian English accent', 1),
-(NEWID(), @languageId, 'English (Canada)', 'Canada', 'en-CA', 'Canadian English accent', 1),
-(NEWID(), @languageId, 'English (New Zealand)', 'New Zealand', 'en-NZ', 'New Zealand English accent', 1),
-(NEWID(), @languageId, 'English (Singapore)', 'Singapore', 'en-SG', 'Singapore English accent', 1),
-(NEWID(), @languageId, 'English (South Africa)', 'South Africa', 'en-ZA', 'South African English accent', 1),
-(NEWID(), @languageId, 'English (Philippines)', 'Philippines', 'en-PH', 'Philippine English accent', 1),
-(NEWID(), @languageId, 'English (Hong Kong)', 'Hong Kong', 'en-HK', 'Hong Kong English accent', 1),
-(NEWID(), @languageId, 'English (Ireland)', 'Ireland', 'en-IE', 'Irish English accent', 1),
-(NEWID(), @languageId, 'English (Kenya)', 'Kenya', 'en-KE', 'Kenyan English accent', 1),
-(NEWID(), @languageId, 'English (Tanzania)', 'Tanzania', 'en-TZ', 'Tanzanian English accent', 1);
-
-
-
+  ('3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01',
+   N'General American', N'United States', 'en-US',
+   N'Standard American English accent',
+   'https://cdn.learnEase.com/audio/accent/en_us_sample.mp3', 1),
+  ('3B5F8475-29D7-4F2D-A127-8CBFDF8D83F2', '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01',
+   N'Received Pronunciation', N'United Kingdom', 'en-GB',
+   N'Standard British English accent',
+   'https://cdn.learnEase.com/audio/accent/en_gb_sample.mp3', 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Australia)', 'Australia', 'en-AU', 'Australian English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (India)', 'India', 'en-IN', 'Indian English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Canada)', 'Canada', 'en-CA', 'Canadian English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (New Zealand)', 'New Zealand', 'en-NZ', 'New Zealand English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Singapore)', 'Singapore', 'en-SG', 'Singapore English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (South Africa)', 'South Africa', 'en-ZA', 'South African English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Philippines)', 'Philippines', 'en-PH', 'Philippine English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Hong Kong)', 'Hong Kong', 'en-HK', 'Hong Kong English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Ireland)', 'Ireland', 'en-IE', 'Irish English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Kenya)', 'Kenya', 'en-KE', 'Kenyan English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Tanzania)', 'Tanzania', 'en-TZ', 'Tanzanian English accent', NULL, 1);
 INSERT INTO Languages(LanguageId, Name)
 VALUES ('1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', N'English');
 

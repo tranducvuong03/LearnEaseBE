@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LearnEase.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class addstreak : Migration
+    public partial class inti : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
