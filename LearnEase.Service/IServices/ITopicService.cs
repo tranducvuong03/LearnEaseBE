@@ -1,4 +1,5 @@
 ﻿using LearnEase.Repository.EntityModel;
+using LearnEase.Service.Models.Response;
 
 namespace LearnEase.Service.IServices
 {
@@ -10,5 +11,6 @@ namespace LearnEase.Service.IServices
         Task<Topic> UpdateAsync(Topic topic);
         Task<bool> DeleteAsync(Guid id);
         Task<IEnumerable<Topic>> GetWithLessonsAsync();
+        Task<IEnumerable<TopicProgressResponse>> GetTopicsWithProgress(Guid userId);
     }
 }

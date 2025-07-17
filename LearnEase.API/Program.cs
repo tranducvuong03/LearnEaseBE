@@ -45,6 +45,7 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IAiLessonService, AiLessonService>();
 builder.Services.AddScoped<ILearningService, LearningService>();
 builder.Services.AddScoped<IUserStreakService, UserStreakService>();
+builder.Services.AddScoped<ITopicService, TopicService>();
 
 builder.Services.AddScoped<IOpenAIService, OpenAIService>();
 builder.Services.AddHttpClient<IOpenAIService, OpenAIService>();

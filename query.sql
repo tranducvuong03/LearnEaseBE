@@ -27,20 +27,6 @@ VALUES
   (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Ireland)', 'Ireland', 'en-IE', 'Irish English accent', NULL, 1),
   (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Kenya)', 'Kenya', 'en-KE', 'Kenyan English accent', NULL, 1),
   (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Tanzania)', 'Tanzania', 'en-TZ', 'Tanzanian English accent', NULL, 1);
-INSERT INTO Languages(LanguageId, Name)
-VALUES ('1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', N'English');
-
-INSERT INTO Dialects
-  (DialectId, LanguageId, Name, Region, AccentCode, Description, VoiceSampleUrl, IsAvailable)
-VALUES
-  ('3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01',
-   N'General American', N'United States', 'en-US',
-   N'Standard American English accent',
-   'https://cdn.learnEase.com/audio/accent/en_us_sample.mp3', 1),
-  ('3B5F8475-29D7-4F2D-A127-8CBFDF8D83F2', '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01',
-   N'Received Pronunciation', N'United Kingdom', 'en-GB',
-   N'Standard British English accent',
-   'https://cdn.learnEase.com/audio/accent/en_gb_sample.mp3', 1);
 
 /*========================================================
   2. USER & SETTING
@@ -267,3 +253,53 @@ INSERT [dbo].[AiLessonParts] ([PartId], [LessonId], [Skill], [Prompt], [Referenc
 INSERT [dbo].[AiLessonParts] ([PartId], [LessonId], [Skill], [Prompt], [ReferenceText], [AudioUrl], [ChoicesJson]) VALUES (N'44a2f0a5-6871-4067-a48f-f867cd5b0172', N'88b25f7c-a3f2-4e51-9799-34b6844a77c2', 1, N'when do you use present simple and present continuous tenses?', NULL, NULL, NULL)
 INSERT [dbo].[AiLessonParts] ([PartId], [LessonId], [Skill], [Prompt], [ReferenceText], [AudioUrl], [ChoicesJson]) VALUES (N'8c84d4a8-53c4-47b1-91f0-fcc7ade6b6c8', N'ca0eeaf6-c847-42e8-aaf9-585f01f3d2b0', 1, N'do you prefer reading books or watching movies in english?', NULL, NULL, NULL)
 GO
+
+/*========================================================
+  8. TOPIC
+========================================================*/
+INSERT INTO Topic (TopicId, Title, Description, [Order])
+VALUES
+  ('11111111-1111-1111-1111-111111111111', N'Greetings', N'Learn how to greet people in different situations.', 1),
+  ('22222222-2222-2222-2222-222222222222', N'Daily Routine', N'Vocabulary and speaking related to everyday daily habits.', 2),
+  ('33333333-3333-3333-3333-333333333333', N'Food & Drink', N'Words and phrases for food, meals, eating out and drinks.', 3),
+  ('44444444-4444-4444-4444-444444444444', N'Work & Office', N'Essential vocabulary for professional and workplace communication.', 4),
+  ('55555555-5555-5555-5555-555555555555', N'Travel', N'Language and expressions for traveling, directions and transportation.', 5);
+  /*========================================================
+  9. LESSON (5 lesson mỗi topic)
+========================================================*/
+INSERT INTO Lessons(LessonId, TopicId, DialectId, [Order], Title, Description, IconUrl)
+VALUES
+-- Greetings Topic (ID: 1111...)
+(NEWID(), '11111111-1111-1111-1111-111111111111', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 1, N'Basic Greetings', N'Learn how to say hello and goodbye.', NULL),
+(NEWID(), '11111111-1111-1111-1111-111111111111', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 2, N'Asking How Someone Is', N'Learn phrases like "How are you?"', NULL),
+(NEWID(), '11111111-1111-1111-1111-111111111111', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 3, N'Introducing Yourself', N'How to introduce yourself and others.', NULL),
+(NEWID(), '11111111-1111-1111-1111-111111111111', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 4, N'Formal vs Informal Greetings', N'Distinguish between formal and casual greetings.', NULL),
+(NEWID(), '11111111-1111-1111-1111-111111111111', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 5, N'Ending Conversations Politely', N'Learn how to wrap up a conversation.', NULL),
+
+-- Daily Routine Topic (ID: 2222...)
+(NEWID(), '22222222-2222-2222-2222-222222222222', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 1, N'Morning Activities', N'Talk about waking up, brushing teeth, etc.', NULL),
+(NEWID(), '22222222-2222-2222-2222-222222222222', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 2, N'Daily Commuting', N'Learn to talk about going to school or work.', NULL),
+(NEWID(), '22222222-2222-2222-2222-222222222222', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 3, N'Work and Study', N'Discuss your work/study schedule.', NULL),
+(NEWID(), '22222222-2222-2222-2222-222222222222', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 4, N'Evening Routine', N'Phrases for dinner, relaxing, and sleeping.', NULL),
+(NEWID(), '22222222-2222-2222-2222-222222222222', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 5, N'Habits and Time Expressions', N'Use time adverbs to describe routines.', NULL),
+
+-- Food & Drink Topic (ID: 3333...)
+(NEWID(), '33333333-3333-3333-3333-333333333333', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 1, N'Common Foods', N'Vocabulary about fruits, vegetables, etc.', NULL),
+(NEWID(), '33333333-3333-3333-3333-333333333333', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 2, N'Drinks and Beverages', N'Learn about drinks and how to order.', NULL),
+(NEWID(), '33333333-3333-3333-3333-333333333333', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 3, N'At the Restaurant', N'Practice ordering food and asking for the bill.', NULL),
+(NEWID(), '33333333-3333-3333-3333-333333333333', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 4, N'Likes and Dislikes', N'Talk about what you like or dislike eating.', NULL),
+(NEWID(), '33333333-3333-3333-3333-333333333333', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 5, N'Food Quantities and Containers', N'Learn words like "a slice of", "a bottle of"...', NULL),
+
+-- Work & Office Topic (ID: 4444...)
+(NEWID(), '44444444-4444-4444-4444-444444444444', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 1, N'Office Vocabulary', N'Common words for things at work.', NULL),
+(NEWID(), '44444444-4444-4444-4444-444444444444', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 2, N'Meeting Language', N'How to join and speak in meetings.', NULL),
+(NEWID(), '44444444-4444-4444-4444-444444444444', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 3, N'Writing Emails', N'Email format, greetings, and tone.', NULL),
+(NEWID(), '44444444-4444-4444-4444-444444444444', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 4, N'Job Interviews', N'Questions and answers for job interviews.', NULL),
+(NEWID(), '44444444-4444-4444-4444-444444444444', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 5, N'Describing Jobs', N'Talk about your role and tasks.', NULL),
+
+-- Travel Topic (ID: 5555...)
+(NEWID(), '55555555-5555-5555-5555-555555555555', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 1, N'At the Airport', N'Check-in, security, boarding vocabulary.', NULL),
+(NEWID(), '55555555-5555-5555-5555-555555555555', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 2, N'Hotel Conversations', N'Booking, checking in/out, asking for service.', NULL),
+(NEWID(), '55555555-5555-5555-5555-555555555555', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 3, N'Asking for Directions', N'Learn how to ask and understand directions.', NULL),
+(NEWID(), '55555555-5555-5555-5555-555555555555', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 4, N'Transportation', N'Vocabulary for trains, buses, taxis, etc.', NULL),
+(NEWID(), '55555555-5555-5555-5555-555555555555', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 5, N'Travel Problems', N'Delays, lost items, changing plans.', NULL);

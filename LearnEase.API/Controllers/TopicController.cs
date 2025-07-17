@@ -1,4 +1,5 @@
-﻿using LearnEase.Repository.EntityModel;
+﻿using LearnEase.Repository;
+using LearnEase.Repository.EntityModel;
 using LearnEase.Service.IServices;
 using Microsoft.AspNetCore.Mvc;
 
@@ -63,5 +64,13 @@ namespace LearnEase.API.Controllers
             var topics = await _topicService.GetWithLessonsAsync();
             return Ok(topics);
         }
+
+        [HttpGet("with-progress/{userId}")]
+        public async Task<IActionResult> GetWithProgress(Guid userId)
+        {
+            var topics = await _topicService.GetTopicsWithProgress(userId);
+            return Ok(topics);
+        }
+
     }
 }
