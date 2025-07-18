@@ -10,10 +10,8 @@ namespace LearnEase.Service
         private readonly IGenericRepository<UserProgress> _userProgressRepo;
         private readonly IGenericRepository<VocabularyItem> _vocabRepo;
         private readonly IGenericRepository<SpeakingExercise> _speakingRepo;
-        // Có thể thêm repo cho UserSettings để lấy PreferredDialect
         private readonly IGenericRepository<UserSettings> _userSettingsRepo;
-
-        private readonly IUnitOfWork _uow; // Thêm UnitOfWork nếu bạn muốn thực hiện thao tác lưu
+        private readonly IUnitOfWork _uow;
 
         public LearningService(IUnitOfWork uow)
         {
@@ -22,6 +20,11 @@ namespace LearnEase.Service
             _vocabRepo = _uow.GetRepository<VocabularyItem>();
             _speakingRepo = _uow.GetRepository<SpeakingExercise>();
             _userSettingsRepo = _uow.GetRepository<UserSettings>();
+        }
+
+        public Task<LessonResponse?> GetNextLessonBlockForUserAsync(Guid userId)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<NextLesson?> GetNextLessonForUserAsync(Guid userId)
@@ -88,7 +91,60 @@ namespace LearnEase.Service
             return null;
         }
 
-        public async Task<LessonModel?> GetNextLessonBlockForUserAsync(Guid userId)
+        public async Task<bool> IsLessonCompleted(Guid userId, Guid lessonId)
+        {
+            var progresses = (await _userProgressRepo.GetAllAsync())
+                             .Where(up => up.UserId == userId && up.LessonId == lessonId)
+                             .ToList();
+
+            int correctCount = progresses.Count(p => p.IsCorrect == true);
+            return correctCount >= 8;
+        }
+
+        public async Task<int> GetCompletedLessonCountInTopic(Guid userId, Guid topicId)
+        {
+            var allLessons = (await _uow.GetRepository<Lesson>().GetAllAsync())
+                              .Where(l => l.TopicId == topicId).ToList();
+
+            int count = 0;
+            foreach (var lesson in allLessons)
+            {
+                if (await IsLessonCompleted(userId, lesson.LessonId))
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        public async Task UpdateTopicProgress(Guid userId, Guid topicId)
+        {
+            var userTopicProgressRepo = _uow.GetRepository<UserTopicProgress>();
+            var existing = (await userTopicProgressRepo.GetAllAsync())
+                           .FirstOrDefault(x => x.UserId == userId && x.TopicId == topicId);
+
+            int completedCount = await GetCompletedLessonCountInTopic(userId, topicId);
+
+            if (existing != null)
+            {
+                existing.CompletedLessonCount = completedCount;
+                userTopicProgressRepo.Update(existing);
+            }
+            else
+            {
+                await userTopicProgressRepo.AddAsync(new UserTopicProgress
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    TopicId = topicId,
+                    CompletedLessonCount = completedCount,
+                });
+            }
+
+            _uow.CommitTransaction();
+        }
+
+        /*public async Task<UserLessonResponse?> GetNextLessonBlockForUserAsync(Guid userId)
         {
             var userSettings = (await _userSettingsRepo.GetAllAsync())
                 .FirstOrDefault(us => us.UserId == userId);
@@ -121,13 +177,12 @@ namespace LearnEase.Service
 
             if (!remainingVocabs.Any() && !remainingSpeaking.Any()) return null;
 
-            return new LessonModel
+            return new LessonResponse
             {
                 LessonId = Guid.NewGuid(),
                 Vocabularies = remainingVocabs,
                 SpeakingExercises = remainingSpeaking
             };
-        }
-
+        }*/
     }
 }

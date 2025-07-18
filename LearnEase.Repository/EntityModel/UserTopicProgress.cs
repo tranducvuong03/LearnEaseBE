@@ -20,8 +20,6 @@ namespace LearnEase.Repository.EntityModel
 
         public int CompletedLessonCount { get; set; }
 
-        public DateTime LastUpdated { get; set; } = DateTime.UtcNow;
-
         public User User { get; set; }
         public Topic Topic { get; set; }
     }

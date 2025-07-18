@@ -5,7 +5,9 @@ namespace LearnEase.Service.IServices
     public interface ILearningService
     {
         Task<NextLesson?> GetNextLessonForUserAsync(Guid userId);
-        Task<LessonModel?> GetNextLessonBlockForUserAsync(Guid userId);
+        Task<LessonResponse?> GetNextLessonBlockForUserAsync(Guid userId);
+        Task<int> GetCompletedLessonCountInTopic(Guid userId, Guid topicId);
+        Task UpdateTopicProgress(Guid userId, Guid topicId);
 
     }
 }

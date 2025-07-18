@@ -17,6 +17,7 @@ namespace LearnEase.Api.Controllers
             _aiService = aiService;
             _logger = logger;
         }
+
         [HttpPost("ask")]
         public async Task<IActionResult> AskAI([FromBody] string userInput)
         {

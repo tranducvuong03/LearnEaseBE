@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace LearnEase.Repository.EntityModel
 {
@@ -23,9 +18,6 @@ namespace LearnEase.Repository.EntityModel
 
         [Required, MaxLength(100)]
         public string Title { get; set; }
-
-        public string? Description { get; set; }
-        public string? IconUrl { get; set; }
 
         public Topic Topic { get; set; }
         public Dialect Dialect { get; set; }
