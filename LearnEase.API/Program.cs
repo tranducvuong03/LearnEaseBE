@@ -120,7 +120,9 @@ builder.Services.AddCors(options =>
 {
 	options.AddPolicy("AllowLocalhost",
 		policy => policy
-			.WithOrigins("http://127.0.0.1:5500")
+			.WithOrigins(
+			"http://127.0.0.1:5500",
+			"https://learn-ease-admin-z913.vercel.app")
 			.AllowAnyHeader()
 			.AllowAnyMethod());
 });

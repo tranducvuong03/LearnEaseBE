@@ -65,35 +65,37 @@ namespace LearnEase.API.Controllers
 		}
 		[AllowAnonymous]
 		[HttpPost("webhook")]
-		public async Task<IActionResult> PayOSWebhook([FromBody] PayOSWebhookRequest request)
+		public async Task<IActionResult> PayOSWebhook([FromBody] PayOSWebhookWrapper wrapper)
 		{
-			Console.WriteLine("=== [WEBHOOK RECEIVED] ===");
-			Console.WriteLine(JsonConvert.SerializeObject(request));
-			if (!string.Equals(request.status, "SUCCESS", StringComparison.OrdinalIgnoreCase) &&
-				!string.Equals(request.status, "PAID", StringComparison.OrdinalIgnoreCase))
+			Console.WriteLine("=== [PAYOS WEBHOOK RECEIVED] ===");
+			Console.WriteLine(JsonConvert.SerializeObject(wrapper));
+
+			var data = wrapper.data;
+
+			if (!wrapper.success || wrapper.code != "00")
 			{
-				return Ok();
+				Console.WriteLine("[!] Webhook báo không thành công");
+				return Ok(); // không lưu DB nếu không thành công
 			}
 
-			var desc = request.description?.Trim();
+			var desc = data.description?.Trim();
 			if (string.IsNullOrWhiteSpace(desc) || !desc.StartsWith("Sub", StringComparison.OrdinalIgnoreCase))
 				return BadRequest("Invalid description format");
 
 			// Strip prefix "Sub" → lấy phần còn lại
-			var payload = desc.Substring(3); // e.g., "monthly3fa85f64"
-
+			var payload = desc.Substring(3); // e.g., "monthly32c3f3d3"
 			string planType = null;
 			string userPrefix = null;
 
 			if (payload.StartsWith("monthly", StringComparison.OrdinalIgnoreCase))
 			{
 				planType = "monthly";
-				userPrefix = payload.Substring(7); // sau "monthly"
+				userPrefix = payload.Substring(7);
 			}
 			else if (payload.StartsWith("yearly", StringComparison.OrdinalIgnoreCase))
 			{
 				planType = "yearly";
-				userPrefix = payload.Substring(6); // sau "yearly"
+				userPrefix = payload.Substring(6);
 			}
 			else
 			{
@@ -104,12 +106,11 @@ namespace LearnEase.API.Controllers
 				return BadRequest("Missing user ID prefix");
 
 			var user = _context.Users
-	.AsEnumerable()
-	.FirstOrDefault(u => u.UserId.ToString().StartsWith(userPrefix, StringComparison.OrdinalIgnoreCase));
+				.AsEnumerable()
+				.FirstOrDefault(u => u.UserId.ToString().StartsWith(userPrefix, StringComparison.OrdinalIgnoreCase));
 
 			if (user == null)
 				return BadRequest("User not found");
-
 
 			var now = DateTime.UtcNow;
 			var endDate = planType == "monthly" ? now.AddMonths(1) : now.AddYears(1);
@@ -125,28 +126,37 @@ namespace LearnEase.API.Controllers
 				CreatedAt = now
 			};
 
-			_context.Subscriptions.Add(subscription);
 			var transaction = new TransactionLogs
 			{
 				Id = Guid.NewGuid(),
 				UserId = user.UserId,
 				PlanType = planType,
 				Amount = price,
-				OrderCode = request.orderCode,
-				PayOSOrderId = request.transactionId?.ToString(),
-				Status = request.status,
-				Description = request.description,
+				OrderCode = data.orderCode,
+				PayOSOrderId = data.reference,
+				Status = wrapper.desc,
+				Description = data.description,
 				CreatedAt = now
 			};
 
+			_context.Subscriptions.Add(subscription);
 			_context.TransactionLogs.Add(transaction);
 
-			await _context.SaveChangesAsync();
-
-			Console.WriteLine($"Subscription created for {user.UserId} - {planType}");
+			try
+			{
+				await _context.SaveChangesAsync();
+				Console.WriteLine($"[✓] Subscription & Transaction saved for {user.UserId}");
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine($"[ERROR] Failed to save DB: {ex.Message}");
+				return StatusCode(500, "DB save error");
+			}
 
 			return Ok();
 		}
+
+
 
 
 
