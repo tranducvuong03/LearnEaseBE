@@ -8,6 +8,8 @@ using LearnEase.Repository.EntityModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using Google.Rpc;
+using LearnEase.Repository.DTO;
+using System.Runtime.InteropServices;
 
 namespace LearnEase.Api.Controllers
 {
@@ -359,6 +361,94 @@ Return JSON:
 
             return userId;
         }
+        [HttpPost("accent-score")]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> EvaluateAccent([FromForm] EvaluateAccentRequest request)
+        {
+            if (request.AudioFile == null || request.DialectId == Guid.Empty)
+                return BadRequest("Thiếu audio hoặc dialectId.");
 
+            var dialect = await _context.Dialects.FindAsync(request.DialectId);
+            if (dialect == null || string.IsNullOrEmpty(dialect.AccentCode))
+                return BadRequest("Dialect không hợp lệ hoặc không có AccentCode.");
+
+            // Convert audio to base64
+            string base64Audio;
+            using (var memoryStream = new MemoryStream())
+            {
+                await request.AudioFile.CopyToAsync(memoryStream);
+                base64Audio = Convert.ToBase64String(memoryStream.ToArray());
+            }
+
+            var googleRequest = new
+            {
+                config = new
+                {
+                    encoding = "MP3",
+                    sampleRateHertz = 16000,
+                    languageCode = dialect.AccentCode
+                },
+                audio = new
+                {
+                    content = base64Audio
+                }
+            };
+
+            using var httpClient = new HttpClient();
+            var content = new StringContent(JsonSerializer.Serialize(googleRequest), Encoding.UTF8, "application/json");
+            var googleResponse = await httpClient.PostAsync(GoogleApiUrl, content);
+            var json = await googleResponse.Content.ReadAsStringAsync();
+
+            JsonDocument parsed;
+            try { parsed = JsonDocument.Parse(json); }
+            catch { return StatusCode(500, "Lỗi phân tích Google Speech."); }
+
+            string transcript = "";
+            if (parsed.RootElement.TryGetProperty("results", out var results) &&
+                results.GetArrayLength() > 0 &&
+                results[0].TryGetProperty("alternatives", out var alternatives) &&
+                alternatives.GetArrayLength() > 0 &&
+                alternatives[0].TryGetProperty("transcript", out var transcriptElement))
+            {
+                transcript = transcriptElement.GetString();
+            }
+            else
+            {
+                return BadRequest("Google không trả về transcript.");
+            }
+
+            // Prompt châm accent
+            var evalPrompt = $@"
+Your task is to evaluate the user's accent.
+Target accent region: {dialect.Region}
+
+Transcript: '{transcript}'
+
+Give:
+- Accent match score (how closely the accent resembles native {dialect.Region})
+- Short feedback
+
+
+Format:
+{{ ""score"": 85, ""feedback"": ""You sound close to a native speaker..."" }}
+";
+
+            var gptResponse = await _aiService.GetAIResponseAsync(evalPrompt, false, new(), "System");
+
+            JsonDocument evalJson;
+            try { evalJson = JsonDocument.Parse(gptResponse); }
+            catch { return StatusCode(500, "GPT trả về JSON không hợp lệ."); }
+
+            var score = evalJson.RootElement.GetProperty("score").GetInt32();
+            var feedback = evalJson.RootElement.GetProperty("feedback").GetString();
+
+            return Ok(new
+            {
+                dialect = dialect.Name,
+                transcript,
+                score,
+                feedback
+            });
+        }
     }
 }

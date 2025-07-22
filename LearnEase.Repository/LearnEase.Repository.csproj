@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Google.Cloud.Speech.V1" Version="3.8.0" />
 	  <PackageReference Include="Google.Cloud.Storage.V1" Version="4.13.0" />
+	  <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="2.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5">
       <PrivateAssets>all</PrivateAssets>
