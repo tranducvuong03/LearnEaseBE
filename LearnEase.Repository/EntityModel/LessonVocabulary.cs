@@ -18,5 +18,4 @@ namespace LearnEase.Repository.EntityModel
         public Lesson Lesson { get; set; }
         public VocabularyItem VocabularyItem { get; set; }
     }
-
 }

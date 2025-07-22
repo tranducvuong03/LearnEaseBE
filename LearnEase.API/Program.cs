@@ -54,7 +54,6 @@ builder.Services.AddScoped<ILessonService, LessonService>();
 //payment
 builder.Services.AddScoped<IPayOSService, PayOSService>();
 
-
 //---------------------send mail------------------------
 builder.Services.AddScoped<IEmailService, EmailService>();
 // Add services to the container.
@@ -63,7 +62,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(opt =>
     {
         opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    });
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>

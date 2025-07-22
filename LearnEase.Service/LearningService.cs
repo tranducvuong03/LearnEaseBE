@@ -22,9 +22,72 @@ namespace LearnEase.Service
             _userSettingsRepo = _uow.GetRepository<UserSettings>();
         }
 
-        public Task<LessonResponse?> GetNextLessonBlockForUserAsync(Guid userId)
+        public async Task<LearningResponse?> GetNextLessonBlockForUserAsync(Guid userId)
         {
-            throw new NotImplementedException();
+            if (userId == Guid.Empty) return null;
+
+            // Lấy cài đặt phương ngữ của user
+            var userSettings = (await _userSettingsRepo.GetAllAsync())
+                .FirstOrDefault(us => us.UserId == userId);
+            Guid? preferredDialectId = userSettings?.PreferredDialectId;
+
+            // Lấy progress của user
+            var userProgress = (await _userProgressRepo.GetAllAsync())
+                .Where(up => up.UserId == userId).ToList();
+
+            // Lấy dữ liệu lesson + vocab + speaking liên quan
+            var lessonRepo = _uow.GetRepository<Lesson>();
+            var lessonVocabRepo = _uow.GetRepository<LessonVocabulary>();
+            var lessonSpeakingRepo = _uow.GetRepository<LessonSpeaking>();
+
+            var allLessons = await lessonRepo.GetAllAsync();
+            if (preferredDialectId.HasValue)
+                allLessons = allLessons.Where(l => l.DialectId == preferredDialectId.Value).ToList();
+
+            var allLessonVocabs = await lessonVocabRepo.GetAllAsync();
+            var allLessonSpeaking = await lessonSpeakingRepo.GetAllAsync();
+            var allVocabs = await _vocabRepo.GetAllAsync();
+            var allSpeaking = await _speakingRepo.GetAllAsync();
+
+            foreach (var lesson in allLessons.OrderBy(l => l.Order))
+            {
+                var lessonVocabs = allLessonVocabs
+                    .Where(lv => lv.LessonId == lesson.LessonId)
+                    .Select(lv => lv.VocabId)
+                    .ToList();
+
+                var lessonSpeakings = allLessonSpeaking
+                    .Where(ls => ls.LessonId == lesson.LessonId)
+                    .Select(ls => ls.ExerciseId)
+                    .ToList();
+
+                var progress = userProgress
+                    .Where(p => p.LessonId == lesson.LessonId)
+                    .ToList();
+
+                int correctCount = progress.Count(p => p.IsCorrect == true);
+
+                if (correctCount < 8)
+                {
+                    var vocabItems = allVocabs
+                        .Where(v => lessonVocabs.Contains(v.VocabId))
+                        .ToList();
+
+                    var speakingItems = allSpeaking
+                        .Where(s => lessonSpeakings.Contains(s.ExerciseId))
+                        .ToList();
+
+                    return new LearningResponse
+                    {
+                        LessonId = lesson.LessonId,
+                        Title = lesson.Title,
+                        Vocabularies = vocabItems,
+                        SpeakingExercises = speakingItems
+                    };
+                }
+            }
+
+            return null;
         }
 
         public async Task<NextLesson?> GetNextLessonForUserAsync(Guid userId)
@@ -144,6 +207,53 @@ namespace LearnEase.Service
             _uow.CommitTransaction();
         }
 
+        // Hàm này để lấy lesson theo userid và lessonid để track progress user đã học
+        public async Task<LearningResponse?> GetLessonBlockByUserAndLessonAsync(Guid userId, Guid lessonId)
+        {
+            if (userId == Guid.Empty || lessonId == Guid.Empty) return null;
+
+            var lessonRepo = _uow.GetRepository<Lesson>();
+            var lessonVocabRepo = _uow.GetRepository<LessonVocabulary>();
+            var lessonSpeakingRepo = _uow.GetRepository<LessonSpeaking>();
+            var userProgress = (await _userProgressRepo.GetAllAsync())
+                               .Where(p => p.UserId == userId && p.LessonId == lessonId)
+                               .ToList();
+
+            var vocabIds = (await lessonVocabRepo.GetAllAsync())
+                            .Where(lv => lv.LessonId == lessonId)
+                            .Select(lv => lv.VocabId)
+                            .ToList();
+
+            var speakingIds = (await lessonSpeakingRepo.GetAllAsync())
+                              .Where(ls => ls.LessonId == lessonId)
+                              .Select(ls => ls.ExerciseId)
+                              .ToList();
+
+            var vocabItems = (await _vocabRepo.GetAllAsync())
+                            .Where(v => vocabIds.Contains(v.VocabId))
+                            .ToList();
+
+            var speakingItems = (await _speakingRepo.GetAllAsync())
+                                .Where(s => speakingIds.Contains(s.ExerciseId))
+                                .ToList();
+
+            var vocabCorrect = userProgress.Count(p => p.IsCorrect && p.VocabId.HasValue);
+            var speakingCorrect = userProgress.Count(p => p.IsCorrect && p.ExerciseId.HasValue);
+
+            var lesson = (await lessonRepo.GetAllAsync()).FirstOrDefault(l => l.LessonId == lessonId);
+            if (lesson == null) return null;
+
+            return new LearningResponse
+            {
+                LessonId = lesson.LessonId,
+                Title = lesson.Title,
+                Vocabularies = vocabItems,
+                SpeakingExercises = speakingItems,
+                VocabCorrectCount = vocabCorrect,
+                SpeakingCorrectCount = speakingCorrect
+            };
+        }
+
         /*public async Task<UserLessonResponse?> GetNextLessonBlockForUserAsync(Guid userId)
         {
             var userSettings = (await _userSettingsRepo.GetAllAsync())
@@ -186,3 +296,10 @@ namespace LearnEase.Service
         }*/
     }
 }
+
+
+
+
+
+
+
