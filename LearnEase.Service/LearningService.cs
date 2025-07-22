@@ -24,18 +24,21 @@ namespace LearnEase.Service
 
         public async Task<LearningResponse?> GetNextLessonBlockForUserAsync(Guid userId)
         {
-            if (userId == Guid.Empty) return null;
+            if (userId == Guid.Empty)
+                return null;
 
-            // Lấy cài đặt phương ngữ của user
+            // 1. Lấy Preferred Dialect từ user
             var userSettings = (await _userSettingsRepo.GetAllAsync())
                 .FirstOrDefault(us => us.UserId == userId);
+
             Guid? preferredDialectId = userSettings?.PreferredDialectId;
 
-            // Lấy progress của user
+            // 2. Lấy progress
             var userProgress = (await _userProgressRepo.GetAllAsync())
-                .Where(up => up.UserId == userId).ToList();
+                .Where(up => up.UserId == userId)
+                .ToList();
 
-            // Lấy dữ liệu lesson + vocab + speaking liên quan
+            // 3. Lấy dữ liệu lessons + vocab + speaking
             var lessonRepo = _uow.GetRepository<Lesson>();
             var lessonVocabRepo = _uow.GetRepository<LessonVocabulary>();
             var lessonSpeakingRepo = _uow.GetRepository<LessonSpeaking>();
@@ -45,18 +48,18 @@ namespace LearnEase.Service
                 allLessons = allLessons.Where(l => l.DialectId == preferredDialectId.Value).ToList();
 
             var allLessonVocabs = await lessonVocabRepo.GetAllAsync();
-            var allLessonSpeaking = await lessonSpeakingRepo.GetAllAsync();
+            var allLessonSpeakings = await lessonSpeakingRepo.GetAllAsync();
             var allVocabs = await _vocabRepo.GetAllAsync();
-            var allSpeaking = await _speakingRepo.GetAllAsync();
+            var allSpeakings = await _speakingRepo.GetAllAsync();
 
             foreach (var lesson in allLessons.OrderBy(l => l.Order))
             {
-                var lessonVocabs = allLessonVocabs
+                var lessonVocabIds = allLessonVocabs
                     .Where(lv => lv.LessonId == lesson.LessonId)
                     .Select(lv => lv.VocabId)
                     .ToList();
 
-                var lessonSpeakings = allLessonSpeaking
+                var lessonSpeakingIds = allLessonSpeakings
                     .Where(ls => ls.LessonId == lesson.LessonId)
                     .Select(ls => ls.ExerciseId)
                     .ToList();
@@ -70,19 +73,38 @@ namespace LearnEase.Service
                 if (correctCount < 8)
                 {
                     var vocabItems = allVocabs
-                        .Where(v => lessonVocabs.Contains(v.VocabId))
+                        .Where(v => lessonVocabIds.Contains(v.VocabId))
                         .ToList();
 
-                    var speakingItems = allSpeaking
-                        .Where(s => lessonSpeakings.Contains(s.ExerciseId))
+                    var speakingItems = allSpeakings
+                        .Where(s => lessonSpeakingIds.Contains(s.ExerciseId))
                         .ToList();
+
+                    var vocabResponses = vocabItems.Select(v => new VocabularyResponse
+                    {
+                        VocabId = v.VocabId,
+                        Word = v.Word,
+                        AudioUrl = v.AudioUrl,
+                        ImageUrl = v.ImageUrl,
+                        DistractorsJson = v.DistractorsJson
+                    }).ToList();
+
+                    var speakingResponses = speakingItems.Select(s => new SpeakingExerciseResponse
+                    {
+                        ExerciseId = s.ExerciseId,
+                        Prompt = s.Prompt,
+                        SampleAudioUrl = s.SampleAudioUrl,
+                        ReferenceText = s.ReferenceText
+                    }).ToList();
 
                     return new LearningResponse
                     {
                         LessonId = lesson.LessonId,
                         Title = lesson.Title,
-                        Vocabularies = vocabItems,
-                        SpeakingExercises = speakingItems
+                        Vocabularies = vocabResponses,
+                        SpeakingExercises = speakingResponses,
+                        VocabCorrectCount = progress.Count(p => p.IsCorrect && p.VocabId.HasValue),
+                        SpeakingCorrectCount = progress.Count(p => p.IsCorrect && p.ExerciseId.HasValue)
                     };
                 }
             }
@@ -210,14 +232,16 @@ namespace LearnEase.Service
         // Hàm này để lấy lesson theo userid và lessonid để track progress user đã học
         public async Task<LearningResponse?> GetLessonBlockByUserAndLessonAsync(Guid userId, Guid lessonId)
         {
-            if (userId == Guid.Empty || lessonId == Guid.Empty) return null;
+            if (userId == Guid.Empty || lessonId == Guid.Empty)
+                return null;
 
             var lessonRepo = _uow.GetRepository<Lesson>();
             var lessonVocabRepo = _uow.GetRepository<LessonVocabulary>();
             var lessonSpeakingRepo = _uow.GetRepository<LessonSpeaking>();
+
             var userProgress = (await _userProgressRepo.GetAllAsync())
-                               .Where(p => p.UserId == userId && p.LessonId == lessonId)
-                               .ToList();
+                                .Where(p => p.UserId == userId && p.LessonId == lessonId)
+                                .ToList();
 
             var vocabIds = (await lessonVocabRepo.GetAllAsync())
                             .Where(lv => lv.LessonId == lessonId)
@@ -240,60 +264,76 @@ namespace LearnEase.Service
             var vocabCorrect = userProgress.Count(p => p.IsCorrect && p.VocabId.HasValue);
             var speakingCorrect = userProgress.Count(p => p.IsCorrect && p.ExerciseId.HasValue);
 
-            var lesson = (await lessonRepo.GetAllAsync()).FirstOrDefault(l => l.LessonId == lessonId);
-            if (lesson == null) return null;
+            var lesson = (await lessonRepo.GetAllAsync())
+                         .FirstOrDefault(l => l.LessonId == lessonId);
+
+            if (lesson == null)
+                return null;
+
+            var vocabResponses = vocabItems.Select(v => new VocabularyResponse
+            {
+                VocabId = v.VocabId,
+                Word = v.Word,
+                AudioUrl = v.AudioUrl,
+                ImageUrl = v.ImageUrl,
+                DistractorsJson = v.DistractorsJson
+            }).ToList();
+
+            var speakingResponses = speakingItems.Select(s => new SpeakingExerciseResponse
+            {
+                ExerciseId = s.ExerciseId,
+                Prompt = s.Prompt,
+                SampleAudioUrl = s.SampleAudioUrl,
+                ReferenceText = s.ReferenceText
+            }).ToList();
 
             return new LearningResponse
             {
                 LessonId = lesson.LessonId,
                 Title = lesson.Title,
-                Vocabularies = vocabItems,
-                SpeakingExercises = speakingItems,
+                Vocabularies = vocabResponses,
+                SpeakingExercises = speakingResponses,
                 VocabCorrectCount = vocabCorrect,
                 SpeakingCorrectCount = speakingCorrect
             };
         }
 
-        /*public async Task<UserLessonResponse?> GetNextLessonBlockForUserAsync(Guid userId)
+        public async Task<bool> SubmitUserProgressAsync(Guid userId, Guid lessonId, Guid? vocabId, Guid? exerciseId, bool isCorrect)
         {
-            var userSettings = (await _userSettingsRepo.GetAllAsync())
-                .FirstOrDefault(us => us.UserId == userId);
-            Guid? preferredDialectId = userSettings?.PreferredDialectId;
+            if (userId == Guid.Empty || lessonId == Guid.Empty || (vocabId == null && exerciseId == null))
+                return false;
 
-            var userProgress = (await _userProgressRepo.GetAllAsync())
-                .Where(up => up.UserId == userId).ToList();
+            var existing = (await _userProgressRepo.GetAllAsync())
+                .FirstOrDefault(p =>
+                    p.UserId == userId &&
+                    p.LessonId == lessonId &&
+                    ((vocabId != null && p.VocabId == vocabId) || (exerciseId != null && p.ExerciseId == exerciseId)));
 
-            IEnumerable<VocabularyItem> allVocabs = await _vocabRepo.GetAllAsync();
-            IEnumerable<SpeakingExercise> allSpeaking = await _speakingRepo.GetAllAsync();
-
-            if (preferredDialectId.HasValue)
+            if (existing != null)
             {
-                var dialectId = preferredDialectId.Value;
-                allVocabs = allVocabs.Where(v => v.DialectId == dialectId);
-                allSpeaking = allSpeaking.Where(s => s.DialectId == dialectId);
+                existing.IsCorrect = isCorrect;
+                _userProgressRepo.Update(existing);
+            }
+            else
+            {
+                var progress = new UserProgress
+                {
+                    ProgressId = Guid.NewGuid(),
+                    UserId = userId,
+                    LessonId = lessonId,
+                    VocabId = vocabId,
+                    ExerciseId = exerciseId,
+                    IsCorrect = isCorrect
+                };
+
+                await _userProgressRepo.AddAsync(progress);
             }
 
-            var remainingVocabs = allVocabs
-                .Where(v => !userProgress.Any(p => p.VocabId == v.VocabId))
-                .OrderBy(v => v.VocabId)
-                .Take(5)
-                .ToList();
+            await _uow.SaveAsync();
+            _uow.CommitTransaction();
 
-            var remainingSpeaking = allSpeaking
-                .Where(s => !userProgress.Any(p => p.ExerciseId == s.ExerciseId))
-                .OrderBy(s => s.ExerciseId)
-                .Take(5)
-                .ToList();
-
-            if (!remainingVocabs.Any() && !remainingSpeaking.Any()) return null;
-
-            return new LessonResponse
-            {
-                LessonId = Guid.NewGuid(),
-                Vocabularies = remainingVocabs,
-                SpeakingExercises = remainingSpeaking
-            };
-        }*/
+            return true;
+        }
     }
 }
 

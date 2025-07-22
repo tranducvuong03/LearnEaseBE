@@ -9,5 +9,10 @@ namespace LearnEase.Service.IServices
         Task<int> GetCompletedLessonCountInTopic(Guid userId, Guid topicId);
         Task UpdateTopicProgress(Guid userId, Guid topicId);
         Task<LearningResponse?> GetLessonBlockByUserAndLessonAsync(Guid userId, Guid lessonId);
+        Task<bool> SubmitUserProgressAsync(Guid userId, 
+                                           Guid lessonId, 
+                                           Guid? vocabId, 
+                                           Guid? exerciseId, 
+                                           bool isCorrect);
     }
 }
