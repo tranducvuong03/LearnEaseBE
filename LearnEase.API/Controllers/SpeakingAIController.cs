@@ -87,8 +87,8 @@ namespace LearnEase.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"❌ Lỗi parse JSON từ Google: {ex.Message}");
-                return StatusCode(500, "❌ Không thể phân tích phản hồi từ Google.");
+                _logger.LogError($"Lỗi parse JSON từ Google: {ex.Message}");
+                return StatusCode(500, "Không thể phân tích phản hồi từ Google.");
             }
 
             // Step 2: Extract transcript safely
@@ -104,7 +104,7 @@ namespace LearnEase.Api.Controllers
             else
             {
                 _logger.LogWarning("Google Speech API không trả về kết quả transcript.");
-                return BadRequest("❌ Không thể trích xuất transcript từ Google Speech API.");
+                return BadRequest("Không thể trích xuất transcript từ Google Speech API.");
             }
 
             // Step 3: Send to OpenAI for evaluation
