@@ -9,19 +9,22 @@ using System.Security.Claims;
 
 namespace LearnEase.API.Controllers
 {
-    [Authorize]
+
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _service;
         private readonly IUserStreakService _userStreakService;
+        private readonly IUserHeartService _userHeartService;
 
-        public UsersController(IUserService service , IUserStreakService userStreakService )
+
+        public UsersController(IUserService service , IUserStreakService userStreakService, IUserHeartService userHeartService )
         {
             _service = service; 
             _userStreakService = userStreakService;
-            
+            _userHeartService = userHeartService;
+
         }
 
         [HttpGet]
@@ -130,6 +133,40 @@ namespace LearnEase.API.Controllers
             });
 
         }
+        [HttpGet("current-heart")]
+        public async Task<IActionResult> GetCurrentHeartsOnly([FromQuery] Guid userId)
+        {
 
+            var user = await _userHeartService.GetCurrentHeartsAsync(userId);
+            if (user == null)
+                return NotFound("User not found");
+
+            var currentHearts = await _userHeartService.GetCurrentHeartsAsync(userId);
+
+            return Ok(new
+            {
+                hearts = currentHearts
+            });
         }
+        [HttpPost("use-heart")]
+        public async Task<IActionResult> UseHeart([FromQuery] Guid userId, [FromQuery] bool isPremium)
+        {
+            var result = await _userHeartService.UseHeartAsync(userId, isPremium);
+            if (!result)
+                return BadRequest("Không đủ tim hoặc user không tồn tại.");
+
+            return Ok("Sử dụng tim thành công.");
+        }
+
+        /// <summary>
+        /// Hồi tim cho user (nếu đủ điều kiện).
+        /// </summary>
+        [HttpPost("regenerate-heart")]
+        public async Task<IActionResult> RegenerateHeart([FromQuery] Guid userId)
+        {
+            var hearts = await _userHeartService.RegenerateHeartsAsync(userId);
+            return Ok(new { currentHearts = hearts });
+        }
+
+    }
 }

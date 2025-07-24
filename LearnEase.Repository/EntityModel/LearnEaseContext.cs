@@ -29,6 +29,7 @@ namespace LearnEase.Repository.EntityModel
         public DbSet<UserStreak> UserStreaks { get; set; }
         public DbSet<TransactionLogs> TransactionLogs { get; set; }
         public DbSet<UserTopicProgress> UserTopicProgress { get; set; }
+        public DbSet<UserHeart> UserHearts { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
