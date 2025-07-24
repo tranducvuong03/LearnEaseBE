@@ -13,6 +13,7 @@ namespace LearnEase.Service.Models.Response
         public int Score { get; set; }
         public string Period { get; set; }
         public DateTime RecordedAt { get; set; }
+        public string AvatarUrl { get; set; }
     }
 
 }

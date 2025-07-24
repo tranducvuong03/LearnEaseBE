@@ -64,6 +64,7 @@ namespace LearnEase.Service
             {
                 UserId = l.UserId,
                 Username = l.User?.Username ?? "Unknown",
+                AvatarUrl = l.User?.AvatarUrl ?? "",
                 Score = l.Score,
                 Period = l.Period,
                 RecordedAt = l.RecordedAt

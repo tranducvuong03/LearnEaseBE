@@ -15,9 +15,9 @@ namespace LearnEase.Repository.EntityModel
 
         [Required]
         public int Score { get; set; }
-
         public DateTime RecordedAt { get; set; } = DateTime.UtcNow;
 
         public User User { get; set; }
+
     }
 }
