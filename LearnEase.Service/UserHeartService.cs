@@ -14,26 +14,23 @@ namespace LearnEase.Service
         {
             _context = context;
         }
-        public async Task<int> GetCurrentHeartsAsync(Guid userId)
-        {
-            var userHeart = await _context.UserHearts
-                .FirstOrDefaultAsync(uh => uh.UserId == userId);
 
-            return userHeart?.CurrentHearts ?? 0;
-        }
-        public async Task<bool> UseHeartAsync(Guid userId, bool isPremium)
+        public async Task<bool> UseHeartAsync(Guid userId)
         {
+            var hasSubscription = await _context.Subscriptions
+                .AnyAsync(s => s.UserId == userId && (s.EndDate == null || s.EndDate > DateTime.UtcNow));
+
+            if (hasSubscription)
+                return true; // Premium: không trừ tim
+
             var userHeart = await _context.UserHearts
                 .FirstOrDefaultAsync(uh => uh.UserId == userId);
 
             if (userHeart == null)
                 return false;
 
-            if (isPremium)
-                return true; // Premium: không trừ tim
-
             if (userHeart.CurrentHearts <= 0)
-                return false; // Hết tim
+                return false;
 
             userHeart.CurrentHearts -= 1;
             userHeart.LastUsedAt = DateTime.UtcNow;
@@ -45,7 +42,7 @@ namespace LearnEase.Service
             return true;
         }
 
-        public async Task<int> RegenerateHeartsAsync(Guid userId)
+        public async Task<int> GetCurrentHeartsAsync(Guid userId)
         {
             var userHeart = await _context.UserHearts
                 .FirstOrDefaultAsync(uh => uh.UserId == userId);
@@ -53,22 +50,28 @@ namespace LearnEase.Service
             if (userHeart == null)
                 return 0;
 
+            if (userHeart.CurrentHearts >= 5)
+                return userHeart.CurrentHearts;
+
             var now = DateTime.UtcNow;
             var lastRegen = userHeart.LastRegeneratedAt ?? userHeart.LastUsedAt ?? now;
-            var hoursElapsed = (now - lastRegen).TotalHours;
+            var minutesElapsed = (now - lastRegen).TotalMinutes;
 
-            int heartsToRegen = (int)(hoursElapsed / 3);
+            int heartsToRegen = (int)(minutesElapsed / 180); // 3 tiếng = 180 phút
 
-            if (heartsToRegen <= 0 || userHeart.CurrentHearts >= 5)
+            if (heartsToRegen <= 0)
                 return userHeart.CurrentHearts;
 
             userHeart.CurrentHearts = Math.Min(5, userHeart.CurrentHearts + heartsToRegen);
-            userHeart.LastRegeneratedAt = lastRegen.AddHours(heartsToRegen * 3);
+            userHeart.LastRegeneratedAt = lastRegen.AddMinutes(heartsToRegen * 180);
 
             _context.UserHearts.Update(userHeart);
             await _context.SaveChangesAsync();
 
             return userHeart.CurrentHearts;
         }
+
+
+
     }
 }

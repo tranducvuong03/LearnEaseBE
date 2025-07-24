@@ -44,6 +44,15 @@ namespace LearnEase.API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
+            _context.UserHearts.Add(new UserHeart
+            {
+                UserId = user.UserId,
+                CurrentHearts = 5,
+                LastUsedAt = null,
+                LastRegeneratedAt = null
+            });
+            await _context.SaveChangesAsync();
+
             return Ok("Registered successfully.");
         }
 
@@ -106,6 +115,15 @@ namespace LearnEase.API.Controllers
                     };
 
                     _context.Users.Add(user);
+                    await _context.SaveChangesAsync();
+
+                    _context.UserHearts.Add(new UserHeart
+                    {
+                        UserId = user.UserId,
+                        CurrentHearts = 5,
+                        LastUsedAt = null,
+                        LastRegeneratedAt = null
+                    });
                     await _context.SaveChangesAsync();
 
                     Console.WriteLine("✅ Tạo user mới thành công");
