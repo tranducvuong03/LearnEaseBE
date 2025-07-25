@@ -42,6 +42,7 @@ namespace LearnEase.Service
             await _unitOfWork.SaveAsync();
             return true;
         }
+
         public async Task<User?> UpdateUsernameAsync(Guid id, string newUsername)
         {
             var user = await _repo.GetByIdAsync(id);

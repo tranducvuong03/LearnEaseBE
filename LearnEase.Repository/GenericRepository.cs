@@ -1,6 +1,8 @@
 ﻿using LearnEase.Repository.EntityModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace LearnEase.Repository
 {
@@ -16,11 +18,17 @@ namespace LearnEase.Repository
         }
 
         public async Task<IEnumerable<T>> GetAllAsync(
-            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null)
+                                            Expression<Func<T, bool>>? predicate = null,
+                                            Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null)
         {
             IQueryable<T> query = _dbSet;
+
+            if (predicate != null)
+                query = query.Where(predicate);
+
             if (include != null)
                 query = include(query);
+
             return await query.ToListAsync();
         }
 

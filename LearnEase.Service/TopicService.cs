@@ -11,11 +11,14 @@ namespace LearnEase.Service
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericRepository<Topic> _repo;
         private readonly IGenericRepository<UserTopicProgress> _progressRepo;
+        private readonly IGenericRepository<UserProgress> _userProgressRepo;
+
         public TopicService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             _repo = _unitOfWork.GetRepository<Topic>();
             _progressRepo = _unitOfWork.GetRepository<UserTopicProgress>();
+            _userProgressRepo = _unitOfWork.GetRepository<UserProgress>();
         }
 
         public async Task<IEnumerable<Topic>> GetAllAsync()
@@ -86,5 +89,54 @@ namespace LearnEase.Service
             return result;
         }
 
+        public async Task UpdateCompletedLessonCountAsync(Guid userId, Guid topicId)
+        {
+            // 1. Lấy tất cả Lesson thuộc topic này
+            var lessonRepo = _unitOfWork.GetRepository<Lesson>();
+            var lessons = await lessonRepo.GetAllAsync(
+                include: null,
+                predicate: l => l.TopicId == topicId
+            );
+            var lessonIds = lessons.Select(l => l.LessonId).ToList();
+
+            // 2. Lấy tất cả UserProgress đúng của user cho các lesson đó
+            var correctProgresses = await _userProgressRepo.GetAllAsync(
+                predicate: p =>
+                    p.UserId == userId &&
+                    lessonIds.Contains(p.LessonId) &&
+                    p.IsCorrect
+            );
+
+            // 3. Nhóm theo LessonId và đếm xem mỗi nhóm có >= 8 câu đúng không
+            var completedLessonCount = correctProgresses
+                .GroupBy(p => p.LessonId)
+                .Count(g => g.Count() >= 8);
+
+            // 4. Lấy hoặc tạo mới record UserTopicProgress
+            var existing = (await _progressRepo.GetAllAsync(
+                predicate: p =>
+                    p.UserId == userId &&
+                    p.TopicId == topicId
+            )).FirstOrDefault();
+
+            if (existing == null)
+            {
+                await _progressRepo.AddAsync(new UserTopicProgress
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    TopicId = topicId,
+                    CompletedLessonCount = completedLessonCount
+                });
+            }
+            else
+            {
+                existing.CompletedLessonCount = completedLessonCount;
+                _progressRepo.Update(existing);
+            }
+
+            // 5. Lưu vào database
+            await _unitOfWork.SaveAsync();
+        }
     }
 }
