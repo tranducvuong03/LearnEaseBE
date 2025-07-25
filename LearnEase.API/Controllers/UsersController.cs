@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace LearnEase.API.Controllers
 {
- 
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
