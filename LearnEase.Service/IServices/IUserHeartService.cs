@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LearnEase.Repository.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace LearnEase.Service.IServices
 {
     public interface IUserHeartService
     {
-            Task<int> GetCurrentHeartsAsync(Guid userId);
+            Task<UserHeartDisplayDTO> GetCurrentHeartsAsync(Guid userId);
             Task<bool> UseHeartAsync(Guid userId);
 
     }

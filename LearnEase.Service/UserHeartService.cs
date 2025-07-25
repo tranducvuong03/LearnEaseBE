@@ -1,4 +1,5 @@
-﻿using LearnEase.Repository.EntityModel;
+﻿using LearnEase.Repository.DTO;
+using LearnEase.Repository.EntityModel;
 using LearnEase.Service.IServices;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -42,16 +43,37 @@ namespace LearnEase.Service
             return true;
         }
 
-        public async Task<int> GetCurrentHeartsAsync(Guid userId)
+        public async Task<UserHeartDisplayDTO> GetCurrentHeartsAsync(Guid userId)
         {
+            bool isPremium = await _context.Subscriptions
+         .AnyAsync(s => s.UserId == userId && (s.EndDate == null || s.EndDate > DateTime.UtcNow));
+
+            if (isPremium)
+            {
+                return new UserHeartDisplayDTO
+                {
+                    CurrentHearts = 5,
+                    IsPremium = true,
+                    LastUsedAt = null,
+                    LastRegeneratedAt = null,
+                    MinutesUntilNextHeart = 0
+                };
+            }
+
             var userHeart = await _context.UserHearts
                 .FirstOrDefaultAsync(uh => uh.UserId == userId);
 
             if (userHeart == null)
-                return 0;
-
-            if (userHeart.CurrentHearts >= 5)
-                return userHeart.CurrentHearts;
+            {
+                return new UserHeartDisplayDTO
+                {
+                    CurrentHearts = 0,
+                    IsPremium = false,
+                    LastUsedAt = null,
+                    LastRegeneratedAt = null,
+                    MinutesUntilNextHeart = 0
+                };
+            }
 
             var now = DateTime.UtcNow;
             var lastRegen = userHeart.LastRegeneratedAt ?? userHeart.LastUsedAt ?? now;
@@ -59,16 +81,30 @@ namespace LearnEase.Service
 
             int heartsToRegen = (int)(minutesElapsed / 180); // 3 tiếng = 180 phút
 
-            if (heartsToRegen <= 0)
-                return userHeart.CurrentHearts;
+            if (userHeart.CurrentHearts < 5 && heartsToRegen > 0)
+            {
+                userHeart.CurrentHearts = Math.Min(5, userHeart.CurrentHearts + heartsToRegen);
+                userHeart.LastRegeneratedAt = lastRegen.AddMinutes(heartsToRegen * 180);
 
-            userHeart.CurrentHearts = Math.Min(5, userHeart.CurrentHearts + heartsToRegen);
-            userHeart.LastRegeneratedAt = lastRegen.AddMinutes(heartsToRegen * 180);
+                _context.UserHearts.Update(userHeart);
+                await _context.SaveChangesAsync();
+            }
 
-            _context.UserHearts.Update(userHeart);
-            await _context.SaveChangesAsync();
+            int minutesUntilNext = 0;
+            if (userHeart.CurrentHearts < 5)
+            {
+                double remaining = 180 - (now - (userHeart.LastRegeneratedAt ?? lastRegen)).TotalMinutes;
+                minutesUntilNext = Math.Max(0, (int)Math.Ceiling(remaining));
+            }
 
-            return userHeart.CurrentHearts;
+            return new UserHeartDisplayDTO
+            {
+                CurrentHearts = userHeart.CurrentHearts,
+                IsPremium = false,
+                LastUsedAt = userHeart.LastUsedAt,
+                LastRegeneratedAt = userHeart.LastRegeneratedAt,
+                MinutesUntilNextHeart = minutesUntilNext
+            };
         }
 
 
