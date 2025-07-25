@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace LearnEase.API.Controllers
 {
-    [Authorize]
+ 
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
@@ -136,8 +136,9 @@ namespace LearnEase.API.Controllers
         [HttpGet("current-heart")]
         public async Task<IActionResult> GetCurrentHeartsOnly([FromQuery] Guid userId)
         {
-            var hearts = await _userHeartService.GetCurrentHeartsAsync(userId);
-            return Ok(new { hearts });
+
+            var heartStatus = await _userHeartService.GetCurrentHeartsAsync(userId);
+            return Ok(heartStatus);
         }
         [HttpPost("use-heart")]
         public async Task<IActionResult> UseHeart([FromQuery] Guid userId)
