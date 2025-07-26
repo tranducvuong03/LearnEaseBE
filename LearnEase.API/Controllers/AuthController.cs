@@ -116,8 +116,18 @@ namespace LearnEase.API.Controllers
 
                     _context.Users.Add(user);
                     await _context.SaveChangesAsync();
+					// send mail to user
+					try
+					{
+						await _emailService.SendWelcomeEmailAsync(user.Email, user.Username);
+					}
+					catch (Exception ex)
+					{
+						// Ghi log nhưng không throw để tránh làm fail login
+						Console.WriteLine("⚠️ SendWelcomeEmail failed: " + ex.Message);
+					}
 
-                    _context.UserHearts.Add(new UserHeart
+					_context.UserHearts.Add(new UserHeart
                     {
                         UserId = user.UserId,
                         CurrentHearts = 5,
