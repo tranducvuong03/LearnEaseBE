@@ -11,6 +11,7 @@ namespace LearnEase.Repository.DTO
     {
         public IFormFile AudioFile { get; set; }
         public Guid DialectId { get; set; }
+        public string TargetText { get; set; }
     }
 
 }
