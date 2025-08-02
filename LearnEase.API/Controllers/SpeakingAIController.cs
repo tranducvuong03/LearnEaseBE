@@ -417,7 +417,8 @@ Return JSON:
             }
 
             // Prompt châm accent
-            var evalPrompt = $@"
+            var evalPrompt = string.IsNullOrWhiteSpace(request.TargetText)
+      ? $@"
 Your task is to evaluate the user's accent.
 Target accent region: {dialect.Region}
 
@@ -427,10 +428,27 @@ Give:
 - Accent match score (how closely the accent resembles native {dialect.Region})
 - Short feedback
 
+Return JSON:
+{{ ""score"": 85, ""feedback"": ""...""
+}}"
+      : $@"
+Evaluate the user's pronunciation and accent match.
 
-Format:
-{{ ""score"": 85, ""feedback"": ""You sound close to a native speaker..."" }}
-";
+Expected text: '{request.TargetText}'
+Transcript from user: '{transcript}'
+Target accent: {dialect.Region}
+
+Give:
+- How close the user's accent sounds to native {dialect.Region} speakers
+- Mention if there are mispronunciations
+- Score from 0 to 100
+- Short feedback
+
+Return JSON:
+{{ ""score"": 85, ""feedback"": ""...""
+}}";
+
+            
 
             var gptResponse = await _aiService.GetAIResponseAsync(evalPrompt, false, new(), "System");
 

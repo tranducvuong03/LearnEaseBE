@@ -1,4 +1,6 @@
-﻿using LearnEase.Repository;
+﻿using Hangfire;
+using LearnEase.API.Controllers;
+using LearnEase.Repository;
 
 using LearnEase.Repository.EntityModel;
 using LearnEase.Repository.IRepo;
@@ -57,6 +59,11 @@ builder.Services.AddScoped<IPayOSService, PayOSService>();
 
 //---------------------send mail------------------------
 builder.Services.AddScoped<IEmailService, EmailService>();
+//hangfire 
+builder.Services.AddHangfire(x =>
+    x.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddHangfireServer();
+
 // Add services to the container.
 builder.Services.AddSqlServer<LearnEaseContext>(builder.Configuration.GetConnectionString("DefaultConnection"));
 builder.Services.AddControllers()
@@ -128,7 +135,13 @@ builder.Services.AddCors(options =>
 			.AllowAnyMethod());
 });
 var app = builder.Build();
-
+app.UseHangfireDashboard();
+RecurringJob.AddOrUpdate<backgroundJob>(
+    "generate-weekly-lessons",
+    scheduler => scheduler.GenerateWeeklyLessons(),
+    "0 0 * * 1"  // Thứ Hai, 00:00
+);
+app.UseHangfireDashboard("/hangfire");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
