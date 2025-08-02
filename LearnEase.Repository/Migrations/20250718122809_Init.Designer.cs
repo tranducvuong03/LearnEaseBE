@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LearnEase.Repository.Migrations
 {
     [DbContext(typeof(LearnEaseContext))]
-    [Migration("20250707055033_addstreak")]
-    partial class addstreak
+    [Migration("20250718122809_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -189,14 +189,8 @@ namespace LearnEase.Repository.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("DialectId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("IconUrl")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Order")
                         .HasColumnType("int");
@@ -349,6 +343,9 @@ namespace LearnEase.Repository.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -467,41 +464,6 @@ namespace LearnEase.Repository.Migrations
                     b.ToTable("UserLessons");
                 });
 
-            modelBuilder.Entity("LearnEase.Repository.EntityModel.UserProgress", b =>
-                {
-                    b.Property<Guid>("ProgressId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("ExerciseId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("LastReviewed")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("RepetitionCount")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("VocabId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("VocabularyItemVocabId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("ProgressId");
-
-                    b.HasIndex("ExerciseId");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("VocabularyItemVocabId");
-
-                    b.ToTable("UserProgresses");
-                });
-
             modelBuilder.Entity("LearnEase.Repository.EntityModel.UserSettings", b =>
                 {
                     b.Property<Guid>("UserId")
@@ -543,6 +505,30 @@ namespace LearnEase.Repository.Migrations
                     b.ToTable("UserStreaks");
                 });
 
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.UserTopicProgress", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("CompletedLessonCount")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("TopicId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TopicId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserTopicProgress");
+                });
+
             modelBuilder.Entity("LearnEase.Repository.EntityModel.VocabularyItem", b =>
                 {
                     b.Property<Guid>("VocabId")
@@ -572,6 +558,43 @@ namespace LearnEase.Repository.Migrations
                     b.HasIndex("DialectId");
 
                     b.ToTable("VocabularyItems");
+                });
+
+            modelBuilder.Entity("UserProgress", b =>
+                {
+                    b.Property<Guid>("ProgressId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ExerciseId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsCorrect")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("LessonId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("VocabId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("VocabularyItemVocabId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("ProgressId");
+
+                    b.HasIndex("ExerciseId");
+
+                    b.HasIndex("LessonId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("VocabularyItemVocabId");
+
+                    b.ToTable("UserProgresses");
                 });
 
             modelBuilder.Entity("LearnEase.Repository.EntityModel.Achievement", b =>
@@ -746,30 +769,6 @@ namespace LearnEase.Repository.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("LearnEase.Repository.EntityModel.UserProgress", b =>
-                {
-                    b.HasOne("LearnEase.Repository.EntityModel.SpeakingExercise", "SpeakingExercise")
-                        .WithMany("UserProgresses")
-                        .HasForeignKey("ExerciseId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("LearnEase.Repository.EntityModel.User", "User")
-                        .WithMany("UserProgresses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("LearnEase.Repository.EntityModel.VocabularyItem", "VocabularyItem")
-                        .WithMany()
-                        .HasForeignKey("VocabularyItemVocabId");
-
-                    b.Navigation("SpeakingExercise");
-
-                    b.Navigation("User");
-
-                    b.Navigation("VocabularyItem");
-                });
-
             modelBuilder.Entity("LearnEase.Repository.EntityModel.UserSettings", b =>
                 {
                     b.HasOne("LearnEase.Repository.EntityModel.User", "User")
@@ -792,6 +791,25 @@ namespace LearnEase.Repository.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("LearnEase.Repository.EntityModel.UserTopicProgress", b =>
+                {
+                    b.HasOne("LearnEase.Repository.EntityModel.Topic", "Topic")
+                        .WithMany()
+                        .HasForeignKey("TopicId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LearnEase.Repository.EntityModel.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Topic");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("LearnEase.Repository.EntityModel.VocabularyItem", b =>
                 {
                     b.HasOne("LearnEase.Repository.EntityModel.Dialect", "Dialect")
@@ -801,6 +819,38 @@ namespace LearnEase.Repository.Migrations
                         .IsRequired();
 
                     b.Navigation("Dialect");
+                });
+
+            modelBuilder.Entity("UserProgress", b =>
+                {
+                    b.HasOne("LearnEase.Repository.EntityModel.SpeakingExercise", "SpeakingExercise")
+                        .WithMany("UserProgresses")
+                        .HasForeignKey("ExerciseId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("LearnEase.Repository.EntityModel.Lesson", "Lesson")
+                        .WithMany()
+                        .HasForeignKey("LessonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LearnEase.Repository.EntityModel.User", "User")
+                        .WithMany("UserProgresses")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("LearnEase.Repository.EntityModel.VocabularyItem", "VocabularyItem")
+                        .WithMany()
+                        .HasForeignKey("VocabularyItemVocabId");
+
+                    b.Navigation("Lesson");
+
+                    b.Navigation("SpeakingExercise");
+
+                    b.Navigation("User");
+
+                    b.Navigation("VocabularyItem");
                 });
 
             modelBuilder.Entity("LearnEase.Repository.EntityModel.AiLesson", b =>

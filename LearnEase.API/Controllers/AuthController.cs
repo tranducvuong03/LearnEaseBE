@@ -44,6 +44,15 @@ namespace LearnEase.API.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
+            _context.UserHearts.Add(new UserHeart
+            {
+                UserId = user.UserId,
+                CurrentHearts = 5,
+                LastUsedAt = null,
+                LastRegeneratedAt = null
+            });
+            await _context.SaveChangesAsync();
+
             return Ok("Registered successfully.");
         }
 
@@ -56,11 +65,23 @@ namespace LearnEase.API.Controllers
             if (user == null)
                 return Unauthorized("Invalid credentials.");
 
-            var token = GenerateJwtToken(user);
-            return Ok(new { token });
+            var token = new JwtHelper(_config).GenerateToken(user);
+            var userResponse = new UserResponse
+            {
+                UserId = user.UserId,
+                Username = user.Username,
+                Email = user.Email,
+                AvatarUrl = user.AvatarUrl
+            };
+
+            return Ok(new LoginResponse
+            {
+                Token = token,
+                User = userResponse
+            });
         }
 
-        
+
         [HttpPost("google-login")]
         public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
         {
@@ -94,6 +115,25 @@ namespace LearnEase.API.Controllers
                     };
 
                     _context.Users.Add(user);
+                    await _context.SaveChangesAsync();
+					// send mail to user
+					try
+					{
+						await _emailService.SendWelcomeEmailAsync(user.Email, user.Username);
+					}
+					catch (Exception ex)
+					{
+						// Ghi log nhưng không throw để tránh làm fail login
+						Console.WriteLine("⚠️ SendWelcomeEmail failed: " + ex.Message);
+					}
+
+					_context.UserHearts.Add(new UserHeart
+                    {
+                        UserId = user.UserId,
+                        CurrentHearts = 5,
+                        LastUsedAt = null,
+                        LastRegeneratedAt = null
+                    });
                     await _context.SaveChangesAsync();
 
                     Console.WriteLine("✅ Tạo user mới thành công");
@@ -199,27 +239,5 @@ namespace LearnEase.API.Controllers
                   return StatusCode(500, $"Internal server error: {ex.Message}");
               }
           }*/
-
-        private string GenerateJwtToken(User user)
-        {
-            var claims = new[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim(ClaimTypes.Name, user.Username)
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtSettings:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: _config["JwtSettings:Issuer"],
-                audience: _config["JwtSettings:Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(_config["JwtSettings:ExpireMinutes"])),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
     }
 }

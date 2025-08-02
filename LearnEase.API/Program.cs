@@ -47,15 +47,15 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IAiLessonService, AiLessonService>();
 builder.Services.AddScoped<ILearningService, LearningService>();
 builder.Services.AddScoped<IUserStreakService, UserStreakService>();
-
+builder.Services.AddScoped<ITopicService, TopicService>();
 builder.Services.AddScoped<IOpenAIService, OpenAIService>();
 builder.Services.AddHttpClient<IOpenAIService, OpenAIService>();
-
 builder.Services.AddScoped<ILearningService, LearningService>();
+builder.Services.AddScoped<ILessonService, LessonService>();
+builder.Services.AddScoped<IUserHeartService, UserHeartService>();
 
 //payment
 builder.Services.AddScoped<IPayOSService, PayOSService>();
-
 
 //---------------------send mail------------------------
 builder.Services.AddScoped<IEmailService, EmailService>();
@@ -70,7 +70,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(opt =>
     {
         opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    });
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
@@ -128,7 +128,9 @@ builder.Services.AddCors(options =>
 {
 	options.AddPolicy("AllowLocalhost",
 		policy => policy
-			.WithOrigins("http://127.0.0.1:5500")
+			.WithOrigins(
+			"http://127.0.0.1:5500",
+			"https://learn-ease-admin-z913.vercel.app")
 			.AllowAnyHeader()
 			.AllowAnyMethod());
 });

@@ -3,30 +3,10 @@ USE [LearnEase]
 /*========================================================
   1. LANGUAGE & DIALECT
 ========================================================*/
-
-INSERT INTO Dialects (DialectId, LanguageId, Name, Region, AccentCode, Description, IsAvailable)
-VALUES
-(NEWID(), @languageId, 'English (US)', 'United States', 'en-US', 'American English accent', 1),
-(NEWID(), @languageId, 'English (UK)', 'United Kingdom', 'en-GB', 'British English accent', 1),
-(NEWID(), @languageId, 'English (Australia)', 'Australia', 'en-AU', 'Australian English accent', 1),
-(NEWID(), @languageId, 'English (India)', 'India', 'en-IN', 'Indian English accent', 1),
-(NEWID(), @languageId, 'English (Canada)', 'Canada', 'en-CA', 'Canadian English accent', 1),
-(NEWID(), @languageId, 'English (New Zealand)', 'New Zealand', 'en-NZ', 'New Zealand English accent', 1),
-(NEWID(), @languageId, 'English (Singapore)', 'Singapore', 'en-SG', 'Singapore English accent', 1),
-(NEWID(), @languageId, 'English (South Africa)', 'South Africa', 'en-ZA', 'South African English accent', 1),
-(NEWID(), @languageId, 'English (Philippines)', 'Philippines', 'en-PH', 'Philippine English accent', 1),
-(NEWID(), @languageId, 'English (Hong Kong)', 'Hong Kong', 'en-HK', 'Hong Kong English accent', 1),
-(NEWID(), @languageId, 'English (Ireland)', 'Ireland', 'en-IE', 'Irish English accent', 1),
-(NEWID(), @languageId, 'English (Kenya)', 'Kenya', 'en-KE', 'Kenyan English accent', 1),
-(NEWID(), @languageId, 'English (Tanzania)', 'Tanzania', 'en-TZ', 'Tanzanian English accent', 1);
-
-
-
 INSERT INTO Languages(LanguageId, Name)
 VALUES ('1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', N'English');
 
-INSERT INTO Dialects
-  (DialectId, LanguageId, Name, Region, AccentCode, Description, VoiceSampleUrl, IsAvailable)
+INSERT INTO Dialects (DialectId, LanguageId, Name, Region, AccentCode, Description, VoiceSampleUrl, IsAvailable)
 VALUES
   ('3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01',
    N'General American', N'United States', 'en-US',
@@ -35,7 +15,18 @@ VALUES
   ('3B5F8475-29D7-4F2D-A127-8CBFDF8D83F2', '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01',
    N'Received Pronunciation', N'United Kingdom', 'en-GB',
    N'Standard British English accent',
-   'https://cdn.learnEase.com/audio/accent/en_gb_sample.mp3', 1);
+   'https://cdn.learnEase.com/audio/accent/en_gb_sample.mp3', 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Australia)', 'Australia', 'en-AU', 'Australian English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (India)', 'India', 'en-IN', 'Indian English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Canada)', 'Canada', 'en-CA', 'Canadian English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (New Zealand)', 'New Zealand', 'en-NZ', 'New Zealand English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Singapore)', 'Singapore', 'en-SG', 'Singapore English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (South Africa)', 'South Africa', 'en-ZA', 'South African English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Philippines)', 'Philippines', 'en-PH', 'Philippine English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Hong Kong)', 'Hong Kong', 'en-HK', 'Hong Kong English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Ireland)', 'Ireland', 'en-IE', 'Irish English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Kenya)', 'Kenya', 'en-KE', 'Kenyan English accent', NULL, 1),
+  (NEWID(), '1A1D84D4-7E68-443D-8DFC-1E048C0ADF01', 'English (Tanzania)', 'Tanzania', 'en-TZ', 'Tanzanian English accent', NULL, 1);
 
 /*========================================================
   2. USER & SETTING
@@ -51,56 +42,257 @@ VALUES
   ('4C6EC7A2-644C-44B8-B222-52EDF6197781', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 1.0, 1);
 
 /*========================================================
-  3. VOCABULARY
+  3. VOCABULARY & SPEAKING EXERCISE
 ========================================================*/
-INSERT INTO VocabularyItems
-  (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson)
-VALUES
-  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'coffee', 'https://cdn.learnEase.com/audio/vocab/coffee_us.mp3', NULL, N'["toffee","coffer","copy"]'),
-  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'library', 'https://cdn.learnEase.com/audio/vocab/library_us.mp3', NULL, N'["librarian","liberty","battery"]'),
-  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'bicycle', 'https://cdn.learnEase.com/audio/vocab/bicycle_us.mp3', NULL, N'["tricycle","icicle","bisect"]'),
-  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'vegetable', 'https://cdn.learnEase.com/audio/vocab/vegetable_us.mp3', NULL, N'["vegetation","vestibule","vegetarian"]'),
-  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'airport', 'https://cdn.learnEase.com/audio/vocab/airport_us.mp3', NULL, N'["seaport","airplane","airdrop"]'),
-  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'mountain', 'https://cdn.learnEase.com/audio/vocab/mountain_us.mp3', NULL, N'["fountain","maintain","molecule"]'),
-  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'hospital', 'https://cdn.learnEase.com/audio/vocab/hospital_us.mp3', NULL, N'["hostile","hostel","postal"]'),
-  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'elephant', 'https://cdn.learnEase.com/audio/vocab/elephant_us.mp3', NULL, N'["relevant","elegant","eleven"]'),
-  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'umbrella', 'https://cdn.learnEase.com/audio/vocab/umbrella_us.mp3', NULL, N'["armadillo","umbrage","gazella"]'),
-  (NEWID(), '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'computer', 'https://cdn.learnEase.com/audio/vocab/computer_us.mp3', NULL, N'["commuter","conductor","composer"]');
-
-/*========================================================
-  4. SPEAKING EXERCISE (with fixed ID)
-========================================================*/
-INSERT INTO SpeakingExercises
-  (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText)
-VALUES
-  ('5D7E5B9D-1144-4AD2-B719-179B1A93AC01',
-   '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1',
-   N'Please say: "How are you today?"',
-   'https://cdn.learnEase.com/audio/exercise/how_are_you_today.mp3',
-   'How are you today?');
-
-/*========================================================
-  5. USER PROGRESS & SPEAKING ATTEMPT
-========================================================*/
-INSERT INTO UserProgresses
-  (ProgressId, UserId, VocabId, ExerciseId, LastReviewed, RepetitionCount)
-VALUES
-  ('9F2898C5-3B35-44F4-8AB3-0A0B0C0D0E01',
-   '4C6EC7A2-644C-44B8-B222-52EDF6197781',
-   NULL, NULL, DATEADD(DAY,-1,SYSUTCDATETIME()), 2),
-  ('9F2898C5-3B35-44F4-8AB3-0A0B0C0D0E02',
-   '4C6EC7A2-644C-44B8-B222-52EDF6197781',
-   NULL, '5D7E5B9D-1144-4AD2-B719-179B1A93AC01', DATEADD(HOUR,-5,SYSUTCDATETIME()), 1);
-
-INSERT INTO SpeakingAttempts
-  (AttemptId, UserId, ExerciseId, AttemptedAt, Score, UserAudioUrl, Transcription)
-VALUES
-  ('AA1B2C3D-4E5F-6789-ABCD-EEFF00112233',
-   '4C6EC7A2-644C-44B8-B222-52EDF6197781',
-   '5D7E5B9D-1144-4AD2-B719-179B1A93AC01',
-   SYSUTCDATETIME(), 85.0,
-   'https://cdn.learnEase.com/audio/user/attempt_001.mp3',
-   N'How are you today?');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010001-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'house', 'https://cdn.learnEase.com/audio/vocab/house1.mp3', NULL, N'["apartment", "villa", "cottage"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010002-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'book', 'https://cdn.learnEase.com/audio/vocab/book2.mp3', NULL, N'["magazine", "newspaper", "novel"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010003-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car3.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010004-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'house', 'https://cdn.learnEase.com/audio/vocab/house4.mp3', NULL, N'["apartment", "villa", "cottage"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010005-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'book', 'https://cdn.learnEase.com/audio/vocab/book5.mp3', NULL, N'["magazine", "newspaper", "novel"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010006-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car6.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010007-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'shoe', 'https://cdn.learnEase.com/audio/vocab/shoe7.mp3', NULL, N'["sock", "slipper", "boot"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010008-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car8.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010009-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water9.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010010-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water10.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010011-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'shoe', 'https://cdn.learnEase.com/audio/vocab/shoe11.mp3', NULL, N'["sock", "slipper", "boot"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010012-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'book', 'https://cdn.learnEase.com/audio/vocab/book12.mp3', NULL, N'["magazine", "newspaper", "novel"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010013-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water13.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010014-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water14.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010015-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'computer', 'https://cdn.learnEase.com/audio/vocab/computer15.mp3', NULL, N'["laptop", "tablet", "phone"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010016-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'computer', 'https://cdn.learnEase.com/audio/vocab/computer16.mp3', NULL, N'["laptop", "tablet", "phone"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010017-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'tree', 'https://cdn.learnEase.com/audio/vocab/tree17.mp3', NULL, N'["bush", "flower", "grass"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010018-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water18.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010019-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car19.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010020-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'shoe', 'https://cdn.learnEase.com/audio/vocab/shoe20.mp3', NULL, N'["sock", "slipper", "boot"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010021-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'book', 'https://cdn.learnEase.com/audio/vocab/book21.mp3', NULL, N'["magazine", "newspaper", "novel"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010022-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'tree', 'https://cdn.learnEase.com/audio/vocab/tree22.mp3', NULL, N'["bush", "flower", "grass"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010023-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'house', 'https://cdn.learnEase.com/audio/vocab/house23.mp3', NULL, N'["apartment", "villa", "cottage"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010024-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'computer', 'https://cdn.learnEase.com/audio/vocab/computer24.mp3', NULL, N'["laptop", "tablet", "phone"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010025-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'sun', 'https://cdn.learnEase.com/audio/vocab/sun25.mp3', NULL, N'["moon", "star", "planet"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010026-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water26.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010027-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'apple', 'https://cdn.learnEase.com/audio/vocab/apple27.mp3', NULL, N'["banana", "orange", "grape"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010028-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'apple', 'https://cdn.learnEase.com/audio/vocab/apple28.mp3', NULL, N'["banana", "orange", "grape"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010029-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car29.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010030-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'house', 'https://cdn.learnEase.com/audio/vocab/house30.mp3', NULL, N'["apartment", "villa", "cottage"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010031-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'apple', 'https://cdn.learnEase.com/audio/vocab/apple31.mp3', NULL, N'["banana", "orange", "grape"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010032-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'house', 'https://cdn.learnEase.com/audio/vocab/house32.mp3', NULL, N'["apartment", "villa", "cottage"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010033-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car33.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010034-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water34.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010035-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'computer', 'https://cdn.learnEase.com/audio/vocab/computer35.mp3', NULL, N'["laptop", "tablet", "phone"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010036-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'dog', 'https://cdn.learnEase.com/audio/vocab/dog36.mp3', NULL, N'["cat", "mouse", "rabbit"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010037-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'house', 'https://cdn.learnEase.com/audio/vocab/house37.mp3', NULL, N'["apartment", "villa", "cottage"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010038-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'house', 'https://cdn.learnEase.com/audio/vocab/house38.mp3', NULL, N'["apartment", "villa", "cottage"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010039-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'shoe', 'https://cdn.learnEase.com/audio/vocab/shoe39.mp3', NULL, N'["sock", "slipper", "boot"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010040-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'house', 'https://cdn.learnEase.com/audio/vocab/house40.mp3', NULL, N'["apartment", "villa", "cottage"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010041-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'sun', 'https://cdn.learnEase.com/audio/vocab/sun41.mp3', NULL, N'["moon", "star", "planet"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010042-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'tree', 'https://cdn.learnEase.com/audio/vocab/tree42.mp3', NULL, N'["bush", "flower", "grass"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010043-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water43.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010044-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'house', 'https://cdn.learnEase.com/audio/vocab/house44.mp3', NULL, N'["apartment", "villa", "cottage"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010045-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'dog', 'https://cdn.learnEase.com/audio/vocab/dog45.mp3', NULL, N'["cat", "mouse", "rabbit"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010046-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car46.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010047-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car47.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010048-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car48.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010049-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'book', 'https://cdn.learnEase.com/audio/vocab/book49.mp3', NULL, N'["magazine", "newspaper", "novel"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010050-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water50.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010051-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'dog', 'https://cdn.learnEase.com/audio/vocab/dog51.mp3', NULL, N'["cat", "mouse", "rabbit"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010052-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water52.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010053-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'dog', 'https://cdn.learnEase.com/audio/vocab/dog53.mp3', NULL, N'["cat", "mouse", "rabbit"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010054-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'apple', 'https://cdn.learnEase.com/audio/vocab/apple54.mp3', NULL, N'["banana", "orange", "grape"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010055-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'shoe', 'https://cdn.learnEase.com/audio/vocab/shoe55.mp3', NULL, N'["sock", "slipper", "boot"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010056-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'apple', 'https://cdn.learnEase.com/audio/vocab/apple56.mp3', NULL, N'["banana", "orange", "grape"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010057-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'sun', 'https://cdn.learnEase.com/audio/vocab/sun57.mp3', NULL, N'["moon", "star", "planet"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010058-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'book', 'https://cdn.learnEase.com/audio/vocab/book58.mp3', NULL, N'["magazine", "newspaper", "novel"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010059-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'house', 'https://cdn.learnEase.com/audio/vocab/house59.mp3', NULL, N'["apartment", "villa", "cottage"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010060-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'tree', 'https://cdn.learnEase.com/audio/vocab/tree60.mp3', NULL, N'["bush", "flower", "grass"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010061-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'shoe', 'https://cdn.learnEase.com/audio/vocab/shoe61.mp3', NULL, N'["sock", "slipper", "boot"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010062-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'apple', 'https://cdn.learnEase.com/audio/vocab/apple62.mp3', NULL, N'["banana", "orange", "grape"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010063-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'sun', 'https://cdn.learnEase.com/audio/vocab/sun63.mp3', NULL, N'["moon", "star", "planet"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010064-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water64.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010065-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car65.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010066-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'house', 'https://cdn.learnEase.com/audio/vocab/house66.mp3', NULL, N'["apartment", "villa", "cottage"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010067-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'apple', 'https://cdn.learnEase.com/audio/vocab/apple67.mp3', NULL, N'["banana", "orange", "grape"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010068-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water68.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010069-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'apple', 'https://cdn.learnEase.com/audio/vocab/apple69.mp3', NULL, N'["banana", "orange", "grape"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010070-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'tree', 'https://cdn.learnEase.com/audio/vocab/tree70.mp3', NULL, N'["bush", "flower", "grass"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010071-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'shoe', 'https://cdn.learnEase.com/audio/vocab/shoe71.mp3', NULL, N'["sock", "slipper", "boot"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010072-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car72.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010073-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'sun', 'https://cdn.learnEase.com/audio/vocab/sun73.mp3', NULL, N'["moon", "star", "planet"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010074-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'tree', 'https://cdn.learnEase.com/audio/vocab/tree74.mp3', NULL, N'["bush", "flower", "grass"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010075-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water75.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010076-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'house', 'https://cdn.learnEase.com/audio/vocab/house76.mp3', NULL, N'["apartment", "villa", "cottage"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010077-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'book', 'https://cdn.learnEase.com/audio/vocab/book77.mp3', NULL, N'["magazine", "newspaper", "novel"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010078-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'computer', 'https://cdn.learnEase.com/audio/vocab/computer78.mp3', NULL, N'["laptop", "tablet", "phone"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010079-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'book', 'https://cdn.learnEase.com/audio/vocab/book79.mp3', NULL, N'["magazine", "newspaper", "novel"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010080-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water80.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010081-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car81.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010082-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water82.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010083-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water83.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010084-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water84.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010085-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water85.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010086-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'computer', 'https://cdn.learnEase.com/audio/vocab/computer86.mp3', NULL, N'["laptop", "tablet", "phone"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010087-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'apple', 'https://cdn.learnEase.com/audio/vocab/apple87.mp3', NULL, N'["banana", "orange", "grape"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010088-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'shoe', 'https://cdn.learnEase.com/audio/vocab/shoe88.mp3', NULL, N'["sock", "slipper", "boot"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010089-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'book', 'https://cdn.learnEase.com/audio/vocab/book89.mp3', NULL, N'["magazine", "newspaper", "novel"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010090-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'computer', 'https://cdn.learnEase.com/audio/vocab/computer90.mp3', NULL, N'["laptop", "tablet", "phone"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010091-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'shoe', 'https://cdn.learnEase.com/audio/vocab/shoe91.mp3', NULL, N'["sock", "slipper", "boot"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010092-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'book', 'https://cdn.learnEase.com/audio/vocab/book92.mp3', NULL, N'["magazine", "newspaper", "novel"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010093-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car93.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010094-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'dog', 'https://cdn.learnEase.com/audio/vocab/dog94.mp3', NULL, N'["cat", "mouse", "rabbit"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010095-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'tree', 'https://cdn.learnEase.com/audio/vocab/tree95.mp3', NULL, N'["bush", "flower", "grass"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010096-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water96.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010097-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'computer', 'https://cdn.learnEase.com/audio/vocab/computer97.mp3', NULL, N'["laptop", "tablet", "phone"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010098-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car98.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010099-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'computer', 'https://cdn.learnEase.com/audio/vocab/computer99.mp3', NULL, N'["laptop", "tablet", "phone"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010100-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'tree', 'https://cdn.learnEase.com/audio/vocab/tree100.mp3', NULL, N'["bush", "flower", "grass"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010101-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'shoe', 'https://cdn.learnEase.com/audio/vocab/shoe101.mp3', NULL, N'["sock", "slipper", "boot"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010102-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'shoe', 'https://cdn.learnEase.com/audio/vocab/shoe102.mp3', NULL, N'["sock", "slipper", "boot"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010103-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'sun', 'https://cdn.learnEase.com/audio/vocab/sun103.mp3', NULL, N'["moon", "star", "planet"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010104-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'tree', 'https://cdn.learnEase.com/audio/vocab/tree104.mp3', NULL, N'["bush", "flower", "grass"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010105-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'house', 'https://cdn.learnEase.com/audio/vocab/house105.mp3', NULL, N'["apartment", "villa", "cottage"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010106-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'book', 'https://cdn.learnEase.com/audio/vocab/book106.mp3', NULL, N'["magazine", "newspaper", "novel"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010107-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'sun', 'https://cdn.learnEase.com/audio/vocab/sun107.mp3', NULL, N'["moon", "star", "planet"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010108-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'dog', 'https://cdn.learnEase.com/audio/vocab/dog108.mp3', NULL, N'["cat", "mouse", "rabbit"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010109-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car109.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010110-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'apple', 'https://cdn.learnEase.com/audio/vocab/apple110.mp3', NULL, N'["banana", "orange", "grape"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010111-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'water', 'https://cdn.learnEase.com/audio/vocab/water111.mp3', NULL, N'["juice", "milk", "soda"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010112-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'apple', 'https://cdn.learnEase.com/audio/vocab/apple112.mp3', NULL, N'["banana", "orange", "grape"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010113-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'apple', 'https://cdn.learnEase.com/audio/vocab/apple113.mp3', NULL, N'["banana", "orange", "grape"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010114-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car114.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010115-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'dog', 'https://cdn.learnEase.com/audio/vocab/dog115.mp3', NULL, N'["cat", "mouse", "rabbit"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010116-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'sun', 'https://cdn.learnEase.com/audio/vocab/sun116.mp3', NULL, N'["moon", "star", "planet"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010117-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'dog', 'https://cdn.learnEase.com/audio/vocab/dog117.mp3', NULL, N'["cat", "mouse", "rabbit"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010118-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car118.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010119-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'computer', 'https://cdn.learnEase.com/audio/vocab/computer119.mp3', NULL, N'["laptop", "tablet", "phone"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010120-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'car', 'https://cdn.learnEase.com/audio/vocab/car120.mp3', NULL, N'["bus", "bike", "truck"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010121-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'apple', 'https://cdn.learnEase.com/audio/vocab/apple121.mp3', NULL, N'["banana", "orange", "grape"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010122-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'sun', 'https://cdn.learnEase.com/audio/vocab/sun122.mp3', NULL, N'["moon", "star", "planet"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010123-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'computer', 'https://cdn.learnEase.com/audio/vocab/computer123.mp3', NULL, N'["laptop", "tablet", "phone"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010124-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'sun', 'https://cdn.learnEase.com/audio/vocab/sun124.mp3', NULL, N'["moon", "star", "planet"]');
+INSERT INTO VocabularyItems (VocabId, DialectId, Word, AudioUrl, ImageUrl, DistractorsJson) VALUES ('C0010125-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'apple', 'https://cdn.learnEase.com/audio/vocab/apple125.mp3', NULL, N'["banana", "orange", "grape"]');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010002-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 2.', 'https://cdn.learnEase.com/audio/exercise/example_002.mp3', N'Example sentence number 2.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010003-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 3.', 'https://cdn.learnEase.com/audio/exercise/example_003.mp3', N'Example sentence number 3.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010004-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 4.', 'https://cdn.learnEase.com/audio/exercise/example_004.mp3', N'Example sentence number 4.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010005-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 5.', 'https://cdn.learnEase.com/audio/exercise/example_005.mp3', N'Example sentence number 5.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010006-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 6.', 'https://cdn.learnEase.com/audio/exercise/example_006.mp3', N'Example sentence number 6.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010007-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 7.', 'https://cdn.learnEase.com/audio/exercise/example_007.mp3', N'Example sentence number 7.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010008-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 8.', 'https://cdn.learnEase.com/audio/exercise/example_008.mp3', N'Example sentence number 8.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010009-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 9.', 'https://cdn.learnEase.com/audio/exercise/example_009.mp3', N'Example sentence number 9.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010010-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 10.', 'https://cdn.learnEase.com/audio/exercise/example_010.mp3', N'Example sentence number 10.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010011-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 11.', 'https://cdn.learnEase.com/audio/exercise/example_011.mp3', N'Example sentence number 11.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010012-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 12.', 'https://cdn.learnEase.com/audio/exercise/example_012.mp3', N'Example sentence number 12.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010013-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 13.', 'https://cdn.learnEase.com/audio/exercise/example_013.mp3', N'Example sentence number 13.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010014-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 14.', 'https://cdn.learnEase.com/audio/exercise/example_014.mp3', N'Example sentence number 14.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010015-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 15.', 'https://cdn.learnEase.com/audio/exercise/example_015.mp3', N'Example sentence number 15.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010016-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'she always paints on sundays, but she is drawing tonight', 'https://www.oxfordlearnersdictionaries.com/media/english/us_pron/e/eco/econo/economic__us_2_rr.mp3', N'Example sentence number 16.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010017-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'she always paints on sundays, but she is drawing tonight', 'https://www.oxfordlearnersdictionaries.com/media/english/us_pron/e/eco/econo/economic__us_2_rr.mp3', N'Example sentence number 17.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010018-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'she always paints on sundays, but she is drawing tonight', 'https://www.oxfordlearnersdictionaries.com/media/english/us_pron/e/eco/econo/economic__us_2_rr.mp3', N'Example sentence number 18.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010019-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'she always paints on sundays, but she is drawing tonight', 'https://www.oxfordlearnersdictionaries.com/media/english/us_pron/e/eco/econo/economic__us_2_rr.mp3', N'Example sentence number 19.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010020-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 20.', 'https://cdn.learnEase.com/audio/exercise/example_020.mp3', N'Example sentence number 20.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010021-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 21.', 'https://cdn.learnEase.com/audio/exercise/example_021.mp3', N'Example sentence number 21.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010022-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 22.', 'https://cdn.learnEase.com/audio/exercise/example_022.mp3', N'Example sentence number 22.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010023-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 23.', 'https://cdn.learnEase.com/audio/exercise/example_023.mp3', N'Example sentence number 23.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010024-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 24.', 'https://cdn.learnEase.com/audio/exercise/example_024.mp3', N'Example sentence number 24.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010025-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 25.', 'https://cdn.learnEase.com/audio/exercise/example_025.mp3', N'Example sentence number 25.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010026-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 26.', 'https://cdn.learnEase.com/audio/exercise/example_026.mp3', N'Example sentence number 26.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010027-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 27.', 'https://cdn.learnEase.com/audio/exercise/example_027.mp3', N'Example sentence number 27.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010028-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 28.', 'https://cdn.learnEase.com/audio/exercise/example_028.mp3', N'Example sentence number 28.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010029-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 29.', 'https://cdn.learnEase.com/audio/exercise/example_029.mp3', N'Example sentence number 29.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010030-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 30.', 'https://cdn.learnEase.com/audio/exercise/example_030.mp3', N'Example sentence number 30.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010031-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 31.', 'https://cdn.learnEase.com/audio/exercise/example_031.mp3', N'Example sentence number 31.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010032-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 32.', 'https://cdn.learnEase.com/audio/exercise/example_032.mp3', N'Example sentence number 32.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010033-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 33.', 'https://cdn.learnEase.com/audio/exercise/example_033.mp3', N'Example sentence number 33.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010034-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 34.', 'https://cdn.learnEase.com/audio/exercise/example_034.mp3', N'Example sentence number 34.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010035-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 35.', 'https://cdn.learnEase.com/audio/exercise/example_035.mp3', N'Example sentence number 35.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010036-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 36.', 'https://cdn.learnEase.com/audio/exercise/example_036.mp3', N'Example sentence number 36.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010037-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 37.', 'https://cdn.learnEase.com/audio/exercise/example_037.mp3', N'Example sentence number 37.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010038-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 38.', 'https://cdn.learnEase.com/audio/exercise/example_038.mp3', N'Example sentence number 38.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010039-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 39.', 'https://cdn.learnEase.com/audio/exercise/example_039.mp3', N'Example sentence number 39.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010040-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 40.', 'https://cdn.learnEase.com/audio/exercise/example_040.mp3', N'Example sentence number 40.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010041-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 41.', 'https://cdn.learnEase.com/audio/exercise/example_041.mp3', N'Example sentence number 41.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010042-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 42.', 'https://cdn.learnEase.com/audio/exercise/example_042.mp3', N'Example sentence number 42.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010043-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 43.', 'https://cdn.learnEase.com/audio/exercise/example_043.mp3', N'Example sentence number 43.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010044-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 44.', 'https://cdn.learnEase.com/audio/exercise/example_044.mp3', N'Example sentence number 44.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010045-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 45.', 'https://cdn.learnEase.com/audio/exercise/example_045.mp3', N'Example sentence number 45.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010046-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 46.', 'https://cdn.learnEase.com/audio/exercise/example_046.mp3', N'Example sentence number 46.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010047-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 47.', 'https://cdn.learnEase.com/audio/exercise/example_047.mp3', N'Example sentence number 47.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010048-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 48.', 'https://cdn.learnEase.com/audio/exercise/example_048.mp3', N'Example sentence number 48.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010049-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 49.', 'https://cdn.learnEase.com/audio/exercise/example_049.mp3', N'Example sentence number 49.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010050-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 50.', 'https://cdn.learnEase.com/audio/exercise/example_050.mp3', N'Example sentence number 50.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010051-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 51.', 'https://cdn.learnEase.com/audio/exercise/example_051.mp3', N'Example sentence number 51.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010052-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 52.', 'https://cdn.learnEase.com/audio/exercise/example_052.mp3', N'Example sentence number 52.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010053-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 53.', 'https://cdn.learnEase.com/audio/exercise/example_053.mp3', N'Example sentence number 53.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010054-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 54.', 'https://cdn.learnEase.com/audio/exercise/example_054.mp3', N'Example sentence number 54.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010055-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 55.', 'https://cdn.learnEase.com/audio/exercise/example_055.mp3', N'Example sentence number 55.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010056-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 56.', 'https://cdn.learnEase.com/audio/exercise/example_056.mp3', N'Example sentence number 56.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010057-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 57.', 'https://cdn.learnEase.com/audio/exercise/example_057.mp3', N'Example sentence number 57.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010058-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 58.', 'https://cdn.learnEase.com/audio/exercise/example_058.mp3', N'Example sentence number 58.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010059-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 59.', 'https://cdn.learnEase.com/audio/exercise/example_059.mp3', N'Example sentence number 59.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010060-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 60.', 'https://cdn.learnEase.com/audio/exercise/example_060.mp3', N'Example sentence number 60.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010061-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 61.', 'https://cdn.learnEase.com/audio/exercise/example_061.mp3', N'Example sentence number 61.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010062-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 62.', 'https://cdn.learnEase.com/audio/exercise/example_062.mp3', N'Example sentence number 62.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010063-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 63.', 'https://cdn.learnEase.com/audio/exercise/example_063.mp3', N'Example sentence number 63.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010064-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 64.', 'https://cdn.learnEase.com/audio/exercise/example_064.mp3', N'Example sentence number 64.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010065-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 65.', 'https://cdn.learnEase.com/audio/exercise/example_065.mp3', N'Example sentence number 65.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010066-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 66.', 'https://cdn.learnEase.com/audio/exercise/example_066.mp3', N'Example sentence number 66.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010067-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 67.', 'https://cdn.learnEase.com/audio/exercise/example_067.mp3', N'Example sentence number 67.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010068-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 68.', 'https://cdn.learnEase.com/audio/exercise/example_068.mp3', N'Example sentence number 68.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010069-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 69.', 'https://cdn.learnEase.com/audio/exercise/example_069.mp3', N'Example sentence number 69.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010070-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 70.', 'https://cdn.learnEase.com/audio/exercise/example_070.mp3', N'Example sentence number 70.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010071-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 71.', 'https://cdn.learnEase.com/audio/exercise/example_071.mp3', N'Example sentence number 71.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010072-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 72.', 'https://cdn.learnEase.com/audio/exercise/example_072.mp3', N'Example sentence number 72.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010073-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 73.', 'https://cdn.learnEase.com/audio/exercise/example_073.mp3', N'Example sentence number 73.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010074-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 74.', 'https://cdn.learnEase.com/audio/exercise/example_074.mp3', N'Example sentence number 74.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010075-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 75.', 'https://cdn.learnEase.com/audio/exercise/example_075.mp3', N'Example sentence number 75.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010076-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 76.', 'https://cdn.learnEase.com/audio/exercise/example_076.mp3', N'Example sentence number 76.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010077-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 77.', 'https://cdn.learnEase.com/audio/exercise/example_077.mp3', N'Example sentence number 77.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010078-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 78.', 'https://cdn.learnEase.com/audio/exercise/example_078.mp3', N'Example sentence number 78.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010079-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 79.', 'https://cdn.learnEase.com/audio/exercise/example_079.mp3', N'Example sentence number 79.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010080-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 80.', 'https://cdn.learnEase.com/audio/exercise/example_080.mp3', N'Example sentence number 80.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010081-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 81.', 'https://cdn.learnEase.com/audio/exercise/example_081.mp3', N'Example sentence number 81.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010082-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 82.', 'https://cdn.learnEase.com/audio/exercise/example_082.mp3', N'Example sentence number 82.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010083-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 83.', 'https://cdn.learnEase.com/audio/exercise/example_083.mp3', N'Example sentence number 83.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010084-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 84.', 'https://cdn.learnEase.com/audio/exercise/example_084.mp3', N'Example sentence number 84.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010085-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 85.', 'https://cdn.learnEase.com/audio/exercise/example_085.mp3', N'Example sentence number 85.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010086-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 86.', 'https://cdn.learnEase.com/audio/exercise/example_086.mp3', N'Example sentence number 86.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010087-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 87.', 'https://cdn.learnEase.com/audio/exercise/example_087.mp3', N'Example sentence number 87.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010088-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 88.', 'https://cdn.learnEase.com/audio/exercise/example_088.mp3', N'Example sentence number 88.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010089-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 89.', 'https://cdn.learnEase.com/audio/exercise/example_089.mp3', N'Example sentence number 89.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010090-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 90.', 'https://cdn.learnEase.com/audio/exercise/example_090.mp3', N'Example sentence number 90.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010091-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 91.', 'https://cdn.learnEase.com/audio/exercise/example_091.mp3', N'Example sentence number 91.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010092-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 92.', 'https://cdn.learnEase.com/audio/exercise/example_092.mp3', N'Example sentence number 92.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010093-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 93.', 'https://cdn.learnEase.com/audio/exercise/example_093.mp3', N'Example sentence number 93.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010094-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 94.', 'https://cdn.learnEase.com/audio/exercise/example_094.mp3', N'Example sentence number 94.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010095-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 95.', 'https://cdn.learnEase.com/audio/exercise/example_095.mp3', N'Example sentence number 95.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010096-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 96.', 'https://cdn.learnEase.com/audio/exercise/example_096.mp3', N'Example sentence number 96.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010097-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 97.', 'https://cdn.learnEase.com/audio/exercise/example_097.mp3', N'Example sentence number 97.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010098-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 98.', 'https://cdn.learnEase.com/audio/exercise/example_098.mp3', N'Example sentence number 98.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010099-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 99.', 'https://cdn.learnEase.com/audio/exercise/example_099.mp3', N'Example sentence number 99.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010100-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 100.', 'https://cdn.learnEase.com/audio/exercise/example_100.mp3', N'Example sentence number 100.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010101-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 101.', 'https://cdn.learnEase.com/audio/exercise/example_101.mp3', N'Example sentence number 101.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010102-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 102.', 'https://cdn.learnEase.com/audio/exercise/example_102.mp3', N'Example sentence number 102.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010103-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 103.', 'https://cdn.learnEase.com/audio/exercise/example_103.mp3', N'Example sentence number 103.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010104-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 104.', 'https://cdn.learnEase.com/audio/exercise/example_104.mp3', N'Example sentence number 104.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010105-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 105.', 'https://cdn.learnEase.com/audio/exercise/example_105.mp3', N'Example sentence number 105.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010106-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 106.', 'https://cdn.learnEase.com/audio/exercise/example_106.mp3', N'Example sentence number 106.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010107-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 107.', 'https://cdn.learnEase.com/audio/exercise/example_107.mp3', N'Example sentence number 107.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010108-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 108.', 'https://cdn.learnEase.com/audio/exercise/example_108.mp3', N'Example sentence number 108.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010109-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 109.', 'https://cdn.learnEase.com/audio/exercise/example_109.mp3', N'Example sentence number 109.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010110-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 110.', 'https://cdn.learnEase.com/audio/exercise/example_110.mp3', N'Example sentence number 110.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010111-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 111.', 'https://cdn.learnEase.com/audio/exercise/example_111.mp3', N'Example sentence number 111.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010112-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 112.', 'https://cdn.learnEase.com/audio/exercise/example_112.mp3', N'Example sentence number 112.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010113-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 113.', 'https://cdn.learnEase.com/audio/exercise/example_113.mp3', N'Example sentence number 113.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010114-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 114.', 'https://cdn.learnEase.com/audio/exercise/example_114.mp3', N'Example sentence number 114.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010115-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 115.', 'https://cdn.learnEase.com/audio/exercise/example_115.mp3', N'Example sentence number 115.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010116-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 116.', 'https://cdn.learnEase.com/audio/exercise/example_116.mp3', N'Example sentence number 116.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010117-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 117.', 'https://cdn.learnEase.com/audio/exercise/example_117.mp3', N'Example sentence number 117.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010118-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 118.', 'https://cdn.learnEase.com/audio/exercise/example_118.mp3', N'Example sentence number 118.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010119-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 119.', 'https://cdn.learnEase.com/audio/exercise/example_119.mp3', N'Example sentence number 119.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010120-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 120.', 'https://cdn.learnEase.com/audio/exercise/example_120.mp3', N'Example sentence number 120.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010121-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 121.', 'https://cdn.learnEase.com/audio/exercise/example_121.mp3', N'Example sentence number 121.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010122-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 122.', 'https://cdn.learnEase.com/audio/exercise/example_122.mp3', N'Example sentence number 122.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010123-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 123.', 'https://cdn.learnEase.com/audio/exercise/example_123.mp3', N'Example sentence number 123.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010124-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 124.', 'https://cdn.learnEase.com/audio/exercise/example_124.mp3', N'Example sentence number 124.');
+INSERT INTO SpeakingExercises (ExerciseId, DialectId, Prompt, SampleAudioUrl, ReferenceText) VALUES ('E0010125-0000-0000-0000-000000000000', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', N'Say: Example sentence number 125.', 'https://cdn.learnEase.com/audio/exercise/example_125.mp3', N'Example sentence number 125.');
 
 /*========================================================
   6. ACHIEVEMENT & LEADERBOARD
@@ -262,3 +454,212 @@ INSERT [dbo].[AiLessonParts] ([PartId], [LessonId], [Skill], [Prompt], [Referenc
 INSERT [dbo].[AiLessonParts] ([PartId], [LessonId], [Skill], [Prompt], [ReferenceText], [AudioUrl], [ChoicesJson]) VALUES (N'44a2f0a5-6871-4067-a48f-f867cd5b0172', N'88b25f7c-a3f2-4e51-9799-34b6844a77c2', 1, N'when do you use present simple and present continuous tenses?', NULL, NULL, NULL)
 INSERT [dbo].[AiLessonParts] ([PartId], [LessonId], [Skill], [Prompt], [ReferenceText], [AudioUrl], [ChoicesJson]) VALUES (N'8c84d4a8-53c4-47b1-91f0-fcc7ade6b6c8', N'ca0eeaf6-c847-42e8-aaf9-585f01f3d2b0', 1, N'do you prefer reading books or watching movies in english?', NULL, NULL, NULL)
 GO
+
+/*========================================================
+  8. TOPIC
+========================================================*/
+INSERT INTO Topic (TopicId, Title, Description, [Order])
+VALUES
+  ('11111111-1111-1111-1111-111111111111', N'Greetings', N'Learn how to greet people in different situations.', 1),
+  ('22222222-2222-2222-2222-222222222222', N'Daily Routine', N'Vocabulary and speaking related to everyday daily habits.', 2),
+  ('33333333-3333-3333-3333-333333333333', N'Food & Drink', N'Words and phrases for food, meals, eating out and drinks.', 3),
+  ('44444444-4444-4444-4444-444444444444', N'Work & Office', N'Essential vocabulary for professional and workplace communication.', 4),
+  ('55555555-5555-5555-5555-555555555555', N'Travel', N'Language and expressions for traveling, directions and transportation.', 5);
+  /*========================================================
+  9. LESSON (5 lesson mỗi topic)
+========================================================*/
+INSERT INTO Lessons(LessonId, TopicId, DialectId, [Order], Title)
+VALUES
+-- Greetings Topic (ID: 1111...)
+('981DA0B3-C785-45E9-9FD8-AF9E5BB64FB5', '11111111-1111-1111-1111-111111111111', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 1, N'Greeting Basics'),
+('B53D0603-85F1-44EC-853E-FDE2E5B2DB02', '11111111-1111-1111-1111-111111111111', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 2, N'Formal Greetings'),
+('94C8C998-F2A6-4066-928A-BA7CACCAA74D', '11111111-1111-1111-1111-111111111111', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 3, N'Casual Greetings'),
+('5EE61239-9FDF-4E7F-9D0F-3B6FF45E63DE', '11111111-1111-1111-1111-111111111111', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 4, N'Introducing Yourself'),
+('0F63CEAA-1BDF-4921-987F-72F07B11A95E', '11111111-1111-1111-1111-111111111111', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 5, N'Farewells'),
+
+-- Daily Routine Topic (ID: 2222...)
+('69AD1BC5-3637-4877-BEC0-A3CDDEB0E5CD', '22222222-2222-2222-2222-222222222222', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 1, N'Morning Activities'),
+('0A019DB5-729C-426F-9B2C-4F95E2231205', '22222222-2222-2222-2222-222222222222', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 2, N'Daily Chores'),
+('31E9E5D2-6844-40A9-B407-C0A3113B5565', '22222222-2222-2222-2222-222222222222', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 3, N'Work and Study'),
+('49509115-D2E5-467B-968A-22B30A75082F', '22222222-2222-2222-2222-222222222222', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 4, N'Evening Routine'),
+('430E03AC-C1F2-48EE-A685-C65491EE6640', '22222222-2222-2222-2222-222222222222', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 5, N'Weekend Activities'),
+
+-- Food & Drink Topic (ID: 3333...)
+('5AF715BA-FEDF-46E6-BAF0-824AC4798CA3', '33333333-3333-3333-3333-333333333333', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 1, N'Common Foods'),
+('65DF01C1-5E66-4C01-9427-BD2DBBFE3277', '33333333-3333-3333-3333-333333333333', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 2, N'Drinks and Beverages'),
+('EC86E519-5A9A-41AB-8BF4-EA0A68099441', '33333333-3333-3333-3333-333333333333', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 3, N'At the Restaurant'),
+('AF9F67BC-3477-4729-B913-226AA5486715', '33333333-3333-3333-3333-333333333333', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 4, N'Likes and Dislikes'),
+('2636C6FC-9A72-4DB1-B5F0-FF533EFB0A64', '33333333-3333-3333-3333-333333333333', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 5, N'Food Quantities'),
+
+-- Work & Office Topic (ID: 4444...)
+('E2080D2E-6BA8-4A18-817F-A2B8CD407AEB', '44444444-4444-4444-4444-444444444444', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 1, N'Office Vocabulary'),
+('C8BA22F8-4E40-4F5D-B3E6-434943B1B628', '44444444-4444-4444-4444-444444444444', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 2, N'Meeting Language'),
+('F83B6646-8948-4DAD-8436-C8F5DDEA5211', '44444444-4444-4444-4444-444444444444', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 3, N'Writing Emails'),
+('3FA1C169-FE55-47B2-AE4D-E8D68B818A3D', '44444444-4444-4444-4444-444444444444', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 4, N'Job Interviews'),
+('1FADED40-027A-4157-BD8A-91CDE2483FB1', '44444444-4444-4444-4444-444444444444', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 5, N'Describing Jobs'),
+
+-- Travel Topic (ID: 5555...)
+('3764133A-0D63-4F63-A3A0-3EA8DADEF04D', '55555555-5555-5555-5555-555555555555', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 1, N'At the Airport'),
+('52E42A41-7BDA-4FE5-85E2-7BD6B1D5C619', '55555555-5555-5555-5555-555555555555', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 2, N'Hotel Conversations'),
+('B0798ED3-DF09-448F-84DF-0DF762C44FFC', '55555555-5555-5555-5555-555555555555', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 3, N'Asking for Directions'),
+('C6B6D2B4-26EC-4D41-ADC7-1B10A95798CE', '55555555-5555-5555-5555-555555555555', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 4, N'Transportation'),
+('86C9B06D-8774-4AE7-A6E4-89DF016D0627', '55555555-5555-5555-5555-555555555555', '3B5F8475-29D7-4F2D-A127-8CBFDF8D83F1', 5, N'Travel Problems');
+
+  /*========================================================
+  10. LessonVocabularies & LessonSpeakings (5 lesson mỗi topic)
+========================================================*/
+INSERT INTO LessonVocabularies (LessonId, VocabId) VALUES 
+-- Lesson 1
+('981DA0B3-C785-45E9-9FD8-AF9E5BB64FB5', 'C0010001-0000-0000-0000-000000000000'),
+('981DA0B3-C785-45E9-9FD8-AF9E5BB64FB5', 'C0010002-0000-0000-0000-000000000000'),
+('981DA0B3-C785-45E9-9FD8-AF9E5BB64FB5', 'C0010003-0000-0000-0000-000000000000'),
+('981DA0B3-C785-45E9-9FD8-AF9E5BB64FB5', 'C0010004-0000-0000-0000-000000000000'),
+('981DA0B3-C785-45E9-9FD8-AF9E5BB64FB5', 'C0010005-0000-0000-0000-000000000000'),
+
+-- Lesson 2
+('B53D0603-85F1-44EC-853E-FDE2E5B2DB02', 'C0010006-0000-0000-0000-000000000000'),
+('B53D0603-85F1-44EC-853E-FDE2E5B2DB02', 'C0010007-0000-0000-0000-000000000000'),
+('B53D0603-85F1-44EC-853E-FDE2E5B2DB02', 'C0010008-0000-0000-0000-000000000000'),
+('B53D0603-85F1-44EC-853E-FDE2E5B2DB02', 'C0010009-0000-0000-0000-000000000000'),
+('B53D0603-85F1-44EC-853E-FDE2E5B2DB02', 'C0010010-0000-0000-0000-000000000000'),
+
+-- Lesson 3
+('94C8C998-F2A6-4066-928A-BA7CACCAA74D', 'C0010011-0000-0000-0000-000000000000'),
+('94C8C998-F2A6-4066-928A-BA7CACCAA74D', 'C0010012-0000-0000-0000-000000000000'),
+('94C8C998-F2A6-4066-928A-BA7CACCAA74D', 'C0010013-0000-0000-0000-000000000000'),
+('94C8C998-F2A6-4066-928A-BA7CACCAA74D', 'C0010014-0000-0000-0000-000000000000'),
+('94C8C998-F2A6-4066-928A-BA7CACCAA74D', 'C0010015-0000-0000-0000-000000000000'),
+
+-- Lesson 4
+('5EE61239-9FDF-4E7F-9D0F-3B6FF45E63DE', 'C0010016-0000-0000-0000-000000000000'),
+('5EE61239-9FDF-4E7F-9D0F-3B6FF45E63DE', 'C0010017-0000-0000-0000-000000000000'),
+('5EE61239-9FDF-4E7F-9D0F-3B6FF45E63DE', 'C0010018-0000-0000-0000-000000000000'),
+('5EE61239-9FDF-4E7F-9D0F-3B6FF45E63DE', 'C0010019-0000-0000-0000-000000000000'),
+('5EE61239-9FDF-4E7F-9D0F-3B6FF45E63DE', 'C0010020-0000-0000-0000-000000000000');
+
+INSERT INTO LessonSpeakings (LessonId, ExerciseId) VALUES
+('981DA0B3-C785-45E9-9FD8-AF9E5BB64FB5', 'E0010002-0000-0000-0000-000000000000'),
+('981DA0B3-C785-45E9-9FD8-AF9E5BB64FB5', 'E0010003-0000-0000-0000-000000000000'),
+('981DA0B3-C785-45E9-9FD8-AF9E5BB64FB5', 'E0010004-0000-0000-0000-000000000000'),
+('981DA0B3-C785-45E9-9FD8-AF9E5BB64FB5', 'E0010005-0000-0000-0000-000000000000'),
+('B53D0603-85F1-44EC-853E-FDE2E5B2DB02', 'E0010006-0000-0000-0000-000000000000'),
+('B53D0603-85F1-44EC-853E-FDE2E5B2DB02', 'E0010007-0000-0000-0000-000000000000'),
+('B53D0603-85F1-44EC-853E-FDE2E5B2DB02', 'E0010008-0000-0000-0000-000000000000'),
+('B53D0603-85F1-44EC-853E-FDE2E5B2DB02', 'E0010009-0000-0000-0000-000000000000'),
+('B53D0603-85F1-44EC-853E-FDE2E5B2DB02', 'E0010010-0000-0000-0000-000000000000'),
+('94C8C998-F2A6-4066-928A-BA7CACCAA74D', 'E0010011-0000-0000-0000-000000000000'),
+('94C8C998-F2A6-4066-928A-BA7CACCAA74D', 'E0010012-0000-0000-0000-000000000000'),
+('94C8C998-F2A6-4066-928A-BA7CACCAA74D', 'E0010013-0000-0000-0000-000000000000'),
+('94C8C998-F2A6-4066-928A-BA7CACCAA74D', 'E0010014-0000-0000-0000-000000000000'),
+('94C8C998-F2A6-4066-928A-BA7CACCAA74D', 'E0010015-0000-0000-0000-000000000000'),
+('5EE61239-9FDF-4E7F-9D0F-3B6FF45E63DE', 'E0010016-0000-0000-0000-000000000000'),
+('5EE61239-9FDF-4E7F-9D0F-3B6FF45E63DE', 'E0010017-0000-0000-0000-000000000000'),
+('5EE61239-9FDF-4E7F-9D0F-3B6FF45E63DE', 'E0010018-0000-0000-0000-000000000000'),
+('5EE61239-9FDF-4E7F-9D0F-3B6FF45E63DE', 'E0010019-0000-0000-0000-000000000000'),
+('5EE61239-9FDF-4E7F-9D0F-3B6FF45E63DE', 'E0010020-0000-0000-0000-000000000000'),
+('0F63CEAA-1BDF-4921-987F-72F07B11A95E', 'E0010021-0000-0000-0000-000000000000'),
+('0F63CEAA-1BDF-4921-987F-72F07B11A95E', 'E0010022-0000-0000-0000-000000000000'),
+('0F63CEAA-1BDF-4921-987F-72F07B11A95E', 'E0010023-0000-0000-0000-000000000000'),
+('0F63CEAA-1BDF-4921-987F-72F07B11A95E', 'E0010024-0000-0000-0000-000000000000'),
+('0F63CEAA-1BDF-4921-987F-72F07B11A95E', 'E0010025-0000-0000-0000-000000000000'),
+('69AD1BC5-3637-4877-BEC0-A3CDDEB0E5CD', 'E0010026-0000-0000-0000-000000000000'),
+('69AD1BC5-3637-4877-BEC0-A3CDDEB0E5CD', 'E0010027-0000-0000-0000-000000000000'),
+('69AD1BC5-3637-4877-BEC0-A3CDDEB0E5CD', 'E0010028-0000-0000-0000-000000000000'),
+('69AD1BC5-3637-4877-BEC0-A3CDDEB0E5CD', 'E0010029-0000-0000-0000-000000000000'),
+('69AD1BC5-3637-4877-BEC0-A3CDDEB0E5CD', 'E0010030-0000-0000-0000-000000000000'),
+('0A019DB5-729C-426F-9B2C-4F95E2231205', 'E0010031-0000-0000-0000-000000000000'),
+('0A019DB5-729C-426F-9B2C-4F95E2231205', 'E0010032-0000-0000-0000-000000000000'),
+('0A019DB5-729C-426F-9B2C-4F95E2231205', 'E0010033-0000-0000-0000-000000000000'),
+('0A019DB5-729C-426F-9B2C-4F95E2231205', 'E0010034-0000-0000-0000-000000000000'),
+('0A019DB5-729C-426F-9B2C-4F95E2231205', 'E0010035-0000-0000-0000-000000000000'),
+('31E9E5D2-6844-40A9-B407-C0A3113B5565', 'E0010036-0000-0000-0000-000000000000'),
+('31E9E5D2-6844-40A9-B407-C0A3113B5565', 'E0010037-0000-0000-0000-000000000000'),
+('31E9E5D2-6844-40A9-B407-C0A3113B5565', 'E0010038-0000-0000-0000-000000000000'),
+('31E9E5D2-6844-40A9-B407-C0A3113B5565', 'E0010039-0000-0000-0000-000000000000'),
+('31E9E5D2-6844-40A9-B407-C0A3113B5565', 'E0010040-0000-0000-0000-000000000000'),
+('49509115-D2E5-467B-968A-22B30A75082F', 'E0010041-0000-0000-0000-000000000000'),
+('49509115-D2E5-467B-968A-22B30A75082F', 'E0010042-0000-0000-0000-000000000000'),
+('49509115-D2E5-467B-968A-22B30A75082F', 'E0010043-0000-0000-0000-000000000000'),
+('49509115-D2E5-467B-968A-22B30A75082F', 'E0010044-0000-0000-0000-000000000000'),
+('49509115-D2E5-467B-968A-22B30A75082F', 'E0010045-0000-0000-0000-000000000000'),
+('430E03AC-C1F2-48EE-A685-C65491EE6640', 'E0010046-0000-0000-0000-000000000000'),
+('430E03AC-C1F2-48EE-A685-C65491EE6640', 'E0010047-0000-0000-0000-000000000000'),
+('430E03AC-C1F2-48EE-A685-C65491EE6640', 'E0010048-0000-0000-0000-000000000000'),
+('430E03AC-C1F2-48EE-A685-C65491EE6640', 'E0010049-0000-0000-0000-000000000000'),
+('430E03AC-C1F2-48EE-A685-C65491EE6640', 'E0010050-0000-0000-0000-000000000000'),
+('5AF715BA-FEDF-46E6-BAF0-824AC4798CA3', 'E0010051-0000-0000-0000-000000000000'),
+('5AF715BA-FEDF-46E6-BAF0-824AC4798CA3', 'E0010052-0000-0000-0000-000000000000'),
+('5AF715BA-FEDF-46E6-BAF0-824AC4798CA3', 'E0010053-0000-0000-0000-000000000000'),
+('5AF715BA-FEDF-46E6-BAF0-824AC4798CA3', 'E0010054-0000-0000-0000-000000000000'),
+('5AF715BA-FEDF-46E6-BAF0-824AC4798CA3', 'E0010055-0000-0000-0000-000000000000'),
+('65DF01C1-5E66-4C01-9427-BD2DBBFE3277', 'E0010056-0000-0000-0000-000000000000'),
+('65DF01C1-5E66-4C01-9427-BD2DBBFE3277', 'E0010057-0000-0000-0000-000000000000'),
+('65DF01C1-5E66-4C01-9427-BD2DBBFE3277', 'E0010058-0000-0000-0000-000000000000'),
+('65DF01C1-5E66-4C01-9427-BD2DBBFE3277', 'E0010059-0000-0000-0000-000000000000'),
+('65DF01C1-5E66-4C01-9427-BD2DBBFE3277', 'E0010060-0000-0000-0000-000000000000'),
+('EC86E519-5A9A-41AB-8BF4-EA0A68099441', 'E0010061-0000-0000-0000-000000000000'),
+('EC86E519-5A9A-41AB-8BF4-EA0A68099441', 'E0010062-0000-0000-0000-000000000000'),
+('EC86E519-5A9A-41AB-8BF4-EA0A68099441', 'E0010063-0000-0000-0000-000000000000'),
+('EC86E519-5A9A-41AB-8BF4-EA0A68099441', 'E0010064-0000-0000-0000-000000000000'),
+('EC86E519-5A9A-41AB-8BF4-EA0A68099441', 'E0010065-0000-0000-0000-000000000000'),
+('AF9F67BC-3477-4729-B913-226AA5486715', 'E0010066-0000-0000-0000-000000000000'),
+('AF9F67BC-3477-4729-B913-226AA5486715', 'E0010067-0000-0000-0000-000000000000'),
+('AF9F67BC-3477-4729-B913-226AA5486715', 'E0010068-0000-0000-0000-000000000000'),
+('AF9F67BC-3477-4729-B913-226AA5486715', 'E0010069-0000-0000-0000-000000000000'),
+('AF9F67BC-3477-4729-B913-226AA5486715', 'E0010070-0000-0000-0000-000000000000'),
+('2636C6FC-9A72-4DB1-B5F0-FF533EFB0A64', 'E0010071-0000-0000-0000-000000000000'),
+('2636C6FC-9A72-4DB1-B5F0-FF533EFB0A64', 'E0010072-0000-0000-0000-000000000000'),
+('2636C6FC-9A72-4DB1-B5F0-FF533EFB0A64', 'E0010073-0000-0000-0000-000000000000'),
+('2636C6FC-9A72-4DB1-B5F0-FF533EFB0A64', 'E0010074-0000-0000-0000-000000000000'),
+('2636C6FC-9A72-4DB1-B5F0-FF533EFB0A64', 'E0010075-0000-0000-0000-000000000000'),
+('E2080D2E-6BA8-4A18-817F-A2B8CD407AEB', 'E0010076-0000-0000-0000-000000000000'),
+('E2080D2E-6BA8-4A18-817F-A2B8CD407AEB', 'E0010077-0000-0000-0000-000000000000'),
+('E2080D2E-6BA8-4A18-817F-A2B8CD407AEB', 'E0010078-0000-0000-0000-000000000000'),
+('E2080D2E-6BA8-4A18-817F-A2B8CD407AEB', 'E0010079-0000-0000-0000-000000000000'),
+('E2080D2E-6BA8-4A18-817F-A2B8CD407AEB', 'E0010080-0000-0000-0000-000000000000'),
+('C8BA22F8-4E40-4F5D-B3E6-434943B1B628', 'E0010081-0000-0000-0000-000000000000'),
+('C8BA22F8-4E40-4F5D-B3E6-434943B1B628', 'E0010082-0000-0000-0000-000000000000'),
+('C8BA22F8-4E40-4F5D-B3E6-434943B1B628', 'E0010083-0000-0000-0000-000000000000'),
+('C8BA22F8-4E40-4F5D-B3E6-434943B1B628', 'E0010084-0000-0000-0000-000000000000'),
+('C8BA22F8-4E40-4F5D-B3E6-434943B1B628', 'E0010085-0000-0000-0000-000000000000'),
+('F83B6646-8948-4DAD-8436-C8F5DDEA5211', 'E0010086-0000-0000-0000-000000000000'),
+('F83B6646-8948-4DAD-8436-C8F5DDEA5211', 'E0010087-0000-0000-0000-000000000000'),
+('F83B6646-8948-4DAD-8436-C8F5DDEA5211', 'E0010088-0000-0000-0000-000000000000'),
+('F83B6646-8948-4DAD-8436-C8F5DDEA5211', 'E0010089-0000-0000-0000-000000000000'),
+('F83B6646-8948-4DAD-8436-C8F5DDEA5211', 'E0010090-0000-0000-0000-000000000000'),
+('3FA1C169-FE55-47B2-AE4D-E8D68B818A3D', 'E0010091-0000-0000-0000-000000000000'),
+('3FA1C169-FE55-47B2-AE4D-E8D68B818A3D', 'E0010092-0000-0000-0000-000000000000'),
+('3FA1C169-FE55-47B2-AE4D-E8D68B818A3D', 'E0010093-0000-0000-0000-000000000000'),
+('3FA1C169-FE55-47B2-AE4D-E8D68B818A3D', 'E0010094-0000-0000-0000-000000000000'),
+('3FA1C169-FE55-47B2-AE4D-E8D68B818A3D', 'E0010095-0000-0000-0000-000000000000'),
+('1FADED40-027A-4157-BD8A-91CDE2483FB1', 'E0010096-0000-0000-0000-000000000000'),
+('1FADED40-027A-4157-BD8A-91CDE2483FB1', 'E0010097-0000-0000-0000-000000000000'),
+('1FADED40-027A-4157-BD8A-91CDE2483FB1', 'E0010098-0000-0000-0000-000000000000'),
+('1FADED40-027A-4157-BD8A-91CDE2483FB1', 'E0010099-0000-0000-0000-000000000000'),
+('1FADED40-027A-4157-BD8A-91CDE2483FB1', 'E0010100-0000-0000-0000-000000000000'),
+('3764133A-0D63-4F63-A3A0-3EA8DADEF04D', 'E0010101-0000-0000-0000-000000000000'),
+('3764133A-0D63-4F63-A3A0-3EA8DADEF04D', 'E0010102-0000-0000-0000-000000000000'),
+('3764133A-0D63-4F63-A3A0-3EA8DADEF04D', 'E0010103-0000-0000-0000-000000000000'),
+('3764133A-0D63-4F63-A3A0-3EA8DADEF04D', 'E0010104-0000-0000-0000-000000000000'),
+('3764133A-0D63-4F63-A3A0-3EA8DADEF04D', 'E0010105-0000-0000-0000-000000000000'),
+('52E42A41-7BDA-4FE5-85E2-7BD6B1D5C619', 'E0010106-0000-0000-0000-000000000000'),
+('52E42A41-7BDA-4FE5-85E2-7BD6B1D5C619', 'E0010107-0000-0000-0000-000000000000'),
+('52E42A41-7BDA-4FE5-85E2-7BD6B1D5C619', 'E0010108-0000-0000-0000-000000000000'),
+('52E42A41-7BDA-4FE5-85E2-7BD6B1D5C619', 'E0010109-0000-0000-0000-000000000000'),
+('52E42A41-7BDA-4FE5-85E2-7BD6B1D5C619', 'E0010110-0000-0000-0000-000000000000'),
+('B0798ED3-DF09-448F-84DF-0DF762C44FFC', 'E0010111-0000-0000-0000-000000000000'),
+('B0798ED3-DF09-448F-84DF-0DF762C44FFC', 'E0010112-0000-0000-0000-000000000000'),
+('B0798ED3-DF09-448F-84DF-0DF762C44FFC', 'E0010113-0000-0000-0000-000000000000'),
+('B0798ED3-DF09-448F-84DF-0DF762C44FFC', 'E0010114-0000-0000-0000-000000000000'),
+('B0798ED3-DF09-448F-84DF-0DF762C44FFC', 'E0010115-0000-0000-0000-000000000000'),
+('C6B6D2B4-26EC-4D41-ADC7-1B10A95798CE', 'E0010116-0000-0000-0000-000000000000'),
+('C6B6D2B4-26EC-4D41-ADC7-1B10A95798CE', 'E0010117-0000-0000-0000-000000000000'),
+('C6B6D2B4-26EC-4D41-ADC7-1B10A95798CE', 'E0010118-0000-0000-0000-000000000000'),
+('C6B6D2B4-26EC-4D41-ADC7-1B10A95798CE', 'E0010119-0000-0000-0000-000000000000'),
+('C6B6D2B4-26EC-4D41-ADC7-1B10A95798CE', 'E0010120-0000-0000-0000-000000000000'),
+('86C9B06D-8774-4AE7-A6E4-89DF016D0627', 'E0010121-0000-0000-0000-000000000000'),
+('86C9B06D-8774-4AE7-A6E4-89DF016D0627', 'E0010122-0000-0000-0000-000000000000'),
+('86C9B06D-8774-4AE7-A6E4-89DF016D0627', 'E0010123-0000-0000-0000-000000000000'),
+('86C9B06D-8774-4AE7-A6E4-89DF016D0627', 'E0010124-0000-0000-0000-000000000000'),
+('86C9B06D-8774-4AE7-A6E4-89DF016D0627', 'E0010125-0000-0000-0000-000000000000');
+

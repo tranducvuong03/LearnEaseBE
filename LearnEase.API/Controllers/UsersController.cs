@@ -16,12 +16,15 @@ namespace LearnEase.API.Controllers
     {
         private readonly IUserService _service;
         private readonly IUserStreakService _userStreakService;
+        private readonly IUserHeartService _userHeartService;
 
-        public UsersController(IUserService service , IUserStreakService userStreakService )
+
+        public UsersController(IUserService service , IUserStreakService userStreakService, IUserHeartService userHeartService )
         {
             _service = service; 
             _userStreakService = userStreakService;
-            
+            _userHeartService = userHeartService;
+
         }
 
         [HttpGet]
@@ -130,6 +133,22 @@ namespace LearnEase.API.Controllers
             });
 
         }
+        [HttpGet("current-heart")]
+        public async Task<IActionResult> GetCurrentHeartsOnly([FromQuery] Guid userId)
+        {
 
+            var heartStatus = await _userHeartService.GetCurrentHeartsAsync(userId);
+            return Ok(heartStatus);
         }
+        [HttpPost("use-heart")]
+        public async Task<IActionResult> UseHeart([FromQuery] Guid userId)
+        {
+            var result = await _userHeartService.UseHeartAsync(userId);
+            if (!result)
+                return BadRequest("Không đủ tim hoặc user không tồn tại.");
+
+            return Ok("Sử dụng tim thành công.");
+        }
+
+    }
 }

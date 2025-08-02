@@ -1,14 +1,10 @@
-﻿using LearnEase.Repository.EntityModel;
-
-namespace LearnEase.Service.Models.Response
+﻿namespace LearnEase.Service.Models.Response
 {
-    public class LessonModel
+    public class LessonResponse
     {
         public Guid LessonId { get; set; }
-        public string Title { get; set; } = "Lesson Block";
-
-        public List<VocabularyItem> Vocabularies { get; set; }
-        public List<SpeakingExercise> SpeakingExercises { get; set; }
+        public Guid TopicId { get; set; }
+        public int Order { get; set; }
+        public string Title { get; set; } = string.Empty;
     }
-
 }

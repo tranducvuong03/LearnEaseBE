@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LearnEase.Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class addstreak : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -43,7 +43,8 @@ namespace LearnEase.Repository.Migrations
                 {
                     TopicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Order = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -274,6 +275,32 @@ namespace LearnEase.Repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserTopicProgress",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    TopicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CompletedLessonCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserTopicProgress", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserTopicProgress_Topic_TopicId",
+                        column: x => x.TopicId,
+                        principalTable: "Topic",
+                        principalColumn: "TopicId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserTopicProgress_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Lessons",
                 columns: table => new
                 {
@@ -281,9 +308,7 @@ namespace LearnEase.Repository.Migrations
                     TopicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DialectId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Order = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IconUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -430,13 +455,19 @@ namespace LearnEase.Repository.Migrations
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     VocabId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ExerciseId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    LastReviewed = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RepetitionCount = table.Column<int>(type: "int", nullable: false),
+                    LessonId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsCorrect = table.Column<bool>(type: "bit", nullable: false),
                     VocabularyItemVocabId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserProgresses", x => x.ProgressId);
+                    table.ForeignKey(
+                        name: "FK_UserProgresses_Lessons_LessonId",
+                        column: x => x.LessonId,
+                        principalTable: "Lessons",
+                        principalColumn: "LessonId",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserProgresses_SpeakingExercises_ExerciseId",
                         column: x => x.ExerciseId,
@@ -537,6 +568,11 @@ namespace LearnEase.Repository.Migrations
                 column: "ExerciseId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_UserProgresses_LessonId",
+                table: "UserProgresses",
+                column: "LessonId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserProgresses_UserId",
                 table: "UserProgresses",
                 column: "UserId");
@@ -549,6 +585,16 @@ namespace LearnEase.Repository.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_UserStreaks_UserId",
                 table: "UserStreaks",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTopicProgress_TopicId",
+                table: "UserTopicProgress",
+                column: "TopicId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserTopicProgress_UserId",
+                table: "UserTopicProgress",
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
@@ -597,10 +643,13 @@ namespace LearnEase.Repository.Migrations
                 name: "UserStreaks");
 
             migrationBuilder.DropTable(
-                name: "Lessons");
+                name: "UserTopicProgress");
 
             migrationBuilder.DropTable(
                 name: "AiLessons");
+
+            migrationBuilder.DropTable(
+                name: "Lessons");
 
             migrationBuilder.DropTable(
                 name: "SpeakingExercises");

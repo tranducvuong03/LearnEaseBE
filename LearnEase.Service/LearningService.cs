@@ -10,10 +10,8 @@ namespace LearnEase.Service
         private readonly IGenericRepository<UserProgress> _userProgressRepo;
         private readonly IGenericRepository<VocabularyItem> _vocabRepo;
         private readonly IGenericRepository<SpeakingExercise> _speakingRepo;
-        // Có thể thêm repo cho UserSettings để lấy PreferredDialect
         private readonly IGenericRepository<UserSettings> _userSettingsRepo;
-
-        private readonly IUnitOfWork _uow; // Thêm UnitOfWork nếu bạn muốn thực hiện thao tác lưu
+        private readonly IUnitOfWork _uow;
 
         public LearningService(IUnitOfWork uow)
         {
@@ -22,6 +20,96 @@ namespace LearnEase.Service
             _vocabRepo = _uow.GetRepository<VocabularyItem>();
             _speakingRepo = _uow.GetRepository<SpeakingExercise>();
             _userSettingsRepo = _uow.GetRepository<UserSettings>();
+        }
+
+        public async Task<LearningResponse?> GetNextLessonBlockForUserAsync(Guid userId)
+        {
+            if (userId == Guid.Empty)
+                return null;
+
+            // 1. Lấy Preferred Dialect từ user
+            var userSettings = (await _userSettingsRepo.GetAllAsync())
+                .FirstOrDefault(us => us.UserId == userId);
+
+            Guid? preferredDialectId = userSettings?.PreferredDialectId;
+
+            // 2. Lấy progress
+            var userProgress = (await _userProgressRepo.GetAllAsync())
+                .Where(up => up.UserId == userId)
+                .ToList();
+
+            // 3. Lấy dữ liệu lessons + vocab + speaking
+            var lessonRepo = _uow.GetRepository<Lesson>();
+            var lessonVocabRepo = _uow.GetRepository<LessonVocabulary>();
+            var lessonSpeakingRepo = _uow.GetRepository<LessonSpeaking>();
+
+            var allLessons = await lessonRepo.GetAllAsync();
+            if (preferredDialectId.HasValue)
+                allLessons = allLessons.Where(l => l.DialectId == preferredDialectId.Value).ToList();
+
+            var allLessonVocabs = await lessonVocabRepo.GetAllAsync();
+            var allLessonSpeakings = await lessonSpeakingRepo.GetAllAsync();
+            var allVocabs = await _vocabRepo.GetAllAsync();
+            var allSpeakings = await _speakingRepo.GetAllAsync();
+
+            foreach (var lesson in allLessons.OrderBy(l => l.Order))
+            {
+                var lessonVocabIds = allLessonVocabs
+                    .Where(lv => lv.LessonId == lesson.LessonId)
+                    .Select(lv => lv.VocabId)
+                    .ToList();
+
+                var lessonSpeakingIds = allLessonSpeakings
+                    .Where(ls => ls.LessonId == lesson.LessonId)
+                    .Select(ls => ls.ExerciseId)
+                    .ToList();
+
+                var progress = userProgress
+                    .Where(p => p.LessonId == lesson.LessonId)
+                    .ToList();
+
+                int correctCount = progress.Count(p => p.IsCorrect == true);
+
+                if (correctCount < 8)
+                {
+                    var vocabItems = allVocabs
+                        .Where(v => lessonVocabIds.Contains(v.VocabId))
+                        .ToList();
+
+                    var speakingItems = allSpeakings
+                        .Where(s => lessonSpeakingIds.Contains(s.ExerciseId))
+                        .ToList();
+
+                    var vocabResponses = vocabItems.Select(v => new VocabularyResponse
+                    {
+                        VocabId = v.VocabId,
+                        Word = v.Word,
+                        AudioUrl = v.AudioUrl,
+                        ImageUrl = v.ImageUrl,
+                        DistractorsJson = v.DistractorsJson
+                    }).ToList();
+
+                    var speakingResponses = speakingItems.Select(s => new SpeakingExerciseResponse
+                    {
+                        ExerciseId = s.ExerciseId,
+                        Prompt = s.Prompt,
+                        SampleAudioUrl = s.SampleAudioUrl,
+                        ReferenceText = s.ReferenceText
+                    }).ToList();
+
+                    return new LearningResponse
+                    {
+                        LessonId = lesson.LessonId,
+                        Title = lesson.Title,
+                        Vocabularies = vocabResponses,
+                        SpeakingExercises = speakingResponses,
+                        VocabCorrectCount = progress.Count(p => p.IsCorrect && p.VocabId.HasValue),
+                        SpeakingCorrectCount = progress.Count(p => p.IsCorrect && p.ExerciseId.HasValue)
+                    };
+                }
+            }
+
+            return null;
         }
 
         public async Task<NextLesson?> GetNextLessonForUserAsync(Guid userId)
@@ -88,46 +176,170 @@ namespace LearnEase.Service
             return null;
         }
 
-        public async Task<LessonModel?> GetNextLessonBlockForUserAsync(Guid userId)
+        public async Task<bool> IsLessonCompleted(Guid userId, Guid lessonId)
         {
-            var userSettings = (await _userSettingsRepo.GetAllAsync())
-                .FirstOrDefault(us => us.UserId == userId);
-            Guid? preferredDialectId = userSettings?.PreferredDialectId;
+            var progresses = (await _userProgressRepo.GetAllAsync())
+                             .Where(up => up.UserId == userId && up.LessonId == lessonId)
+                             .ToList();
 
-            var userProgress = (await _userProgressRepo.GetAllAsync())
-                .Where(up => up.UserId == userId).ToList();
+            int correctCount = progresses.Count(p => p.IsCorrect == true);
+            return correctCount >= 8;
+        }
 
-            IEnumerable<VocabularyItem> allVocabs = await _vocabRepo.GetAllAsync();
-            IEnumerable<SpeakingExercise> allSpeaking = await _speakingRepo.GetAllAsync();
+        public async Task<int> GetCompletedLessonCountInTopic(Guid userId, Guid topicId)
+        {
+            var allLessons = (await _uow.GetRepository<Lesson>().GetAllAsync())
+                              .Where(l => l.TopicId == topicId).ToList();
 
-            if (preferredDialectId.HasValue)
+            int count = 0;
+            foreach (var lesson in allLessons)
             {
-                var dialectId = preferredDialectId.Value;
-                allVocabs = allVocabs.Where(v => v.DialectId == dialectId);
-                allSpeaking = allSpeaking.Where(s => s.DialectId == dialectId);
+                if (await IsLessonCompleted(userId, lesson.LessonId))
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        public async Task UpdateTopicProgress(Guid userId, Guid topicId)
+        {
+            var userTopicProgressRepo = _uow.GetRepository<UserTopicProgress>();
+            var existing = (await userTopicProgressRepo.GetAllAsync())
+                           .FirstOrDefault(x => x.UserId == userId && x.TopicId == topicId);
+
+            int completedCount = await GetCompletedLessonCountInTopic(userId, topicId);
+
+            if (existing != null)
+            {
+                existing.CompletedLessonCount = completedCount;
+                userTopicProgressRepo.Update(existing);
+            }
+            else
+            {
+                await userTopicProgressRepo.AddAsync(new UserTopicProgress
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = userId,
+                    TopicId = topicId,
+                    CompletedLessonCount = completedCount,
+                });
             }
 
-            var remainingVocabs = allVocabs
-                .Where(v => !userProgress.Any(p => p.VocabId == v.VocabId))
-                .OrderBy(v => v.VocabId)
-                .Take(5)
-                .ToList();
+            _uow.CommitTransaction();
+        }
 
-            var remainingSpeaking = allSpeaking
-                .Where(s => !userProgress.Any(p => p.ExerciseId == s.ExerciseId))
-                .OrderBy(s => s.ExerciseId)
-                .Take(5)
-                .ToList();
+        // Hàm này để lấy lesson theo userid và lessonid để track progress user đã học
+        public async Task<LearningResponse?> GetLessonBlockByUserAndLessonAsync(Guid userId, Guid lessonId)
+        {
+            if (userId == Guid.Empty || lessonId == Guid.Empty)
+                return null;
 
-            if (!remainingVocabs.Any() && !remainingSpeaking.Any()) return null;
+            var lessonRepo = _uow.GetRepository<Lesson>();
+            var lessonVocabRepo = _uow.GetRepository<LessonVocabulary>();
+            var lessonSpeakingRepo = _uow.GetRepository<LessonSpeaking>();
 
-            return new LessonModel
+            var userProgress = (await _userProgressRepo.GetAllAsync())
+                                .Where(p => p.UserId == userId && p.LessonId == lessonId)
+                                .ToList();
+
+            var vocabIds = (await lessonVocabRepo.GetAllAsync())
+                            .Where(lv => lv.LessonId == lessonId)
+                            .Select(lv => lv.VocabId)
+                            .ToList();
+
+            var speakingIds = (await lessonSpeakingRepo.GetAllAsync())
+                              .Where(ls => ls.LessonId == lessonId)
+                              .Select(ls => ls.ExerciseId)
+                              .ToList();
+
+            var vocabItems = (await _vocabRepo.GetAllAsync())
+                            .Where(v => vocabIds.Contains(v.VocabId))
+                            .ToList();
+
+            var speakingItems = (await _speakingRepo.GetAllAsync())
+                                .Where(s => speakingIds.Contains(s.ExerciseId))
+                                .ToList();
+
+            var vocabCorrect = userProgress.Count(p => p.IsCorrect && p.VocabId.HasValue);
+            var speakingCorrect = userProgress.Count(p => p.IsCorrect && p.ExerciseId.HasValue);
+
+            var lesson = (await lessonRepo.GetAllAsync())
+                         .FirstOrDefault(l => l.LessonId == lessonId);
+
+            if (lesson == null)
+                return null;
+
+            var vocabResponses = vocabItems.Select(v => new VocabularyResponse
             {
-                LessonId = Guid.NewGuid(),
-                Vocabularies = remainingVocabs,
-                SpeakingExercises = remainingSpeaking
+                VocabId = v.VocabId,
+                Word = v.Word,
+                AudioUrl = v.AudioUrl,
+                ImageUrl = v.ImageUrl,
+                DistractorsJson = v.DistractorsJson
+            }).ToList();
+
+            var speakingResponses = speakingItems.Select(s => new SpeakingExerciseResponse
+            {
+                ExerciseId = s.ExerciseId,
+                Prompt = s.Prompt,
+                SampleAudioUrl = s.SampleAudioUrl,
+                ReferenceText = s.ReferenceText
+            }).ToList();
+
+            return new LearningResponse
+            {
+                LessonId = lesson.LessonId,
+                Title = lesson.Title,
+                Vocabularies = vocabResponses,
+                SpeakingExercises = speakingResponses,
+                VocabCorrectCount = vocabCorrect,
+                SpeakingCorrectCount = speakingCorrect
             };
         }
 
+        public async Task<bool> SubmitUserProgressAsync(Guid userId, Guid lessonId, Guid? vocabId, Guid? exerciseId, bool isCorrect)
+        {
+            if (userId == Guid.Empty || lessonId == Guid.Empty || (vocabId == null && exerciseId == null))
+                return false;
+
+            var existing = (await _userProgressRepo.GetAllAsync())
+                .FirstOrDefault(p =>
+                    p.UserId == userId &&
+                    p.LessonId == lessonId &&
+                    ((vocabId != null && p.VocabId == vocabId) || (exerciseId != null && p.ExerciseId == exerciseId)));
+
+            if (existing != null)
+            {
+                existing.IsCorrect = isCorrect;
+                _userProgressRepo.Update(existing);
+            }
+            else
+            {
+                var progress = new UserProgress
+                {
+                    ProgressId = Guid.NewGuid(),
+                    UserId = userId,
+                    LessonId = lessonId,
+                    VocabId = vocabId,
+                    ExerciseId = exerciseId,
+                    IsCorrect = isCorrect
+                };
+
+                await _userProgressRepo.AddAsync(progress);
+            }
+
+            await _uow.SaveAsync();
+            _uow.CommitTransaction();
+
+            return true;
+        }
     }
 }
+
+
+
+
+
+
+

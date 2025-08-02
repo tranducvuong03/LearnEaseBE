@@ -22,8 +22,6 @@ namespace LearnEase.Api.Controllers
         private readonly LearnEaseContext _context;
         private readonly ILogger<SpeakingAIController> _logger;
 
-      
-     
         public SpeakingAIController(IOpenAIService aiService, ILogger<SpeakingAIController> logger, LearnEaseContext context)
         {
             _aiService = aiService;
@@ -111,17 +109,17 @@ namespace LearnEase.Api.Controllers
 
             // Step 3: Send to OpenAI for evaluation
             string evalPrompt = $@"
-Evaluate the user's response for the following:
-Prompt: '{originalPrompt}'
-Transcript: '{transcript}'
-Give:
-- Pronunciation feedback
-- Grammar & fluency feedback
-- A score out of 100
+                Evaluate the user's response for the following:
+                Prompt: '{originalPrompt}'
+                Transcript: '{transcript}'
+                Give:
+                - Pronunciation feedback
+                - Grammar & fluency feedback
+                - A score out of 100
 
-Format JSON:
-{{ ""score"": 90, ""feedback"": ""Good..."" }}
-";
+                Format JSON:
+                {{ ""score"": 90, ""feedback"": ""Good..."" }}
+                ";
 
             var evaluation = await _aiService.GetAIResponseAsync(evalPrompt, false, new(), "System");
 
@@ -132,8 +130,8 @@ Format JSON:
             }
             catch (Exception ex)
             {
-                _logger.LogError($"❌ Lỗi phân tích phản hồi từ OpenAI: {ex.Message}");
-                return StatusCode(500, "❌ OpenAI trả phản hồi không hợp lệ.");
+                _logger.LogError($"Lỗi phân tích phản hồi từ OpenAI: {ex.Message}");
+                return StatusCode(500, "OpenAI trả phản hồi không hợp lệ.");
             }
 
             return Ok(new
@@ -144,6 +142,7 @@ Format JSON:
                 feedback = evalJson.RootElement.GetProperty("feedback").GetString()
             });
         }
+
         [HttpGet("drills")]
         public async Task<IActionResult> GetSpeakingDrills(
         [FromQuery] Guid dialectId,

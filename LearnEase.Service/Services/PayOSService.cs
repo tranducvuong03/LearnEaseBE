@@ -46,15 +46,6 @@ namespace LearnEase.Service.Services
 				signature = BitConverter.ToString(hash).Replace("-", "").ToLower();
 			}
 
-			// Log debug
-			Console.WriteLine("=== PayOS - DEBUG LOGS ===");
-			Console.WriteLine($"[Amount] {amount}");
-			Console.WriteLine($"[OrderCode] {orderCode}");
-			Console.WriteLine($"[Description] {description}");
-			Console.WriteLine($"[ReturnUrl] {returnUrl}");
-			Console.WriteLine($"[CancelUrl] {cancelUrl}");
-			Console.WriteLine($"[Raw Signature Data] {rawSignatureData}");
-			Console.WriteLine($"[Generated Signature] {signature}");
 
 			// Tạo request
 			var request = new PayOSRequest
@@ -68,7 +59,6 @@ namespace LearnEase.Service.Services
 			};
 
 			var json = JsonConvert.SerializeObject(request);
-			Console.WriteLine($"[Final Request JSON] {json}");
 
 			var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -76,7 +66,6 @@ namespace LearnEase.Service.Services
 			var response = await _http.PostAsync(_config["PayOS:CreateUrl"], content);
 			var body = await response.Content.ReadAsStringAsync();
 
-			Console.WriteLine($"[PayOS Response StatusCode] {response.StatusCode}");
 			Console.WriteLine($"[PayOS Response Body] {body}");
 
 			if (!response.IsSuccessStatusCode)
