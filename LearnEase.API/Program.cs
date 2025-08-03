@@ -141,7 +141,10 @@ RecurringJob.AddOrUpdate<backgroundJob>(
     scheduler => scheduler.GenerateWeeklyLessons(),
     "0 0 * * 1"  // Thứ Hai, 00:00
 );
-app.UseHangfireDashboard("/hangfire");
+app.UseHangfireDashboard("/hangfire", new DashboardOptions
+{
+    Authorization = new[] { new AllowAllDashboardAuthorizationFilter() }
+});
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
