@@ -121,7 +121,9 @@ Return only the prompt sentence.";
     }
     public async Task<List<AiLesson>> GetOrGenerateWeeklyLessonsAsync()
     {
-        var startOfWeek = DateTime.UtcNow.Date.AddDays(-(int)DateTime.UtcNow.DayOfWeek);
+        int todayIndex = (int)DateTime.UtcNow.DayOfWeek;
+        if (todayIndex == 0) todayIndex = 7;
+        var startOfWeek = DateTime.UtcNow.Date.AddDays(-(todayIndex - 1));
         var existing = (await _lessonRepo.GetAllAsync())
                         .Where(l => l.CreatedAt >= startOfWeek)
                         .OrderBy(l => l.DayIndex)
