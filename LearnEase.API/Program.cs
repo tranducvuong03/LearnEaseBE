@@ -18,11 +18,11 @@ var googleKeyPath = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDE
 Console.WriteLine($"🔐 GOOGLE_APPLICATION_CREDENTIALS = {googleKeyPath}");
 if (!File.Exists("google-key.json"))
 {
-    Console.WriteLine("❌ File google-key.json không tồn tại trong thư mục làm việc.");
+	Console.WriteLine("❌ File google-key.json không tồn tại trong thư mục làm việc.");
 }
 else
 {
-    Console.WriteLine("✅ File google-key.json đã tồn tại.");
+	Console.WriteLine("✅ File google-key.json đã tồn tại.");
 }
 var path = Path.GetFullPath("google-key.json");
 Console.WriteLine($"📌 Đường dẫn tuyệt đối: {path}");
@@ -61,67 +61,67 @@ builder.Services.AddScoped<IPayOSService, PayOSService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 //hangfire 
 builder.Services.AddHangfire(x =>
-    x.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+	x.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddHangfireServer();
 
 // Add services to the container.
 builder.Services.AddSqlServer<LearnEaseContext>(builder.Configuration.GetConnectionString("DefaultConnection"));
 builder.Services.AddControllers()
-    .AddJsonOptions(opt =>
-    {
-        opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
+	.AddJsonOptions(opt =>
+	{
+		opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+	});
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new() { Title = "LearnEase API", Version = "v1" });
+	options.SwaggerDoc("v1", new() { Title = "LearnEase API", Version = "v1" });
 
-    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-    {
-        Name = "Authorization",
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
-        Scheme = "Bearer",
-        BearerFormat = "JWT",
-        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
-        Description = "Nhập token theo định dạng: Bearer {token}"
-    });
+	options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+	{
+		Name = "Authorization",
+		Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+		Scheme = "Bearer",
+		BearerFormat = "JWT",
+		In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+		Description = "Nhập token theo định dạng: Bearer {token}"
+	});
 
-    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
-    {
-        {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
-            {
-                Reference = new Microsoft.OpenApi.Models.OpenApiReference
-                {
-                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>()
-        }
-    });
+	options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+	{
+		{
+			new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+			{
+				Reference = new Microsoft.OpenApi.Models.OpenApiReference
+				{
+					Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+					Id = "Bearer"
+				}
+			},
+			Array.Empty<string>()
+		}
+	});
 });
 
 // JWT
 builder.Services.AddAuthentication(options =>
 {
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+	options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
 .AddJwtBearer(options =>
 {
-    var config = builder.Configuration;
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = config["JwtSettings:Issuer"],
-        ValidAudience = config["JwtSettings:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]))
-    };
+	var config = builder.Configuration;
+	options.TokenValidationParameters = new TokenValidationParameters
+	{
+		ValidateIssuer = true,
+		ValidateAudience = true,
+		ValidateLifetime = true,
+		ValidateIssuerSigningKey = true,
+		ValidIssuer = config["JwtSettings:Issuer"],
+		ValidAudience = config["JwtSettings:Audience"],
+		IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]))
+	};
 });
 //------cho phép chạy api local----------------
 builder.Services.AddCors(options =>
@@ -135,21 +135,22 @@ builder.Services.AddCors(options =>
 			.AllowAnyMethod());
 });
 var app = builder.Build();
-app.UseHangfireDashboard();
-RecurringJob.AddOrUpdate<backgroundJob>(
-    "generate-weekly-lessons",
-    scheduler => scheduler.GenerateWeeklyLessons(),
-    "0 0 * * 1"  // Thứ Hai, 00:00
-);
-app.UseHangfireDashboard("/hangfire", new DashboardOptions
+app.MapHangfireDashboard("/hangfire", new DashboardOptions
 {
-    Authorization = new[] { new AllowAllDashboardAuthorizationFilter() }
+	Authorization = new[] { new AllowAllDashboardAuthorizationFilter() }
 });
+//app.UseHangfireDashboard();
+RecurringJob.AddOrUpdate<backgroundJob>(
+	"generate-weekly-lessons",
+	scheduler => scheduler.GenerateWeeklyLessons(),
+	"0 0 * * 1"  // Thứ Hai, 00:00
+);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
