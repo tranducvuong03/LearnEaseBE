@@ -145,7 +145,8 @@ namespace LearnEase.API.Controllers
 			return Ok(new
 			{
 				monthlyRevenue,
-				changePercent = Math.Round(changePercent, 2)
+				changePercent = Math.Round(changePercent, 2),
+				totalRevenue = Math.Round(sumCurrent, 2)
 			});
 		}
 
