@@ -9,7 +9,7 @@ using System.Security.Claims;
 
 namespace LearnEase.API.Controllers
 {
-    [Authorize]
+    
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
@@ -17,7 +17,7 @@ namespace LearnEase.API.Controllers
         private readonly IUserService _service;
         private readonly IUserStreakService _userStreakService;
         private readonly IUserHeartService _userHeartService;
-
+        private readonly TimeZoneInfo _vnTz = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
 
         public UsersController(IUserService service , IUserStreakService userStreakService, IUserHeartService userHeartService )
         {
@@ -123,7 +123,7 @@ namespace LearnEase.API.Controllers
         [HttpGet("{id}/streak")]
         public async Task<IActionResult> GetStreak(Guid id)
         {
-            var streak = await _userStreakService.GetCurrentStreakAsync(id);
+            var streak = await _userStreakService.GetCurrentStreakAsOfTodayAsync(id, _vnTz);
             var lastActive = await _userStreakService.GetLastActiveDateAsync(id);
 
             return Ok(new

@@ -9,7 +9,8 @@ namespace LearnEase.Service.IServices
     public interface IUserStreakService
     {
         Task UpdateStreakAsync(Guid userId);
-        Task<int> GetCurrentStreakAsync(Guid userId);
+        Task UpdateStreakAsync(Guid userId, TimeZoneInfo tz = null);
+        Task<int> GetCurrentStreakAsOfTodayAsync(Guid userId, TimeZoneInfo tz = null);
         Task<DateTime?> GetLastActiveDateAsync(Guid userId);
     }
 }

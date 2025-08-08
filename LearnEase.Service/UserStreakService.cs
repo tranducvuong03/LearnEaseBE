@@ -79,28 +79,100 @@ namespace LearnEase.Service
                 await _context.SaveChangesAsync();
             }
         }
-
-        public async Task<int> GetCurrentStreakAsync(Guid userId)
+        private static TimeZoneInfo GetTzOrDefault(TimeZoneInfo tz)
+    => tz ?? TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+        private static DateTime TodayInTz(TimeZoneInfo tz)
+    => TimeZoneInfo.ConvertTime(DateTime.UtcNow, tz).Date;
+        public async Task UpdateStreakAsync(Guid userId, TimeZoneInfo tz = null)
         {
+            var zone = GetTzOrDefault(tz);
+            var today = TodayInTz(zone);
+
+            var streakToday = await _context.UserStreaks
+                .FirstOrDefaultAsync(s => s.UserId == userId && s.Date == today);
+
+            if (streakToday == null)
+            {
+                var yesterday = today.AddDays(-1);
+                var hadYesterday = await _context.UserStreaks
+                    .AnyAsync(s => s.UserId == userId && s.Date == yesterday);
+
+                int streakCount = 0;
+                if (hadYesterday)
+                {
+                    var recentDays = await _context.UserStreaks
+                        .Where(s => s.UserId == userId && s.Date <= yesterday)
+                        .OrderByDescending(s => s.Date)
+                        .Take(40) // đủ cho mốc 30
+                        .ToListAsync();
+
+                    streakCount = 1; // bắt đầu từ yesterday
+                    for (int i = 0; i < recentDays.Count - 1; i++)
+                    {
+                        if ((recentDays[i].Date - recentDays[i + 1].Date).Days == 1)
+                            streakCount++;
+                        else
+                            break;
+                    }
+                    streakCount += 1; // + hôm nay
+                }
+
+                _context.UserStreaks.Add(new UserStreak
+                {
+                    UserId = userId,
+                    Date = today,
+                    LessonCount = 1
+                });
+                await _context.SaveChangesAsync();
+
+                if (new[] { 5, 10, 30 }.Contains(streakCount))
+                {
+                    _context.Achievements.Add(new Achievement
+                    {
+                        AchievementId = Guid.NewGuid(),
+                        UserId = userId,
+                        Name = $"🔥 {streakCount}-Day Streak!",
+                        Description = "Keep up the great work!"
+                    });
+                    await _context.SaveChangesAsync();
+                }
+            }
+            else
+            {
+                streakToday.LessonCount += 1;
+                _context.UserStreaks.Update(streakToday);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task<int> GetCurrentStreakAsOfTodayAsync(Guid userId, TimeZoneInfo tz = null)
+        {
+            var zone = GetTzOrDefault(tz);
+            var today = TodayInTz(zone);
+
+            // Nếu hôm nay chưa có hoạt động => streak = 0
+            var hasToday = await _context.UserStreaks
+                .AnyAsync(s => s.UserId == userId && s.Date == today);
+            if (!hasToday) return 0;
+
+            // Lấy lịch sử gần đây nhất (tối đa 40 ngày)
             var latest = await _context.UserStreaks
-                .Where(s => s.UserId == userId)
+                .Where(s => s.UserId == userId && s.Date <= today)
                 .OrderByDescending(s => s.Date)
-                .Take(30)
+                .Take(40)
                 .ToListAsync();
 
             int streak = 0;
             DateTime? prev = null;
+
             foreach (var s in latest)
             {
-                if (prev == null || (prev.Value - s.Date).TotalDays == 1)
+                if (prev == null || (prev.Value - s.Date).Days == 1)
                 {
                     streak++;
                     prev = s.Date;
                 }
-                else
-                {
-                    break;
-                }
+                else break;
             }
 
             return streak;

@@ -15,6 +15,8 @@ namespace LearnEase.API.Controllers
     [ApiController]
     public class AiLessonController : ControllerBase
     {
+        private readonly TimeZoneInfo _vnTz = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+
         private readonly IAiLessonService _lessonService;
         private readonly IGenericRepository<AiLesson> _lessonRepo;
         private readonly IGenericRepository<AiLessonPart> _partRepo;
@@ -180,7 +182,7 @@ namespace LearnEase.API.Controllers
 
             await _attemptRepo.AddAsync(attempt);
             await _uow.SaveAsync();
-            await _userStreakService.UpdateStreakAsync(request.UserId);
+            await _userStreakService.UpdateStreakAsync(request.UserId, _vnTz);
 
             int rounded = (int)Math.Round(score);
             foreach (var p in new[] { "weekly", "monthly" })
@@ -413,7 +415,7 @@ Trả lời trực tiếp, không cần tiêu đề hay định dạng.";
 
                 await _attemptRepo.AddAsync(tooShortAttempt);
                 await _uow.SaveAsync();
-                await _userStreakService.UpdateStreakAsync(request.UserId);
+                await _userStreakService.UpdateStreakAsync(request.UserId, _vnTz);
 
                 return Ok(new { score = 0, feedback = tooShortAttempt.Feedback });
             }
@@ -515,7 +517,7 @@ Bài viết của học viên:
 
             await _attemptRepo.AddAsync(attempt);
             await _uow.SaveAsync();
-            await _userStreakService.UpdateStreakAsync(request.UserId);
+            await _userStreakService.UpdateStreakAsync(request.UserId, _vnTz);
 
 
             int rounded = (int)Math.Round(score);
