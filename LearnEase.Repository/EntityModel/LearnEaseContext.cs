@@ -78,7 +78,16 @@ namespace LearnEase.Repository.EntityModel
                 .HasOne(l => l.Topic)
                 .WithMany(t => t.Lessons)
                 .HasForeignKey(l => l.TopicId);
+			// --- UserStreak: mỗi user chỉ có 1 record theo ngày ---
+			modelBuilder.Entity<UserStreak>(b =>
+			{
+				// Đảm bảo cột Date là date-only (không có time)
+				b.Property(x => x.Date).HasColumnType("date");
 
-        }
+				// Unique index theo (UserId, Date)
+				b.HasIndex(x => new { x.UserId, x.Date }).IsUnique();
+			});
+
+		}
     }
 }

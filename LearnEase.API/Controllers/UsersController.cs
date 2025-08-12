@@ -133,7 +133,13 @@ namespace LearnEase.API.Controllers
             });
 
         }
-        [HttpGet("current-heart")]
+		[HttpPost("{id}/streak/credit")]
+		public async Task<IActionResult> CreditStreak(Guid id, [FromQuery] string source = "study")
+		{
+			await _userStreakService.UpdateStreakAsync(id, _vnTz);
+			return Ok(new { credited = true, source });
+		}
+		[HttpGet("current-heart")]
         public async Task<IActionResult> GetCurrentHeartsOnly([FromQuery] Guid userId)
         {
 
