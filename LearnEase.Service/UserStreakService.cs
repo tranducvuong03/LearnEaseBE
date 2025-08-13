@@ -145,40 +145,47 @@ namespace LearnEase.Service
             }
         }
 
-        public async Task<int> GetCurrentStreakAsOfTodayAsync(Guid userId, TimeZoneInfo tz = null)
-        {
-            var zone = GetTzOrDefault(tz);
-            var today = TodayInTz(zone);
+		public async Task<int> GetCurrentStreakAsOfTodayAsync(Guid userId, TimeZoneInfo tz = null)
+		{
+			var zone = GetTzOrDefault(tz);
+			var today = TodayInTz(zone);
 
-            // Nếu hôm nay chưa có hoạt động => streak = 0
-            var hasToday = await _context.UserStreaks
-                .AnyAsync(s => s.UserId == userId && s.Date == today);
-            if (!hasToday) return 0;
+			// Nếu hôm nay có hoạt động -> anchor = hôm nay; nếu không -> anchor = hôm qua
+			var hasToday = await _context.UserStreaks
+				.AnyAsync(s => s.UserId == userId && s.Date == today);
 
-            // Lấy lịch sử gần đây nhất (tối đa 40 ngày)
-            var latest = await _context.UserStreaks
-                .Where(s => s.UserId == userId && s.Date <= today)
-                .OrderByDescending(s => s.Date)
-                .Take(40)
-                .ToListAsync();
+			var anchor = hasToday ? today : today.AddDays(-1);
 
-            int streak = 0;
-            DateTime? prev = null;
+			// Nếu không có record ở anchor (tức là hôm nay không làm và hôm qua cũng không làm) => 0
+			var hasAnchor = await _context.UserStreaks
+				.AnyAsync(s => s.UserId == userId && s.Date == anchor);
+			if (!hasAnchor) return 0;
 
-            foreach (var s in latest)
-            {
-                if (prev == null || (prev.Value - s.Date).Days == 1)
-                {
-                    streak++;
-                    prev = s.Date;
-                }
-                else break;
-            }
+			// Lấy lịch sử ngược về trước tính từ anchor để đếm chuỗi liên tiếp
+			var latest = await _context.UserStreaks
+				.Where(s => s.UserId == userId && s.Date <= anchor)
+				.OrderByDescending(s => s.Date)
+				.Take(40)
+				.ToListAsync();
 
-            return streak;
-        }
+			int streak = 0;
+			DateTime? prev = null;
 
-        public async Task<DateTime?> GetLastActiveDateAsync(Guid userId)
+			foreach (var s in latest)
+			{
+				if (prev == null || (prev.Value - s.Date).Days == 1)
+				{
+					streak++;
+					prev = s.Date;
+				}
+				else break;
+			}
+
+			return streak;
+		}
+
+
+		public async Task<DateTime?> GetLastActiveDateAsync(Guid userId)
         {
             return await _context.UserStreaks
                 .Where(s => s.UserId == userId)
